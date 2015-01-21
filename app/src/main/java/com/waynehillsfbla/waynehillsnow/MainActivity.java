@@ -58,6 +58,12 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
 
         RetrievePictures rp = new RetrievePictures();
         rp.execute();
@@ -72,7 +78,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         scroller = (ImageView) findViewById(R.id.imageScroller);
-        //ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         anim = new AnimationDrawable();
 
@@ -83,7 +89,7 @@ public class MainActivity extends ActionBarActivity {
         scroller.setBackgroundDrawable(anim);
         anim.setOneShot(false);
         scroller.setVisibility(View.VISIBLE);
-        //progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
         anim.start();
     }
 
