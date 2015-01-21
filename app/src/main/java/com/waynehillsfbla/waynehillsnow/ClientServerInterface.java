@@ -1,8 +1,5 @@
 package com.waynehillsfbla.waynehillsnow;
 
-/**
- * Created by Sudharshan on 1/19/2015.
- */
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -114,3 +111,4 @@ public class ClientServerInterface {
         return jarr;
     }
 }
+

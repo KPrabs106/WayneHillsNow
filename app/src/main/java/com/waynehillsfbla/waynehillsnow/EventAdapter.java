@@ -1,8 +1,5 @@
 package com.waynehillsfbla.waynehillsnow;
 
-/**
- * Created by Sudharshan on 1/19/2015.
- */
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -140,4 +137,3 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 }
-

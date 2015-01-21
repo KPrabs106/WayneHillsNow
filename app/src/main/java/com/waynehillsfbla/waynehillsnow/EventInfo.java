@@ -1,7 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
 /**
- * Created by Sudharshan on 1/19/2015.
+ * Created by Kartik on 1/17/2015.
  */
 public class EventInfo {
     protected String title;
