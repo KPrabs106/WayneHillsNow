@@ -17,23 +17,29 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
 
     ImageView scroller;
     AnimationDrawable anim;
     JSONArray jarr;
     ClientServerInterface clientServerInterface = new ClientServerInterface();
-    Bitmap[] images;
+    HashMap<String, String> pictureData = new HashMap<String, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +74,7 @@ public class MainActivity extends ActionBarActivity {
         RetrievePictures rp = new RetrievePictures();
         rp.execute();
         try {
-            rp.get(5000, TimeUnit.MILLISECONDS);
+            rp.get(1000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -77,20 +83,49 @@ public class MainActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        scroller = (ImageView) findViewById(R.id.imageScroller);
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        SliderLayout imageScroller = (SliderLayout) findViewById(R.id.slider);
 
-        anim = new AnimationDrawable();
+        JSONObject jsonObject;
+        Bundle bundle;
+        for(int i = 0; i < jarr.length(); i++){
+            TextSliderView textSliderView = new TextSliderView(this);
+            bundle = textSliderView.getBundle();
 
-        for(int i = 0; i < images.length; i++) {
-            anim.addFrame((new BitmapDrawable(getResources(), images[i])), 2000);
+            try {
+                jsonObject = jarr.getJSONObject(i);
+                textSliderView.description(jsonObject.getString("title"))
+                        .image(jsonObject.getString("pictureURL"))
+                        .setScaleType(BaseSliderView.ScaleType.Fit)
+                        .setOnSliderClickListener(this);
+                bundle.putString("Title", jsonObject.getString("title"));
+                bundle.putString("Type", jsonObject.getString("type"));
+                bundle.putString("Location", jsonObject.getString("location"));
+                bundle.putString("Description", jsonObject.getString("description"));
+                bundle.putString("Contact", jsonObject.getString("contact"));
+                bundle.putString("StartDate", jsonObject.getString("startDate"));
+                bundle.putString("EndDate", jsonObject.getString("endDate"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            imageScroller.addSlider(textSliderView);
         }
+/*
+        for(String name : pictureData.keySet()){
+            TextSliderView textSliderView = new TextSliderView(this);
 
-        scroller.setBackgroundDrawable(anim);
-        anim.setOneShot(false);
-        scroller.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.INVISIBLE);
-        anim.start();
+            textSliderView.description(name)
+                    .image(pictureData.get(name))
+                    .setScaleType(BaseSliderView.ScaleType.Fit)
+                    .setOnSliderClickListener(this);
+
+            textSliderView.getBundle()
+                    .putString("title", name);
+
+            imageScroller.addSlider(textSliderView);
+
+        }
+        */
     }
 
 
@@ -116,29 +151,29 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onSliderClick(BaseSliderView baseSliderView) {
+        Bundle bundle = baseSliderView.getBundle();
+
+        Intent intent = new Intent(baseSliderView.getContext(), DetailedEventActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     class RetrievePictures extends AsyncTask<String, String, Void> {
         protected Void doInBackground(String... arg0) {
 
             jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/get_pictures.php");
-
-            images = new Bitmap[jarr.length()];
-            String url = "";
-
-            for (int i = 0; i < jarr.length(); i++) {
+            JSONObject jsonObject;
+            for(int i = 0; i < jarr.length(); i++){
                 try {
-                    url = jarr.getJSONObject(i).getString("pictureURL");
+                    jsonObject = jarr.getJSONObject(i);
+                    pictureData.put(jsonObject.getString("title"), jsonObject.getString("pictureURL"));
                 } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    images[i] = BitmapFactory.decodeStream(new URL(url).openStream());
-                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             return null;
         }
     }
-
-
 }

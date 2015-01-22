@@ -46,25 +46,12 @@
         android:layout_above="@+id/buttonCalendar"
         android:layout_alignEnd="@+id/buttonList" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageScroller"
-        android:layout_alignParentEnd="true"
-        android:layout_toEndOf="@+id/buttonList"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:visibility="invisible" />
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="107dp"
-        android:visibility="visible"/>
+    <com.daimajia.slider.library.SliderLayout
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/buttonList"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>
