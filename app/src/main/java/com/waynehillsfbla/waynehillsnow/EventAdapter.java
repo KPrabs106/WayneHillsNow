@@ -1,5 +1,6 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -78,8 +81,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        DownloadImageTask dit = new DownloadImageTask(eventViewHolder.vPicture, eventViewHolder.vProgressBar);
-        dit.execute(ei.pictureURL);
+        Picasso.with(eventViewHolder.context).load(ei.pictureURL).into(eventViewHolder.vPicture);
         eventViewHolder.vType.setText(ei.type);
     }
 
@@ -97,6 +99,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         protected ImageView vPicture;
         protected TextView vType;
         protected ProgressBar vProgressBar;
+        protected Context context;
 
         public EventViewHolder(View v){
             super(v);
@@ -105,35 +108,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             vPicture = (ImageView) v.findViewById(R.id.picture);
             vType = (TextView) v.findViewById(R.id.txtType);
             vProgressBar = (ProgressBar) v.findViewById(R.id.imgLoad);
-        }
-    }
-
-    class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-        ProgressBar pb;
-
-        public DownloadImageTask(ImageView bmImage, ProgressBar pb){
-            this.bmImage = bmImage;
-            this.pb = pb;
-        }
-
-        protected Bitmap doInBackground(String... urls){
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try{
-                InputStream in = new URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            }catch (Exception e){
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result){
-            bmImage.setImageBitmap(result);
-            pb.setVisibility(View.INVISIBLE);
-            bmImage.setVisibility(View.VISIBLE);
+            context = v.getContext();
         }
     }
 }
