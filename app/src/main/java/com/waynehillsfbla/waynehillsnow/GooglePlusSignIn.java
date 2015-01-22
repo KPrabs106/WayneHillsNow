@@ -25,7 +25,7 @@ public class GooglePlusSignIn extends ActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google_plus_sign_in);
+        //setContentView(R.layout.activity_google_plus_sign_in);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -34,7 +34,7 @@ public class GooglePlusSignIn extends ActionBarActivity implements
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        //findViewById(R.id.sign_in_button).setOnClickListener(this);
     }
 
     @Override
@@ -76,6 +76,7 @@ public class GooglePlusSignIn extends ActionBarActivity implements
 
     @Override
     public void onConnected(Bundle bundle) {
+        //setContentView(R.layout.activity_main);
 
     }
 

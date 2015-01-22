@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
+import com.google.android.gms.common.SignInButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +49,8 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
 
         ImageButton listButton = (ImageButton) findViewById(R.id.buttonList);
         ImageButton calendarButton = (ImageButton) findViewById(R.id.buttonCalendar);
+        SignInButton signInButton = (SignInButton) findViewById(R.id.signin_button);
+
 
         listButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +64,14 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CalendarActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), GooglePlusSignIn.class);
                 startActivity(intent);
             }
         });
