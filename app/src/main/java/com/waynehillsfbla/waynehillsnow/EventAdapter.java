@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
@@ -56,7 +57,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return result;
     }
 
-    public void onBindViewHolder(EventViewHolder eventViewHolder, final int i)
+    public void onBindViewHolder(final EventViewHolder eventViewHolder, final int i)
     {
         eventViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +82,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        Picasso.with(eventViewHolder.context).load(ei.pictureURL).into(eventViewHolder.vPicture);
+        Picasso.with(eventViewHolder.context).load(ei.pictureURL).into(eventViewHolder.vPicture, new Callback() {
+            @Override
+            public void onSuccess() {
+                eventViewHolder.vProgressBar.setVisibility(View.INVISIBLE);
+                eventViewHolder.vPicture.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError() {
+                eventViewHolder.vProgressBar.setVisibility(View.VISIBLE);
+                eventViewHolder.vProgressBar.setVisibility(View.INVISIBLE);
+            }
+        });
         eventViewHolder.vType.setText(ei.type);
     }
 
