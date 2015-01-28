@@ -41,7 +41,7 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="230dp"
+            android:layout_height="300dp"
             android:id="@+id/frameLayout"
             android:background="@android:color/darker_gray"
             android:layout_marginTop="29dp"
@@ -86,9 +86,9 @@
                 android:text="@string/desc"
                 android:id="@+id/dispDesc"
                 android:layout_gravity="left|center_vertical"
-                android:layout_marginTop="3dp"
-                android:layout_below="@+id/txtLocation"
-                android:layout_alignParentStart="true" />
+                android:layout_marginTop="22dp"
+                android:layout_below="@+id/dispLoc"
+                android:layout_alignStart="@+id/txtDesc" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -147,6 +147,24 @@
                 android:textColor="@android:color/secondary_text_light"
                 android:layout_alignTop="@+id/To"
                 android:layout_alignStart="@+id/txtStartDate" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Attend"
+                android:id="@+id/attend_button"
+                android:layout_marginTop="24dp"
+                android:layout_below="@+id/To"
+                android:layout_toStartOf="@+id/txtContact" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You are not attending"
+                android:id="@+id/attend_status"
+                android:layout_alignBaseline="@+id/attend_button"
+                android:layout_alignBottom="@+id/attend_button"
+                android:layout_toEndOf="@+id/txtDesc" />
         </RelativeLayout>
 
         <TextView

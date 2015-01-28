@@ -5,7 +5,11 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -57,6 +61,19 @@ public class DetailedEventActivity extends ActionBarActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
+        final Button attendButton = (Button) findViewById(R.id.attend_button);
+        final TextView attendStatus = (TextView) findViewById(R.id.attend_status);
+        attendStatus.setVisibility(View.VISIBLE);
+
+        attendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    attendStatus.setText("You are attending");
+                }
+        });
+
     }
 
 
