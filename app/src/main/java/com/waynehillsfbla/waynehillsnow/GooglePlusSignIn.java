@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 
 /**
  * Android Google+ Quickstart activity.
@@ -86,7 +85,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
     private Button mSignOutButton;
     private Button mRevokeButton;
     private TextView mStatus;
-    private TextView mName;;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -97,10 +95,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
         mRevokeButton = (Button) findViewById(R.id.revoke_access_button);
         mStatus = (TextView) findViewById(R.id.sign_in_status);
-        mName = (TextView) findViewById(R.id.userName);
-
-        mName.setVisibility(View.INVISIBLE);
-
 
         mSignInButton.setOnClickListener(this);
         mSignOutButton.setOnClickListener(this);
@@ -113,6 +107,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
         }
 
         mGoogleApiClient = buildGoogleApiClient();
+
     }
 
     private GoogleApiClient buildGoogleApiClient() {
@@ -131,15 +126,16 @@ public class GooglePlusSignIn extends FragmentActivity implements
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        if (mGoogleApiClient.isConnected()) {
+        /*if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
-        }
+        }*/
     }
 
     @Override
@@ -158,7 +154,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
                 case R.id.sign_in_button:
                     mStatus.setText(R.string.status_signing_in);
                     resolveSignInError();
-                    mName.setVisibility(View.VISIBLE);
                     break;
                 case R.id.sign_out_button:
                     // We clear the default account on sign out so that Google Play
@@ -167,7 +162,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
                     Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
                     mGoogleApiClient.disconnect();
                     mGoogleApiClient.connect();
-                    mName.setVisibility(View.INVISIBLE);
                     break;
                 case R.id.revoke_access_button:
                     // After we revoke permissions for the user with a GoogleApiClient
@@ -209,10 +203,8 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
 
         mStatus.setText(String.format(
-                getResources().getString(R.string.signed_in_as),
+                getResources().getString(R.string.signed_in),
                 currentUser.getDisplayName()));
-
-        mName.setText(currentUser.getDisplayName());
 
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
@@ -320,22 +312,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
     @Override
     public void onResult(LoadPeopleResult peopleData) {
-        /*if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
-            mCirclesList.clear();
-            PersonBuffer personBuffer = peopleData.getPersonBuffer();
-            try {
-                int count = personBuffer.getCount();
-                for (int i = 0; i < count; i++) {
-                    mCirclesList.add(personBuffer.get(i).getDisplayName());
-                }
-            } finally {
-                personBuffer.close();
-            }
-
-            mCirclesAdapter.notifyDataSetChanged();
-        } else {
-            Log.e(TAG, "Error requesting visible circles: " + peopleData.getStatus());
-        } */
 
         if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
             PersonBuffer personBuffer = peopleData.getPersonBuffer();
@@ -357,7 +333,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
         mSignInButton.setEnabled(true);
         mSignOutButton.setEnabled(false);
         mRevokeButton.setEnabled(false);
-        mName.setText("");
 
         mStatus.setText(R.string.status_signed_out);
 
