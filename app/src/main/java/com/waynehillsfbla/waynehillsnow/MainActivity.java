@@ -75,17 +75,11 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
                 startActivity(intent);
             }
         });
-    }
-
-    @Override
-    protected void onStart()
-    {
-        super.onStart();
 
         RetrievePictures rp = new RetrievePictures();
         rp.execute();
         try {
-            rp.get(1000, TimeUnit.MILLISECONDS);
+            rp.get(2000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -121,24 +115,7 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
 
             imageScroller.addSlider(textSliderView);
         }
-/*
-        for(String name : pictureData.keySet()){
-            TextSliderView textSliderView = new TextSliderView(this);
-
-            textSliderView.description(name)
-                    .image(pictureData.get(name))
-                    .setScaleType(BaseSliderView.ScaleType.Fit)
-                    .setOnSliderClickListener(this);
-
-            textSliderView.getBundle()
-                    .putString("title", name);
-
-            imageScroller.addSlider(textSliderView);
-
-        }
-        */
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
