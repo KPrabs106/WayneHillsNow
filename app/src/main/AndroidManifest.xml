@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".ListEventActivity"
-            android:label="@string/title_activity_list_event" >
+            android:label="@string/title_activity_list_event"
+            android:parentActivityName=".CalendarActivity">
         </activity>
         <activity
             android:name=".CalendarActivity"
