@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 
 
 public class DetailedEventActivity extends ActionBarActivity {
-    JSONObject userEventData = null;
+    //JSONObject userEventData = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,12 +69,12 @@ public class DetailedEventActivity extends ActionBarActivity {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
+/*
         try {
             userEventData.put("event_id", id);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
         //TODO replace event_id with user_id once found from google+
         //userEventData.put("event_id", )
