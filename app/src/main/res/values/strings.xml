@@ -27,5 +27,6 @@
     <string name="sign_out_button_name">Sign Out</string>
     <string name="revoke_access_button_name">Revoke</string>
     <string name="circles_title">Circles</string>
+    <string name="gplus">Google Plus</string>
 
 </resources>
