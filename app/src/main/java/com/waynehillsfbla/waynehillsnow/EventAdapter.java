@@ -63,6 +63,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             @Override
             public void onClick(View v) {
                 Bundle bund = new Bundle();
+                bund.putInt("Id", eventList.get(i).id);
                 bund.putString("Title", eventList.get(i).title);
                 bund.putString("Type", eventList.get(i).type);
                 bund.putString("Location", eventList.get(i).location);

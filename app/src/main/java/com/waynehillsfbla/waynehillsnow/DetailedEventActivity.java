@@ -1,6 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -9,13 +10,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.sql.ClientInfoStatus;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 
 public class DetailedEventActivity extends ActionBarActivity {
+    JSONObject userEventData = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +30,8 @@ public class DetailedEventActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
+
+        int id = extras.getInt("Id");
 
         String title = extras.getString("Title");
         String type = extras.getString("Type");
@@ -62,11 +70,23 @@ public class DetailedEventActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
+        try {
+            userEventData.put("event_id", id);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //TODO replace event_id with user_id once found from google+
+        //userEventData.put("event_id", )
+
 
         final Button attendButton = (Button) findViewById(R.id.attend_button);
         final TextView attendStatus = (TextView) findViewById(R.id.attend_status);
         attendStatus.setVisibility(View.VISIBLE);
 
+        //TODO make button invisible when no one is logged in
+        //TODO make button grey when already logged in
+        //TODO add button to not attend
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,4 +135,23 @@ public class DetailedEventActivity extends ActionBarActivity {
 
         return dispForm.format(origForm.parse(result));
     }
+
+    class addAttendance extends AsyncTask<String,Void,Void>
+    {
+        protected Void doInBackground(String... arg0) {
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+            //TODO replace url
+            clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
+            return null;
+        }
+    }
+
+    /*
+    class removeAttendance extends AsyncTask<String,Void,Void>
+    {
+        protected Void doInBackground(String...arg0){
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+        }
+    }
+    */
 }

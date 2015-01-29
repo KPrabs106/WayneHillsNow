@@ -24,6 +24,7 @@ public class ListEventActivity extends ActionBarActivity {
     JSONObject json = new JSONObject();
     JSONArray jarr = new JSONArray();
     JSONObject jobj = null;
+    PostData pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class ListEventActivity extends ActionBarActivity {
         }
 
 
-        PostData pd = new PostData();
+        pd = new PostData();
         pd.execute();
 
         try {
@@ -81,6 +82,7 @@ public class ListEventActivity extends ActionBarActivity {
             EventInfo ei = new EventInfo();
             try {
                 jobj = jarr.getJSONObject(i);
+                ei.id = Integer.parseInt(jobj.getString("id"));
                 ei.title = jobj.getString("title");
                 ei.startDatetime = jobj.getString("startDate");
                 ei.pictureURL = jobj.getString("pictureURL");
@@ -97,6 +99,12 @@ public class ListEventActivity extends ActionBarActivity {
         return result;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        pd.cancel(true);
+        finish();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
