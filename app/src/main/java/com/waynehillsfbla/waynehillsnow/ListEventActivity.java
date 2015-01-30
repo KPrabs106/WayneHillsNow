@@ -101,7 +101,7 @@ public class ListEventActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+
         pd.cancel(true);
         finish();
     }

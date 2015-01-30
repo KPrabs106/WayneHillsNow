@@ -146,12 +146,17 @@ public class DetailedEventActivity extends ActionBarActivity {
         }
     }
 
-    /*
-    class removeAttendance extends AsyncTask<String,Void,Void>
+    class removeAttendance extends AsyncTask<JSONObject,Void,Void>
     {
-        protected Void doInBackground(String...arg0){
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[1];
             ClientServerInterface clientServerInterface = new ClientServerInterface();
+            //TODO add new URL
+            //clientServerInterface.postData(, jsonObject);
+
+            return null;
         }
     }
-    */
+
 }

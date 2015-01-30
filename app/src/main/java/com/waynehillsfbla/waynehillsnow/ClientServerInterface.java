@@ -67,6 +67,24 @@ public class ClientServerInterface {
         return jarr;
     }
 
+    public void updateData(String url, JSONObject jobj){
+        DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
+        HttpConnectionParams.setConnectionTimeout(defaultHttpClient.getParams(), 100000);
+        HttpPost httpPost = new HttpPost(url);
+
+        JSONArray sendJSON = new JSONArray();
+        sendJSON.put(jobj);
+
+        httpPost.setHeader("json", jobj.toString());
+        httpPost.getParams().setParameter("jsonpost", sendJSON);
+
+        try {
+            HttpResponse httpResponse = defaultHttpClient.execute(httpPost);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public JSONArray postData(String url, JSONObject jobj){
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 100000);

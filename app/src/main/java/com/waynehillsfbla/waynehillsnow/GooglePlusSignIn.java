@@ -20,6 +20,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -28,6 +29,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 /**
@@ -200,6 +204,24 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+
+        JSONObject userData = new JSONObject();
+        try {
+            userData.put("name", currentUser.getDisplayName());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            userData.put("profilePicture", currentUser.getImage().getUrl());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            userData.put("googleId", currentUser.getId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
 
         mStatus.setText(String.format(
@@ -379,6 +401,17 @@ public class GooglePlusSignIn extends FragmentActivity implements
                 }
             default:
                 return super.onCreateDialog(id);
+        }
+    }
+
+    class addUser extends AsyncTask<JSONObject,Void,Void>
+    {
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[1];
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+            clientServerInterface.updateData("http://54.164.136.46/add_user.php", jsonObject);
+            return null;
         }
     }
 }
