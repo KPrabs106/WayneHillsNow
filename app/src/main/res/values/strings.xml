@@ -22,7 +22,7 @@
     <string name="status_signed_out">Signed out</string>
     <string name="close">close</string>
     <string name="play_services_error">Play Services Error</string>
-    <string name="signed_in">Signed in</string>
+    <string name="signed_in">Signed in as </string>
     <string name="status_signing_in">Signing in...</string>
     <string name="sign_out_button_name">Sign Out</string>
     <string name="revoke_access_button_name">Revoke</string>

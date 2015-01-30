@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -221,13 +222,12 @@ public class GooglePlusSignIn extends FragmentActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        Log.e("JSON DATA", userData.toString());
 
         AddUser addUser = new AddUser();
         addUser.execute(userData);
 
-        mStatus.setText(String.format(
-                getResources().getString(R.string.signed_in),
-                currentUser.getDisplayName()));
+        mStatus.setText(getString(R.string.signed_in) + " " + currentUser.getDisplayName());
 
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
@@ -411,8 +411,9 @@ public class GooglePlusSignIn extends FragmentActivity implements
         protected Void doInBackground(JSONObject... params) {
             JSONObject jsonObject = params[0];
             ClientServerInterface clientServerInterface = new ClientServerInterface();
-            clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
+            JSONArray jarr = clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
             //clientServerInterface.updateData("http://54.164.136.46/add_user.php", jsonObject);
+            Log.e("users", jarr.toString());
             return null;
         }
     }

@@ -1,5 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -74,6 +76,8 @@ public class ClientServerInterface {
 
         JSONArray sendJSON = new JSONArray();
         sendJSON.put(jobj);
+
+        Log.e("JSON Data in Update Data", jobj.toString());
 
         httpPost.setHeader("json", jobj.toString());
         httpPost.getParams().setParameter("jsonpost", sendJSON);

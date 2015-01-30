@@ -2,13 +2,29 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.CommonStatusCodes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.plus.People;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
+import com.google.android.gms.plus.model.people.PersonBuffer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,10 +34,15 @@ import org.w3c.dom.Text;
 import java.sql.ClientInfoStatus;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 
-public class DetailedEventActivity extends ActionBarActivity {
+public class DetailedEventActivity extends ActionBarActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
     //JSONObject userEventData = null;
+
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +51,7 @@ public class DetailedEventActivity extends ActionBarActivity {
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
+
 
         int id = extras.getInt("Id");
 
@@ -40,6 +62,13 @@ public class DetailedEventActivity extends ActionBarActivity {
         String contact = extras.getString("Contact");
         String startDate = extras.getString("StartDate");
         String endDate = extras.getString("EndDate");
+
+
+
+        mGoogleApiClient = buildGoogleApiClient();
+        mGoogleApiClient.isConnected();
+        Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
+                .setResultCallback(this);
 
         TextView txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
@@ -55,6 +84,16 @@ public class DetailedEventActivity extends ActionBarActivity {
 
         TextView txtContact = (TextView) findViewById(R.id.txtContact);
         txtContact.setText(contact);
+
+
+
+        ListView attendeeList = (ListView) findViewById(R.id.attendee_list);
+        attendeeList.setVisibility(View.VISIBLE);
+        ArrayList attendArrList = new ArrayList<String>();
+        ListAdapter attendAdapter = new ArrayAdapter<String>(
+                this, R.layout.activity_detailed_event, attendArrList);
+        attendeeList.setAdapter(attendAdapter);
+
 
         TextView txtStartDate = (TextView) findViewById(R.id.txtStartDate);
         try {
@@ -80,13 +119,13 @@ public class DetailedEventActivity extends ActionBarActivity {
         //userEventData.put("event_id", )
 
 
-        final Button attendButton = (Button) findViewById(R.id.attend_button);
+        Button attendButton = (Button) findViewById(R.id.attend_button);
         final TextView attendStatus = (TextView) findViewById(R.id.attend_status);
-        attendStatus.setVisibility(View.VISIBLE);
 
         //TODO make button invisible when no one is logged in
         //TODO make button grey when already logged in
         //TODO add button to not attend
+
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +175,46 @@ public class DetailedEventActivity extends ActionBarActivity {
         return dispForm.format(origForm.parse(result));
     }
 
+    @Override
+    public void onResult(People.LoadPeopleResult peopleData) {
+
+        if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
+            PersonBuffer personBuffer = peopleData.getPersonBuffer();
+            try {
+                int count = personBuffer.getCount();
+                for (int i = 0; i < count; i++) {
+                    Log.d("Display name: ", personBuffer.get(i).getDisplayName());
+                }
+            } finally {
+                personBuffer.close();
+            }
+        } else {
+            Log.e( "Error requesting visible circles: ", peopleData.getStatus().toString());
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+
     class addAttendance extends AsyncTask<String,Void,Void>
     {
         protected Void doInBackground(String... arg0) {
@@ -157,6 +236,18 @@ public class DetailedEventActivity extends ActionBarActivity {
 
             return null;
         }
+    }
+
+    private GoogleApiClient buildGoogleApiClient() {
+        // When we build the GoogleApiClient we specify where connected and
+        // connection failed callbacks should be returned, which Google APIs our
+        // app uses and which OAuth 2.0 scopes our app requests.
+        return new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
+                .addScope(Plus.SCOPE_PLUS_LOGIN)
+                .build();
     }
 
 }

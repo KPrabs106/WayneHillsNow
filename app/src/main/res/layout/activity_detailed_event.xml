@@ -41,7 +41,7 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="300dp"
+            android:layout_height="530dp"
             android:id="@+id/frameLayout"
             android:background="@android:color/darker_gray"
             android:layout_marginTop="29dp"
@@ -56,8 +56,8 @@
                 android:text="[Location]"
                 android:id="@+id/txtLocation"
                 android:layout_gravity="left|top"
-                android:layout_alignBottom="@+id/dispLoc"
-                android:layout_toEndOf="@+id/txtDesc" />
+                android:layout_below="@+id/dispLoc"
+                android:layout_alignParentStart="true" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,9 +86,9 @@
                 android:text="@string/desc"
                 android:id="@+id/dispDesc"
                 android:layout_gravity="left|center_vertical"
-                android:layout_marginTop="22dp"
-                android:layout_below="@+id/dispLoc"
-                android:layout_alignStart="@+id/txtDesc" />
+                android:layout_below="@+id/txtLocation"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="17dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -153,9 +153,9 @@
                 android:layout_height="wrap_content"
                 android:text="Attend"
                 android:id="@+id/attend_button"
-                android:layout_marginTop="24dp"
                 android:layout_below="@+id/To"
-                android:layout_toStartOf="@+id/txtContact" />
+                android:layout_toStartOf="@+id/txtContact"
+                android:layout_marginTop="20dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -165,6 +165,13 @@
                 android:layout_alignBaseline="@+id/attend_button"
                 android:layout_alignBottom="@+id/attend_button"
                 android:layout_toEndOf="@+id/txtDesc" />
+
+            <ListView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/attendee_list"
+                android:layout_alignParentEnd="true"
+                android:layout_below="@+id/attend_button" />
         </RelativeLayout>
 
         <TextView
