@@ -222,7 +222,8 @@ public class GooglePlusSignIn extends FragmentActivity implements
             e.printStackTrace();
         }
 
-
+        AddUser addUser = new AddUser();
+        addUser.execute(userData);
 
         mStatus.setText(String.format(
                 getResources().getString(R.string.signed_in),
@@ -404,7 +405,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
         }
     }
 
-    class addUser extends AsyncTask<JSONObject,Void,Void>
+    class AddUser extends AsyncTask<JSONObject,Void,Void>
     {
         @Override
         protected Void doInBackground(JSONObject... params) {
@@ -414,4 +415,5 @@ public class GooglePlusSignIn extends FragmentActivity implements
             return null;
         }
     }
+
 }
