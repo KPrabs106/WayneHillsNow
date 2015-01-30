@@ -409,7 +409,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
     {
         @Override
         protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[1];
+            JSONObject jsonObject = params[0];
             ClientServerInterface clientServerInterface = new ClientServerInterface();
             clientServerInterface.updateData("http://54.164.136.46/add_user.php", jsonObject);
             return null;
