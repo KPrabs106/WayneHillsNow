@@ -222,12 +222,13 @@ public class GooglePlusSignIn extends FragmentActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.e("JSON DATA", userData.toString());
 
         AddUser addUser = new AddUser();
         addUser.execute(userData);
 
-        mStatus.setText(getString(R.string.signed_in) + " " + currentUser.getDisplayName());
+        mStatus.setText(String.format(
+                getResources().getString(R.string.signed_in),
+                currentUser.getDisplayName()));
 
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
@@ -405,15 +406,17 @@ public class GooglePlusSignIn extends FragmentActivity implements
         }
     }
 
+
     class AddUser extends AsyncTask<JSONObject,Void,Void>
     {
         @Override
         protected Void doInBackground(JSONObject... params) {
             JSONObject jsonObject = params[0];
+            Log.e("JSON object", jsonObject.toString());
             ClientServerInterface clientServerInterface = new ClientServerInterface();
-            JSONArray jarr = clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
+            JSONArray jsonArray = clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
+            Log.e("JSONARRAy", jsonArray.toString());
             //clientServerInterface.updateData("http://54.164.136.46/add_user.php", jsonObject);
-            Log.e("users", jarr.toString());
             return null;
         }
     }

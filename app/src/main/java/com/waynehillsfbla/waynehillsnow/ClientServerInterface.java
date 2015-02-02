@@ -6,6 +6,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONArray;
@@ -132,5 +133,31 @@ public class ClientServerInterface {
         }
         return jarr;
     }
+/*
+    public void sendJSONTask(String uri, String jsonString,
+                              int task_case) {
+        try {
+
+            HttpPost httpPost = new HttpPost(uri);
+            httpPost.setHeader("content-type", "application/json");
+
+            HttpEntity entity;
+
+            StringEntity s = new StringEntity(jsonString);
+            entity = s;
+            httpPost.setEntity(entity);
+
+            WebServiceRestTask task = new WebServiceRestTask(task_case);
+            task.setResponseCallback(GooglePlusSignIn);
+            task.execute(httpPost);
+
+            Log.e("Sending JSON task : " + task_case,
+                    jsonString);
+
+        } catch (Exception e) {
+            Log.e("ERROR sending JSON task: ", e.getMessage());
+        }
+    }
+    */
 }
 
