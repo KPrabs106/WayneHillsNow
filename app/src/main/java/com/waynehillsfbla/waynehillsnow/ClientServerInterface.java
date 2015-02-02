@@ -117,11 +117,7 @@ public class ClientServerInterface {
                     }
                     is.close();
                     json = sb.toString();
-                    try{
-                        jarr = new JSONArray(json);
-                    }catch (JSONException e){
-                        e.printStackTrace();
-                    }
+                    jarr = new JSONArray().put(json);
                 }catch(IOException e){
                     e.printStackTrace();
                 }

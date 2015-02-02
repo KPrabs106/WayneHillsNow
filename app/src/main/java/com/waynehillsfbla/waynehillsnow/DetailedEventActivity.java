@@ -69,6 +69,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         mGoogleApiClient.isConnected();
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
+        //Log.e("");
 
         TextView txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);

@@ -226,9 +226,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
         AddUser addUser = new AddUser();
         addUser.execute(userData);
 
-        mStatus.setText(String.format(
-                getResources().getString(R.string.signed_in),
-                currentUser.getDisplayName()));
+        mStatus.setText(getResources().getString(R.string.signed_in) +  " " + currentUser.getDisplayName());
 
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
