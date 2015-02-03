@@ -58,7 +58,7 @@ public class CalendarActivity extends ActionBarActivity {
         rd.execute();
 
         try {
-            rd.get(2000, TimeUnit.MILLISECONDS);
+            rd.get(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
