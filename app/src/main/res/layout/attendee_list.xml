@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+     android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/attendeePicture" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_alignTop="@id/attendeePicture"
+        android:layout_alignBottom="@id/attendeePicture"
+        android:layout_alignLeft="@id/attendeePicture"
+        android:layout_alignRight="@id/attendeePicture"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="[Name]"
+        android:id="@+id/attendeeName"
+        android:layout_alignLeft="@id/attendeePicture"/>
+
+</RelativeLayout>

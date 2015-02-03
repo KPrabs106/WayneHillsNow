@@ -1,5 +1,6 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
@@ -37,7 +38,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
-public class DetailedEventActivity extends ActionBarActivity implements
+public class DetailedEventActivity extends ListActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
     //JSONObject userEventData = null;
@@ -52,9 +53,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-
         int id = extras.getInt("Id");
-
         String title = extras.getString("Title");
         String type = extras.getString("Type");
         String location = extras.getString("Location");
@@ -63,13 +62,10 @@ public class DetailedEventActivity extends ActionBarActivity implements
         String startDate = extras.getString("StartDate");
         String endDate = extras.getString("EndDate");
 
-
-
         mGoogleApiClient = buildGoogleApiClient();
         mGoogleApiClient.isConnected();
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
-        //Log.e("");
 
         TextView txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
@@ -86,16 +82,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
         TextView txtContact = (TextView) findViewById(R.id.txtContact);
         txtContact.setText(contact);
 
-
-
-        ListView attendeeList = (ListView) findViewById(R.id.attendee_list);
-        attendeeList.setVisibility(View.VISIBLE);
-        ArrayList attendArrList = new ArrayList<String>();
-        ListAdapter attendAdapter = new ArrayAdapter<String>(
-                this, R.layout.activity_detailed_event, attendArrList);
-        attendeeList.setAdapter(attendAdapter);
-
-
         TextView txtStartDate = (TextView) findViewById(R.id.txtStartDate);
         try {
             txtStartDate.setText(getDetailedDisplayDate(startDate));
@@ -109,6 +95,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        //TODO Get names and pictures of those attending event
+        //AttendeeListAdapter adapter = new AttendeeListAdapter(this, names, pictures);
+        //setListAdapter(adapter);
+
 /*
         try {
             userEventData.put("event_id", id);
