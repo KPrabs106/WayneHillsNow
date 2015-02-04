@@ -38,6 +38,7 @@ import java.sql.ClientInfoStatus;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -151,7 +152,6 @@ public class DetailedEventActivity extends ListActivity implements
                 Toast.makeText(getApplicationContext(), "You are now attending.", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 
 
@@ -261,16 +261,25 @@ public class DetailedEventActivity extends ListActivity implements
             JSONArray attendanceDetails = clientServerInterface.postData("http://54.164.136.46/get_attendance.php", jsonObject);
             Log.e("Attendance Details: ", attendanceDetails.toString());
 
-            nameAttendees = new String[attendanceDetails.length()];
-            pictureAttendees = new String[attendanceDetails.length()];
 
             JSONObject jobj = null;
+            JSONArray jarr = null;
+            try {
+                jarr = new JSONArray(attendanceDetails.get(0).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            for(int i = 0; i < attendanceDetails.length(); i++)
+            nameAttendees = new String[jarr.length()];
+            pictureAttendees = new String[jarr.length()];
+
+
+            for(int i = 0; i < jarr.length(); i++)
             {
                 try {
                     //Log.e("Attendance details get i: ", attendanceDetails.get(i).toString());
-                    JSONArray jarr = new JSONArray(attendanceDetails.get(i).toString());
+                    //JSONArray jarr = new JSONArray(attendanceDetails.get(0).toString());
+                    Log.e("First json array", jarr.toString());
                     JSONObject jObject = jarr.getJSONObject(i);
                     //JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
                     nameAttendees[i] = jObject.getString("name");
@@ -278,6 +287,8 @@ public class DetailedEventActivity extends ListActivity implements
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                Log.e("nameAttendees", Arrays.toString(nameAttendees));
+                Log.e("nameAttendees", Arrays.toString(pictureAttendees));
             }
 
             return null;
