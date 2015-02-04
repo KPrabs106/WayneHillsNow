@@ -135,23 +135,6 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
-        try {
-            if(userEventData.getString("userId") == null)
-            {
-                Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-                Log.e("user id:", "null");
-                try {
-                    userEventData.put("userId", currentUser.getId());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
         Button attendButton = (Button) findViewById(R.id.attend_button);
         final TextView attendStatus = (TextView) findViewById(R.id.attend_status);
 
@@ -287,7 +270,9 @@ public class DetailedEventActivity extends ListActivity implements
             {
                 try {
                     //Log.e("Attendance details get i: ", attendanceDetails.get(i).toString());
-                    JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
+                    JSONArray jarr = new JSONArray(attendanceDetails.get(i).toString());
+                    JSONObject jObject = jarr.getJSONObject(i);
+                    //JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
                     nameAttendees[i] = jObject.getString("name");
                     pictureAttendees[i] = jObject.getString("profilePicture");
                 } catch (JSONException e) {
