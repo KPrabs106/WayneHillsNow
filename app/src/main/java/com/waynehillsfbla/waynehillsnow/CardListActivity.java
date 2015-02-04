@@ -45,7 +45,7 @@ public class CardListActivity extends ActionBarActivity {
         rd.execute();
 
         try {
-            rd.get(1000, TimeUnit.MILLISECONDS);
+            rd.get(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -94,6 +94,7 @@ public class CardListActivity extends ActionBarActivity {
             EventInfo ei = new EventInfo();
             try {
                 jobj = jarr.getJSONObject(i);
+                ei.id = Integer.parseInt(jobj.getString("id"));
                 ei.title = jobj.getString("title");
                 ei.startDatetime = jobj.getString("startDate");
                 ei.pictureURL = jobj.getString("pictureURL");

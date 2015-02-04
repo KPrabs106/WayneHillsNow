@@ -102,13 +102,15 @@ public class ClientServerInterface {
             httppost.setHeader("json", jobj.toString());
             httppost.getParams().setParameter("jsonpost", postjson);
 
+            Log.e("What is being sent: ", postjson.toString());
+
             HttpResponse httpResponse = httpClient.execute(httppost);
 
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
 
             try{
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"), 8);
                 StringBuilder sb = new StringBuilder();
                 String line = null;
                 try{

@@ -16,7 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -36,12 +38,17 @@ import java.sql.ClientInfoStatus;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 public class DetailedEventActivity extends ListActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
-    //JSONObject userEventData = null;
+    JSONObject userEventData = new JSONObject();
+    String[] nameAttendees;
+    String[] pictureAttendees;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -63,7 +70,8 @@ public class DetailedEventActivity extends ListActivity implements
         String endDate = extras.getString("EndDate");
 
         mGoogleApiClient = buildGoogleApiClient();
-        mGoogleApiClient.isConnected();
+        mGoogleApiClient.connect();
+
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
 
@@ -96,19 +104,52 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
-        //TODO Get names and pictures of those attending event
-        //AttendeeListAdapter adapter = new AttendeeListAdapter(this, names, pictures);
-        //setListAdapter(adapter);
-
-/*
+        JSONObject eventDetails = new JSONObject();
         try {
-            userEventData.put("event_id", id);
+            eventDetails.put("eventId", Integer.toString(id));
         } catch (JSONException e) {
             e.printStackTrace();
-        }*/
+        }
 
-        //TODO replace event_id with user_id once found from google+
-        //userEventData.put("event_id", )
+        GetAttendance getAttendance = new GetAttendance();
+        getAttendance.execute(eventDetails);
+        try {
+            getAttendance.get(10000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+
+        AttendeeListAdapter adapter = new AttendeeListAdapter(this, nameAttendees, pictureAttendees);
+        setListAdapter(adapter);
+
+        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar2);
+        progressBar.setVisibility(View.INVISIBLE);
+
+        try {
+            userEventData.put("eventId", Integer.toString(id) );
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if(userEventData.getString("userId") == null)
+            {
+                Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+                Log.e("user id:", "null");
+                try {
+                    userEventData.put("userId", currentUser.getId());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
         Button attendButton = (Button) findViewById(R.id.attend_button);
@@ -121,8 +162,11 @@ public class DetailedEventActivity extends ListActivity implements
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    attendStatus.setText("You are attending");
-                }
+                attendStatus.setText("You are attending");
+                AddAttendance addAttendance = new AddAttendance();
+                addAttendance.execute(userEventData);
+                Toast.makeText(getApplicationContext(), "You are now attending.", Toast.LENGTH_SHORT).show();
+            }
         });
 
     }
@@ -188,7 +232,18 @@ public class DetailedEventActivity extends ListActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        Log.e("Connection", "connected");
+        try {
+            userEventData.put("googleId", currentUser.getId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
+        /*try {
+            userEventData.put("googleId", currentUser.getId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }*/
     }
 
     @Override
@@ -206,13 +261,52 @@ public class DetailedEventActivity extends ListActivity implements
 
     }
 
-
-    class addAttendance extends AsyncTask<String,Void,Void>
+    public void onPause()
     {
-        protected Void doInBackground(String... arg0) {
+        super.onPause();
+        Log.e("Exit", "onPause() is called");
+        mGoogleApiClient.disconnect();
+    }
+
+    class GetAttendance extends AsyncTask<JSONObject, Void, Void>
+    {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[0];
             ClientServerInterface clientServerInterface = new ClientServerInterface();
-            //TODO replace url
-            clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
+            JSONArray attendanceDetails = clientServerInterface.postData("http://54.164.136.46/get_attendance.php", jsonObject);
+            Log.e("Attendance Details: ", attendanceDetails.toString());
+
+            nameAttendees = new String[attendanceDetails.length()];
+            pictureAttendees = new String[attendanceDetails.length()];
+
+            JSONObject jobj = null;
+
+            for(int i = 0; i < attendanceDetails.length(); i++)
+            {
+                try {
+                    //Log.e("Attendance details get i: ", attendanceDetails.get(i).toString());
+                    JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
+                    nameAttendees[i] = jObject.getString("name");
+                    pictureAttendees[i] = jObject.getString("profilePicture");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+    }
+
+
+    class AddAttendance extends AsyncTask<JSONObject,Void,Void>
+    {
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[0];
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+            clientServerInterface.postData("http://54.164.136.46/add_attendance.php", jsonObject);
+            //Toast.makeText(getApplicationContext(), "You are now attending.", Toast.LENGTH_SHORT).show();
             return null;
         }
     }
@@ -225,7 +319,7 @@ public class DetailedEventActivity extends ListActivity implements
             ClientServerInterface clientServerInterface = new ClientServerInterface();
             //TODO add new URL
             //clientServerInterface.postData(, jsonObject);
-
+            Toast.makeText(getApplicationContext(), "You are no longer attending.", Toast.LENGTH_SHORT).show();
             return null;
         }
     }

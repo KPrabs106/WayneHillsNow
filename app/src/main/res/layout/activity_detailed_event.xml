@@ -171,12 +171,6 @@
                 android:layout_alignBottom="@+id/attend_button"
                 android:layout_toEndOf="@+id/txtDesc" />
 
-            <ListView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/attendee_list"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@+id/attend_button" />
         </RelativeLayout>
 
         <TextView
@@ -199,7 +193,18 @@
 <ListView
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
-    android:layout_below="@id/card_view"></ListView>
+    android:layout_below="@id/card_view"
+    android:id="@android:id/list"></ListView>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar2"
+        android:layout_alignBottom="@android:id/list"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="127dp"
+        android:visibility="visible"/>
 
 </RelativeLayout>
     <!--TODO add scrollable list of people attending event-->
