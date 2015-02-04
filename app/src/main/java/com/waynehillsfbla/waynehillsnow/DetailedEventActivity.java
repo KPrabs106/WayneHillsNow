@@ -136,8 +136,9 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
-        Button attendButton = (Button) findViewById(R.id.attend_button);
-        final TextView attendStatus = (TextView) findViewById(R.id.attend_status);
+        final Button attendButton = (Button) findViewById(R.id.attend_button);
+        final Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        cancelButton.setEnabled(false);
 
         //TODO make button invisible when no one is logged in
         //TODO make button grey when already logged in
@@ -146,12 +147,26 @@ public class DetailedEventActivity extends ListActivity implements
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                attendStatus.setText("You are attending");
                 AddAttendance addAttendance = new AddAttendance();
                 addAttendance.execute(userEventData);
-                Toast.makeText(getApplicationContext(), "You are now attending.", Toast.LENGTH_SHORT).show();
+                cancelButton.setEnabled(true);
+                attendButton.setEnabled(false);
+                Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
             }
         });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeAttendance removeAttendance = new removeAttendance();
+                removeAttendance.execute(userEventData);
+                attendButton.setEnabled(true);
+                cancelButton.setEnabled(false);
+                Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
 
@@ -283,7 +298,7 @@ public class DetailedEventActivity extends ListActivity implements
                     JSONObject jObject = jarr.getJSONObject(i);
                     //JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
                     nameAttendees[i] = jObject.getString("name");
-                    pictureAttendees[i] = jObject.getString("profilePicture");
+                    pictureAttendees[i] = (jObject.getString("profilePicture")).substring(0,96) + "103";
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -293,6 +308,7 @@ public class DetailedEventActivity extends ListActivity implements
 
             return null;
         }
+
     }
 
 
@@ -311,11 +327,11 @@ public class DetailedEventActivity extends ListActivity implements
     {
         @Override
         protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[1];
+            JSONObject jsonObject = params[0]; //changed from 1...causing out of bounds error
             ClientServerInterface clientServerInterface = new ClientServerInterface();
             //TODO add new URL
             //clientServerInterface.postData(, jsonObject);
-            Toast.makeText(getApplicationContext(), "You are no longer attending.", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
             return null;
         }
     }

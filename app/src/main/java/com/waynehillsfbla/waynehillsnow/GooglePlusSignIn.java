@@ -218,7 +218,9 @@ public class GooglePlusSignIn extends FragmentActivity implements
             e.printStackTrace();
         }
         try {
+            //userData.put("googleId", formatURLid(currentUser.getUrl()));
             userData.put("googleId", currentUser.getId());
+            Log.d("PROFILE", currentUser.getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -226,13 +228,17 @@ public class GooglePlusSignIn extends FragmentActivity implements
         AddUser addUser = new AddUser();
         addUser.execute(userData);
 
-        mStatus.setText(getResources().getString(R.string.signed_in) +  " " + currentUser.getDisplayName());
+        mStatus.setText(getResources().getString(R.string.signed_in) + " " + currentUser.getDisplayName());
 
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
 
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
+    }
+
+    private String formatURLid(String url) {
+        return url.substring(28,50);
     }
 
     /* onConnectionFailed is called when our Activity could not connect to Google
@@ -413,7 +419,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
             Log.e("JSON object", jsonObject.toString());
             ClientServerInterface clientServerInterface = new ClientServerInterface();
             JSONArray jsonArray = clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
-            Log.e("JSONARRAy", jsonArray.toString());
+            Log.e("Table details", jsonArray.toString());
             //clientServerInterface.updateData("http://54.164.136.46/add_user.php", jsonObject);
             return null;
         }

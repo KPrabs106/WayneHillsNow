@@ -46,7 +46,7 @@
 
         <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="300dp"
+            android:layout_height="330dp"
             android:id="@+id/frameLayout"
             android:background="@android:color/darker_gray"
             android:layout_marginTop="29dp"
@@ -158,18 +158,16 @@
                 android:layout_height="wrap_content"
                 android:text="Attend"
                 android:id="@+id/attend_button"
-                android:layout_below="@+id/To"
-                android:layout_toStartOf="@+id/txtContact"
-                android:layout_marginTop="20dp" />
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true" />
 
-            <TextView
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="You are not attending"
-                android:id="@+id/attend_status"
-                android:layout_alignBaseline="@+id/attend_button"
-                android:layout_alignBottom="@+id/attend_button"
-                android:layout_toEndOf="@+id/txtDesc" />
+                android:text="Cancel"
+                android:id="@+id/cancel_button"
+                android:layout_alignParentBottom="true"
+                android:layout_alignStart="@+id/txtContact" />
 
         </RelativeLayout>
 
@@ -194,17 +192,30 @@
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:layout_below="@id/card_view"
-    android:id="@android:id/list"></ListView>
+    android:id="@android:id/list"
+    android:layout_marginTop="30dp">
+    </ListView>
 
     <ProgressBar
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/progressBar2"
-        android:layout_alignBottom="@android:id/list"
+        android:visibility="visible"
+        android:layout_marginTop="42dp"
+        android:layout_alignTop="@android:id/list"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/people_attending"
+        android:id="@+id/textView4"
+        android:layout_below="@+id/card_view"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="127dp"
-        android:visibility="visible"/>
+        android:background="#660033"
+        android:textColor="@android:color/primary_text_dark" />
 
 </RelativeLayout>
     <!--TODO add scrollable list of people attending event-->

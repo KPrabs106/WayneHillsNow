@@ -23,8 +23,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="[Name]"
         android:id="@+id/attendeeName"
-        android:layout_alignLeft="@id/attendeePicture"/>
+        android:layout_alignLeft="@id/attendeePicture"
+        android:layout_marginLeft="50dp" />
+
 
 </RelativeLayout>
