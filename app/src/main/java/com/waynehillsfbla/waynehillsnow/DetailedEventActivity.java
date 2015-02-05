@@ -157,6 +157,7 @@ public class DetailedEventActivity extends ListActivity implements
                 addAttendance.execute(userEventData);
                 cancelButton.setEnabled(true);
                 attendButton.setEnabled(false);
+                restartActivity();
                 Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
             }
         });
@@ -168,7 +169,9 @@ public class DetailedEventActivity extends ListActivity implements
                 removeAttendance.execute(userEventData);
                 attendButton.setEnabled(true);
                 cancelButton.setEnabled(false);
+                restartActivity();
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -181,6 +184,11 @@ public class DetailedEventActivity extends ListActivity implements
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detailed_event, menu);
         return true;
+    }
+
+    private void restartActivity() {
+        finish();
+        startActivity(getIntent());
     }
 
     @Override
