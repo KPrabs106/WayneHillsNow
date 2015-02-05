@@ -109,6 +109,7 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
                         .image(jsonObject.getString("pictureURL"))
                         .setScaleType(BaseSliderView.ScaleType.Fit)
                         .setOnSliderClickListener(this);
+                bundle.putInt("Id", Integer.parseInt(jsonObject.getString("id")));
                 bundle.putString("Title", jsonObject.getString("title"));
                 bundle.putString("Type", jsonObject.getString("type"));
                 bundle.putString("Location", jsonObject.getString("location"));
