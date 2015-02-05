@@ -50,6 +50,7 @@ public class DetailedEventActivity extends ListActivity implements
     JSONObject userEventData = new JSONObject();
     String[] nameAttendees;
     String[] pictureAttendees;
+    Integer[] googleIdAttendees;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -75,6 +76,25 @@ public class DetailedEventActivity extends ListActivity implements
 
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
+
+        JSONObject eventDetails = new JSONObject();
+        try {
+            eventDetails.put("eventId", Integer.toString(id));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        GetAttendance getAttendance = new GetAttendance();
+        getAttendance.execute(eventDetails);
+        try {
+            getAttendance.get(10000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
 
         TextView txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
@@ -105,24 +125,6 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
-        JSONObject eventDetails = new JSONObject();
-        try {
-            eventDetails.put("eventId", Integer.toString(id));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        GetAttendance getAttendance = new GetAttendance();
-        getAttendance.execute(eventDetails);
-        try {
-            getAttendance.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
 
         AttendeeListAdapter adapter = new AttendeeListAdapter(this, nameAttendees, pictureAttendees);
         setListAdapter(adapter);
@@ -138,7 +140,22 @@ public class DetailedEventActivity extends ListActivity implements
 
         final Button attendButton = (Button) findViewById(R.id.attend_button);
         final Button cancelButton = (Button) findViewById(R.id.cancel_button);
-        cancelButton.setEnabled(false);
+
+        try {
+            if(Arrays.asList(googleIdAttendees).contains(Integer.parseInt(userEventData.getString("googleId")))) {
+                attendButton.setEnabled(false);
+                cancelButton.setEnabled(true);
+            }
+            else
+            {
+                attendButton.setEnabled(true);
+                cancelButton.setEnabled(false);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //cancelButton.setEnabled(false);
 
         //TODO make button invisible when no one is logged in
         //TODO make button grey when already logged in
@@ -158,7 +175,7 @@ public class DetailedEventActivity extends ListActivity implements
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeAttendance removeAttendance = new removeAttendance();
+                RemoveAttendance removeAttendance = new RemoveAttendance();
                 removeAttendance.execute(userEventData);
                 attendButton.setEnabled(true);
                 cancelButton.setEnabled(false);
@@ -287,7 +304,7 @@ public class DetailedEventActivity extends ListActivity implements
 
             nameAttendees = new String[jarr.length()];
             pictureAttendees = new String[jarr.length()];
-
+            googleIdAttendees = new Integer[jarr.length()];
 
             for(int i = 0; i < jarr.length(); i++)
             {
@@ -299,6 +316,7 @@ public class DetailedEventActivity extends ListActivity implements
                     //JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
                     nameAttendees[i] = jObject.getString("name");
                     pictureAttendees[i] = (jObject.getString("profilePicture")).substring(0,96) + "103";
+                    googleIdAttendees[i] = Integer.parseInt(jObject.getString("googleId"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -318,20 +336,17 @@ public class DetailedEventActivity extends ListActivity implements
             JSONObject jsonObject = params[0];
             ClientServerInterface clientServerInterface = new ClientServerInterface();
             clientServerInterface.postData("http://54.164.136.46/add_attendance.php", jsonObject);
-            //Toast.makeText(getApplicationContext(), "You are now attending.", Toast.LENGTH_SHORT).show();
             return null;
         }
     }
 
-    class removeAttendance extends AsyncTask<JSONObject,Void,Void>
+    class RemoveAttendance extends AsyncTask<JSONObject,Void,Void>
     {
         @Override
         protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0]; //changed from 1...causing out of bounds error
+            JSONObject jsonObject = params[0];
             ClientServerInterface clientServerInterface = new ClientServerInterface();
-            //TODO add new URL
-            //clientServerInterface.postData(, jsonObject);
-            //Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
+            clientServerInterface.postData("http://54.164.136.46/remove_attendance.php", jsonObject);
             return null;
         }
     }
