@@ -174,8 +174,6 @@ public class DetailedEventActivity extends ListActivity implements
 
             }
         });
-
-
     }
 
 
@@ -257,7 +255,6 @@ public class DetailedEventActivity extends ListActivity implements
 
         if(Arrays.asList(nameAttendees).contains(nameCurrentUser))
         {
-            Log.e("status", "does contain");
             attendButton.setEnabled(false);
             cancelButton.setEnabled(true);
         }
