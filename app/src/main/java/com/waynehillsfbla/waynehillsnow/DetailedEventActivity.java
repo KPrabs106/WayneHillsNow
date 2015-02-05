@@ -50,7 +50,8 @@ public class DetailedEventActivity extends ListActivity implements
     JSONObject userEventData = new JSONObject();
     String[] nameAttendees;
     String[] pictureAttendees;
-    Integer[] googleIdAttendees;
+    String[] googleIdAttendees;
+    String nameCurrentUser;
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -125,7 +126,6 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
-
         AttendeeListAdapter adapter = new AttendeeListAdapter(this, nameAttendees, pictureAttendees);
         setListAdapter(adapter);
 
@@ -141,25 +141,7 @@ public class DetailedEventActivity extends ListActivity implements
         final Button attendButton = (Button) findViewById(R.id.attend_button);
         final Button cancelButton = (Button) findViewById(R.id.cancel_button);
 
-        try {
-            if(Arrays.asList(googleIdAttendees).contains(Integer.parseInt(userEventData.getString("googleId")))) {
-                attendButton.setEnabled(false);
-                cancelButton.setEnabled(true);
-            }
-            else
-            {
-                attendButton.setEnabled(true);
-                cancelButton.setEnabled(false);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        //cancelButton.setEnabled(false);
-
-        //TODO make button invisible when no one is logged in
-        //TODO make button grey when already logged in
-        //TODO add button to not attend
 
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,11 +229,27 @@ public class DetailedEventActivity extends ListActivity implements
     @Override
     public void onConnected(Bundle bundle) {
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        nameCurrentUser = currentUser.getDisplayName();
         Log.e("Connection", "connected");
         try {
             userEventData.put("googleId", currentUser.getId());
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        final Button attendButton = (Button) findViewById(R.id.attend_button);
+        final Button cancelButton = (Button) findViewById(R.id.cancel_button);
+
+        if(Arrays.asList(nameAttendees).contains(nameCurrentUser))
+        {
+            Log.e("status", "does contain");
+            attendButton.setEnabled(false);
+            cancelButton.setEnabled(true);
+        }
+        else
+        {
+            attendButton.setEnabled(true);
+            cancelButton.setEnabled(false);
         }
 
         /*try {
@@ -304,7 +302,7 @@ public class DetailedEventActivity extends ListActivity implements
 
             nameAttendees = new String[jarr.length()];
             pictureAttendees = new String[jarr.length()];
-            googleIdAttendees = new Integer[jarr.length()];
+            googleIdAttendees = new String[jarr.length()];
 
             for(int i = 0; i < jarr.length(); i++)
             {
@@ -316,12 +314,13 @@ public class DetailedEventActivity extends ListActivity implements
                     //JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
                     nameAttendees[i] = jObject.getString("name");
                     pictureAttendees[i] = (jObject.getString("profilePicture")).substring(0,96) + "103";
-                    googleIdAttendees[i] = Integer.parseInt(jObject.getString("googleId"));
+                    googleIdAttendees[i] = jObject.getString("googleId");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 Log.e("nameAttendees", Arrays.toString(nameAttendees));
-                Log.e("nameAttendees", Arrays.toString(pictureAttendees));
+                Log.e("pictureAttendees", Arrays.toString(pictureAttendees));
+                Log.e("googleIdAttendees", Arrays.toString(googleIdAttendees));
             }
 
             return null;
