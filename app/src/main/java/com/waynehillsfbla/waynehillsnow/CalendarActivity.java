@@ -6,15 +6,13 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.format.Time;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
-
 
 import com.tyczj.extendedcalendarview.CalendarProvider;
 import com.tyczj.extendedcalendarview.Day;
@@ -24,7 +22,6 @@ import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 
 import java.util.Calendar;
 import java.util.TimeZone;
@@ -53,6 +50,7 @@ public class CalendarActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
+        //Stop app if there is no internet connection
         if(!isNetworkAvailable())
         {
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
@@ -64,6 +62,7 @@ public class CalendarActivity extends ActionBarActivity {
 
         ContentValues values = new ContentValues();
 
+        //Get all the events
         RetrieveData rd = new RetrieveData();
         rd.execute();
 
@@ -81,6 +80,7 @@ public class CalendarActivity extends ActionBarActivity {
         Calendar cal = Calendar.getInstance();
         TimeZone tz = TimeZone.getDefault();
 
+        //Add every event into the calendar
         for(int i = 0; i < jarr.length(); i++){
             try {
                 jobj = jarr.getJSONObject(i);
@@ -162,6 +162,7 @@ public class CalendarActivity extends ActionBarActivity {
 
         calendar.refreshCalendar();
 
+        //Check if the user clicked a day that has an event
         calendar.setOnDayClickListener( new ExtendedCalendarView.OnDayClickListener() {
             @Override
             public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, Day day) {
@@ -198,18 +199,19 @@ public class CalendarActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class RetrieveData extends AsyncTask<String,String,JSONArray>
-    {
-        protected JSONArray doInBackground(String... arg0) {
-            jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
-            return jarr;
-        }
-    }
-
+    //Check for internet connectivity
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    //Get all the events
+    class RetrieveData extends AsyncTask<String, String, JSONArray> {
+        protected JSONArray doInBackground(String... arg0) {
+            jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
+            return jarr;
+        }
     }
 }

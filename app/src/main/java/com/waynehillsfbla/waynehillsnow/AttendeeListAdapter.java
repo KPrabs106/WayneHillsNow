@@ -1,7 +1,6 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-/**
- * Created by Kartik on 2/2/2015.
- */
-public class AttendeeListAdapter extends ArrayAdapter<String>{
+public class AttendeeListAdapter extends ArrayAdapter<String> {
 
     private final Activity activity;
     private final String[] names;
@@ -30,8 +26,7 @@ public class AttendeeListAdapter extends ArrayAdapter<String>{
         this.pictures = pictures;
     }
 
-    public View getView(int position, View view, ViewGroup parent)
-    {
+    public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.attendee_list, null, true);
 

@@ -1,5 +1,19 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.SignInButton;
@@ -14,23 +28,6 @@ import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.PersonBuffer;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.PendingIntent;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentSender.SendIntentException;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -137,10 +134,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-
-        /*if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }*/
     }
 
     @Override
@@ -218,7 +211,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
             e.printStackTrace();
         }
         try {
-            //userData.put("googleId", formatURLid(currentUser.getUrl()));
             userData.put("googleId", currentUser.getId());
             Log.d("PROFILE", currentUser.getId());
         } catch (JSONException e) {
@@ -410,17 +402,14 @@ public class GooglePlusSignIn extends FragmentActivity implements
         }
     }
 
-
+    //Add a user to the database
     class AddUser extends AsyncTask<JSONObject,Void,Void>
     {
         @Override
         protected Void doInBackground(JSONObject... params) {
             JSONObject jsonObject = params[0];
-            Log.e("JSON object", jsonObject.toString());
             ClientServerInterface clientServerInterface = new ClientServerInterface();
-            JSONArray jsonArray = clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
-            Log.e("Table details", jsonArray.toString());
-            //clientServerInterface.updateData("http://54.164.136.46/add_user.php", jsonObject);
+            clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
             return null;
         }
     }

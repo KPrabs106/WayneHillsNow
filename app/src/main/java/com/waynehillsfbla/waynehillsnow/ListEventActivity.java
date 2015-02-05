@@ -5,11 +5,10 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -35,8 +34,8 @@ public class ListEventActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_event);
 
-        if(!isNetworkAvailable())
-        {
+        //Stop app if there is no internet connection
+        if (!isNetworkAvailable()) {
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -118,7 +117,6 @@ public class ListEventActivity extends ActionBarActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -134,6 +132,15 @@ public class ListEventActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Check for internet connectivity
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    //Get all activities for a given day
     class PostData extends AsyncTask<String, Void, Void> {
 
         @Override
@@ -142,12 +149,5 @@ public class ListEventActivity extends ActionBarActivity {
             jarr = clientServerInterface.postData("http://54.164.136.46/decodejson.php", json);
             return null;
         }
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

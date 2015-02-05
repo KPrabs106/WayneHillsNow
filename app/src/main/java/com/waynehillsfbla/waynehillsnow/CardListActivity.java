@@ -4,8 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -33,15 +33,14 @@ public class CardListActivity extends ActionBarActivity {
     ImageView pictureImageView;
     TextView dateTextView;
     TextView typeTextView;
-    String ab = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_list);
 
-        if(!isNetworkAvailable())
-        {
+        //Stop app if there is no internet connection
+        if (!isNetworkAvailable()) {
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -113,7 +112,7 @@ public class CardListActivity extends ActionBarActivity {
                 ei.endDatetime = jobj.getString("endDate");
                 ei.location = jobj.getString("location");
                 ei.description = jobj.getString("description");
-            }catch (JSONException e){
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
             result.add(ei);
@@ -121,18 +120,19 @@ public class CardListActivity extends ActionBarActivity {
         return result;
     }
 
-    class RetrieveData extends AsyncTask<String,String,JSONArray>
-    {
-        protected JSONArray doInBackground(String... arg0) {
-            jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
-            return jarr;
-        }
-    }
-
+    //Check for internet connectivity
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    //Get the event details
+    class RetrieveData extends AsyncTask<String, String, JSONArray> {
+        protected JSONArray doInBackground(String... arg0) {
+            jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
+            return jarr;
+        }
     }
 }

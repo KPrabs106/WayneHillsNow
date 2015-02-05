@@ -6,19 +6,12 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,12 +28,9 @@ import com.google.android.gms.plus.model.people.PersonBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.sql.ClientInfoStatus;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -250,7 +240,6 @@ public class DetailedEventActivity extends ListActivity implements
         cancelButton.setVisibility(View.VISIBLE);
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
         nameCurrentUser = currentUser.getDisplayName();
-        Log.e("Connection", ""+mGoogleApiClient.isConnected());
         try {
             userEventData.put("googleId", currentUser.getId());
         } catch (JSONException e) {
@@ -290,68 +279,7 @@ public class DetailedEventActivity extends ListActivity implements
     public void onPause()
     {
         super.onPause();
-        Log.e("Exit", "onPause() is called");
         mGoogleApiClient.disconnect();
-    }
-
-    class GetAttendance extends AsyncTask<JSONObject, Void, Void>
-    {
-
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            JSONArray attendanceDetails = clientServerInterface.postData("http://54.164.136.46/get_attendance.php", jsonObject);
-            Log.e("Attendance Details: ", attendanceDetails.toString());
-
-            JSONArray jarr = null;
-            try {
-                jarr = new JSONArray(attendanceDetails.get(0).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            nameAttendees = new String[jarr.length()];
-            pictureAttendees = new String[jarr.length()];
-            googleIdAttendees = new String[jarr.length()];
-
-            for(int i = 0; i < jarr.length(); i++)
-            {
-                try {
-                    JSONObject jObject = jarr.getJSONObject(i);
-                    nameAttendees[i] = jObject.getString("name");
-                    pictureAttendees[i] = (jObject.getString("profilePicture")).substring(0,96) + "103";
-                    googleIdAttendees[i] = jObject.getString("googleId");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            return null;
-        }
-
-    }
-
-
-    class AddAttendance extends AsyncTask<JSONObject,Void,Void>
-    {
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            clientServerInterface.postData("http://54.164.136.46/add_attendance.php", jsonObject);
-            return null;
-        }
-    }
-
-    class RemoveAttendance extends AsyncTask<JSONObject,Void,Void>
-    {
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            clientServerInterface.postData("http://54.164.136.46/remove_attendance.php", jsonObject);
-            return null;
-        }
     }
 
     private GoogleApiClient buildGoogleApiClient() {
@@ -366,11 +294,67 @@ public class DetailedEventActivity extends ListActivity implements
                 .build();
     }
 
+    //Check for internet connectivity
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    class GetAttendance extends AsyncTask<JSONObject, Void, Void>
+    {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[0];
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+            JSONArray attendanceDetails = clientServerInterface.postData("http://54.164.136.46/get_attendance.php", jsonObject);
+
+            JSONArray jarr = null;
+            try {
+                jarr = new JSONArray(attendanceDetails.get(0).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            nameAttendees = new String[jarr.length()];
+            pictureAttendees = new String[jarr.length()];
+            googleIdAttendees = new String[jarr.length()];
+
+            for (int i = 0; i < jarr.length(); i++) {
+                try {
+                    JSONObject jObject = jarr.getJSONObject(i);
+                    nameAttendees[i] = jObject.getString("name");
+                    pictureAttendees[i] = (jObject.getString("profilePicture")).substring(0, 96) + "103";
+                    googleIdAttendees[i] = jObject.getString("googleId");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
+
+    }
+
+    class AddAttendance extends AsyncTask<JSONObject, Void, Void> {
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[0];
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+            clientServerInterface.postData("http://54.164.136.46/add_attendance.php", jsonObject);
+            return null;
+        }
+    }
+
+    class RemoveAttendance extends AsyncTask<JSONObject, Void, Void> {
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[0];
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+            clientServerInterface.postData("http://54.164.136.46/remove_attendance.php", jsonObject);
+            return null;
+        }
     }
 
 }

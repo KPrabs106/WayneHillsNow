@@ -2,12 +2,8 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +14,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.io.InputStream;
-import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -31,13 +25,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     private List<EventInfo> eventList;
 
-    public EventAdapter(List<EventInfo> eventList)
-    {
+    public EventAdapter(List<EventInfo> eventList) {
         this.eventList = eventList;
     }
 
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return eventList.size();
     }
 
@@ -47,9 +39,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         SimpleDateFormat simpForm = new SimpleDateFormat("MM/dd/yyyy");
         SimpleDateFormat dispForm = new SimpleDateFormat("EEEE, MMMM dd yyyy");
 
-        day = date.substring(8,10);
-        month = date.substring(5,7);
-        year = date.substring(0,4);
+        day = date.substring(8, 10);
+        month = date.substring(5, 7);
+        year = date.substring(0, 4);
         result = month + "/" + day + "/" + year;
 
         result = dispForm.format(simpForm.parse(result));
@@ -57,8 +49,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return result;
     }
 
-    public void onBindViewHolder(final EventViewHolder eventViewHolder, final int i)
-    {
+    public void onBindViewHolder(final EventViewHolder eventViewHolder, final int i) {
         eventViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,15 +90,14 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         eventViewHolder.vType.setText(ei.type);
     }
 
-    public EventViewHolder onCreateViewHolder(ViewGroup viewGroup, int i)
-    {
+    public EventViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.
                 from(viewGroup.getContext()).
                 inflate(R.layout.card_layout, viewGroup, false);
         return new EventViewHolder(itemView);
     }
 
-    public static class EventViewHolder extends RecyclerView.ViewHolder{
+    public static class EventViewHolder extends RecyclerView.ViewHolder {
         protected TextView vTitle;
         protected TextView vDate;
         protected ImageView vPicture;
@@ -115,7 +105,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         protected ProgressBar vProgressBar;
         protected Context context;
 
-        public EventViewHolder(View v){
+        public EventViewHolder(View v) {
             super(v);
             vTitle = (TextView) v.findViewById(R.id.txtTitle);
             vDate = (TextView) v.findViewById(R.id.txtDate);

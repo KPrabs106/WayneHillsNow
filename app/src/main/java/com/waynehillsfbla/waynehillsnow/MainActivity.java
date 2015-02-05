@@ -2,23 +2,14 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
@@ -30,18 +21,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
 public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
 
-    ImageView scroller;
-    AnimationDrawable anim;
     JSONArray jarr;
     ClientServerInterface clientServerInterface = new ClientServerInterface();
     HashMap<String, String> pictureData = new HashMap<String, String>();
@@ -51,9 +37,9 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(!isNetworkAvailable())
-        {
-            Toast.makeText(this,"No Internet connection", Toast.LENGTH_LONG).show();
+        //Stop the app if there is no internet connection
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -102,7 +88,9 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
 
         JSONObject jsonObject;
         Bundle bundle;
-        for(int i = 0; i < jarr.length(); i++){
+
+        //Create banner image scroller and add each images
+        for (int i = 0; i < jarr.length(); i++) {
             TextSliderView textSliderView = new TextSliderView(this);
             bundle = textSliderView.getBundle();
 
@@ -149,21 +137,30 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         return super.onOptionsItemSelected(item);
     }
 
+    //Start a new activity when the banner image scroller is clicked with the event details
     @Override
     public void onSliderClick(BaseSliderView baseSliderView) {
         Bundle bundle = baseSliderView.getBundle();
-
         Intent intent = new Intent(baseSliderView.getContext(), DetailedEventActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
-    class RetrievePictures extends AsyncTask<String, String, Void> {
-        protected Void doInBackground(String... arg0) {
+    //Check for internet connectivity
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
+    //Get picture URLs from the database and store it in a JSON Object
+    class RetrievePictures extends AsyncTask<String, String, Void> {
+
+        protected Void doInBackground(String... arg0) {
             jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/get_pictures.php");
             JSONObject jsonObject;
-            for(int i = 0; i < jarr.length(); i++){
+            for (int i = 0; i < jarr.length(); i++) {
                 try {
                     jsonObject = jarr.getJSONObject(i);
                     pictureData.put(jsonObject.getString("title"), jsonObject.getString("pictureURL"));
@@ -173,12 +170,5 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
             }
             return null;
         }
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
