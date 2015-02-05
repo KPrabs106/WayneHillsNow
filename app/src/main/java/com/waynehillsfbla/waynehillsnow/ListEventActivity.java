@@ -1,6 +1,9 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,6 +34,13 @@ public class ListEventActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_event);
+
+        if(!isNetworkAvailable())
+        {
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         int year = extras.getInt("year");
@@ -136,5 +147,12 @@ public class ListEventActivity extends ActionBarActivity {
             jarr = clientServerInterface.postData("http://54.164.136.46/decodejson.php", json);
             return null;
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
