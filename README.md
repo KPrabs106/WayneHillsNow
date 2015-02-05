@@ -20,6 +20,7 @@ NOTE: You must use an emulator running Android 4.3 (Jelly Bean) or higher!
 <br>
 <h3>Notes</h3>
 <ul>
+<li>The app communicates with our server, an Amazon EC2 Cloud Computing server, which is at <a href="http://54.164.136.46">http://54.164.136.46</a>.</li>
 <li>Log in to Google+ in order to get the maximum functionality of the application. Without logging in to Google+, you will not be able to use the attend event feature.</li>
 <li>Running on the emulator is typically slower than on an actual device, depending on the specs of the machine running the emulator.</li>
 <li>Certain features on the emulator do not work, such as clicking on an email address contact. On a real device, clicking an email address will result in the opening of the default email application.</li>
