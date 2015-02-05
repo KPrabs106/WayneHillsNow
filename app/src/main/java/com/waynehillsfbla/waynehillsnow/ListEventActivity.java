@@ -22,7 +22,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
+/**
+ * ******************************************************
+ * This activity presents the events in a list of cards.
+ * It gets the event information from the database.
+ * ******************************************************
+ */
 public class ListEventActivity extends ActionBarActivity {
     JSONObject json = new JSONObject();
     JSONArray jarr = new JSONArray();
@@ -111,7 +116,6 @@ public class ListEventActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-
         pd.cancel(true);
         finish();
     }
@@ -153,8 +157,6 @@ public class ListEventActivity extends ActionBarActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
 
             return null;
         }

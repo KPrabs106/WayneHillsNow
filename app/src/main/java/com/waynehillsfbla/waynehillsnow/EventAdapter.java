@@ -18,6 +18,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * ****************************************************************
+ * Given information about events, this adapter adds the information
+ * to the cards.
+ * ****************************************************************
+ */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<EventInfo> eventList;
@@ -30,6 +36,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return eventList.size();
     }
 
+    //Puts the date into a more aesthetically pleasing format
     private String getDisplayDate(String date) throws ParseException {
         String day, month, year, result;
 
@@ -46,6 +53,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     }
 
     public void onBindViewHolder(final EventViewHolder eventViewHolder, final int i) {
+        //If the user clicks on a card, they are then taken to the detailed view
         eventViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,11 +73,13 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         });
         EventInfo ei = eventList.get(i);
         eventViewHolder.vTitle.setText(ei.title);
+
         try {
             eventViewHolder.vDate.setText(getDisplayDate(ei.startDatetime));
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         Picasso.with(eventViewHolder.context).load(ei.pictureURL).into(eventViewHolder.vPicture, new Callback() {
             @Override
             public void onSuccess() {

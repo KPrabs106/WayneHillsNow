@@ -1,7 +1,9 @@
 package com.waynehillsfbla.waynehillsnow;
 
 /**
- * Created by Kartik on 1/17/2015.
+ * *******************************
+ * Class representing an event.
+ * *******************************
  */
 public class EventInfo {
     protected int id;

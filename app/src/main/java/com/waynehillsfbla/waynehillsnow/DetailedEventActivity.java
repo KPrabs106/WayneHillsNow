@@ -36,7 +36,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
+/**
+ * ************************************************************
+ * This activity displays event details in a more detailed view.
+ * It has Google+ integration, which allows users to attend events
+ * and allows users to see who all are attending events and.
+ * *************************************************************
+ */
 public class DetailedEventActivity extends ListActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
@@ -56,9 +62,9 @@ public class DetailedEventActivity extends ListActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
 
-        if(!isNetworkAvailable())
-        {
-            Toast.makeText(this,"No Internet connection", Toast.LENGTH_LONG).show();
+        //Close app if there is no internet connection
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -80,6 +86,7 @@ public class DetailedEventActivity extends ListActivity implements
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
 
+        //Put the event id into a JSON Object that is sent if a user clicks a button
         JSONObject eventDetails = new JSONObject();
         try {
             eventDetails.put("eventId", Integer.toString(id));
@@ -87,6 +94,7 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
+        //Get the names and profile pictures of those attending the event
         GetAttendance getAttendance = new GetAttendance();
         getAttendance.execute(eventDetails);
         try {
@@ -128,23 +136,29 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
+        //Create the list adapter that will add names and pictures to the list of those attending
         AttendeeListAdapter adapter = new AttendeeListAdapter(this, nameAttendees, pictureAttendees);
         setListAdapter(adapter);
 
         ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar2);
         progressBar.setVisibility(View.INVISIBLE);
 
+        //Put the eventId into another JSON Object that could be sent
         try {
-            userEventData.put("eventId", Integer.toString(id) );
+            userEventData.put("eventId", Integer.toString(id));
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        //The attend and cancel button are invisible by default, and become visible if the user is
+        //logged into Google+
         attendButton = (Button) findViewById(R.id.attend_button);
         attendButton.setVisibility(View.INVISIBLE);
         cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setVisibility(View.INVISIBLE);
 
+        //If the user clicks on the attend button, send a JSON Object of event ID and google ID to
+        //the webpage, which will then process it and add the user to the database
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,6 +171,8 @@ public class DetailedEventActivity extends ListActivity implements
             }
         });
 
+        //If the user clicks on the cancel button, send a JSON Object of the event id and google ID
+        //to the webpage, which will then process it and remove the user from the database
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,11 +221,11 @@ public class DetailedEventActivity extends ListActivity implements
         SimpleDateFormat origForm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         SimpleDateFormat dispForm = new SimpleDateFormat("EEEE, MM/dd/yy hh:mm aa");
 
-        day = date.substring(8,10);
-        month = date.substring(5,7);
-        year = date.substring(0,4);
-        hr = date.substring(11,13);
-        min = date.substring(14,16);
+        day = date.substring(8, 10);
+        month = date.substring(5, 7);
+        year = date.substring(0, 4);
+        hr = date.substring(11, 13);
+        min = date.substring(14, 16);
 
         result = year + "-" + month + "-" + day + " " + hr + ":" + min;
 
@@ -230,14 +246,16 @@ public class DetailedEventActivity extends ListActivity implements
                 personBuffer.close();
             }
         } else {
-            Log.e( "Error requesting visible circles: ", peopleData.getStatus().toString());
+            Log.e("Error requesting visible circles: ", peopleData.getStatus().toString());
         }
     }
 
     @Override
     public void onConnected(Bundle bundle) {
+        //The user is connected to Google+, which means they can now attend events
         attendButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
+
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
         nameCurrentUser = currentUser.getDisplayName();
         try {
@@ -249,13 +267,11 @@ public class DetailedEventActivity extends ListActivity implements
         final Button attendButton = (Button) findViewById(R.id.attend_button);
         final Button cancelButton = (Button) findViewById(R.id.cancel_button);
 
-        if(Arrays.asList(nameAttendees).contains(nameCurrentUser))
-        {
+        //If the user is already attending the event, the appropriate buttons are enabled or disabled
+        if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
             attendButton.setEnabled(false);
             cancelButton.setEnabled(true);
-        }
-        else
-        {
+        } else {
             attendButton.setEnabled(true);
             cancelButton.setEnabled(false);
         }
@@ -276,8 +292,7 @@ public class DetailedEventActivity extends ListActivity implements
 
     }
 
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         mGoogleApiClient.disconnect();
     }
@@ -302,8 +317,8 @@ public class DetailedEventActivity extends ListActivity implements
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    class GetAttendance extends AsyncTask<JSONObject, Void, Void>
-    {
+    //Gets names and pictures of those attending this event, given JSON Object of event id
+    class GetAttendance extends AsyncTask<JSONObject, Void, Void> {
 
         @Override
         protected Void doInBackground(JSONObject... params) {
@@ -338,6 +353,7 @@ public class DetailedEventActivity extends ListActivity implements
 
     }
 
+    //Adds user to the database, given JSON Object of user id and event id
     class AddAttendance extends AsyncTask<JSONObject, Void, Void> {
         protected Void doInBackground(JSONObject... params) {
             JSONObject jsonObject = params[0];
@@ -347,6 +363,7 @@ public class DetailedEventActivity extends ListActivity implements
         }
     }
 
+    //Removes user from the database, given JSON Object of user id and event id
     class RemoveAttendance extends AsyncTask<JSONObject, Void, Void> {
         @Override
         protected Void doInBackground(JSONObject... params) {

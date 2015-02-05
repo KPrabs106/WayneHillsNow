@@ -33,10 +33,10 @@ import org.json.JSONObject;
 
 
 /**
- * Android Google+ Quickstart activity.
- * <p/>
- * Demonstrates Google+ Sign-In and usage of the Google+ APIs to retrieve a
- * users profile information.
+ * ******************************************************************
+ * Activity that uses Google+ to sign in users and adds users to a
+ * database containing all the users.
+ * ******************************************************************
  */
 public class GooglePlusSignIn extends FragmentActivity implements
         ConnectionCallbacks, OnConnectionFailedListener,
@@ -230,7 +230,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
     }
 
     private String formatURLid(String url) {
-        return url.substring(28,50);
+        return url.substring(28, 50);
     }
 
     /* onConnectionFailed is called when our Activity could not connect to Google
@@ -402,9 +402,8 @@ public class GooglePlusSignIn extends FragmentActivity implements
         }
     }
 
-    //Add a user to the database
-    class AddUser extends AsyncTask<JSONObject,Void,Void>
-    {
+    //Add a user to the database of users upon sign in
+    class AddUser extends AsyncTask<JSONObject, Void, Void> {
         @Override
         protected Void doInBackground(JSONObject... params) {
             JSONObject jsonObject = params[0];

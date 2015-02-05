@@ -24,7 +24,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
+/**
+ * ****************************************************
+ * Using JSON data given by the server, this activity
+ * creates clickable cards containing event information.
+ * ****************************************************
+ */
 public class CardListActivity extends ActionBarActivity {
     JSONArray jarr = null;
     JSONObject jobj = null;
@@ -53,6 +58,7 @@ public class CardListActivity extends ActionBarActivity {
         RetrieveData rd = new RetrieveData();
         rd.execute();
 
+        //Wait until the JSON data from the server is received
         try {
             rd.get(10000, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -63,6 +69,7 @@ public class CardListActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
+        //Set up the cards
         RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -96,6 +103,7 @@ public class CardListActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Give the adapter all the information about each event
     private List<EventInfo> createList(int size) {
 
         List<EventInfo> result = new ArrayList<EventInfo>();

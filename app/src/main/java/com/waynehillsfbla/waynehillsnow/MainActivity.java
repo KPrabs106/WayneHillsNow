@@ -26,6 +26,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * ****************************************************
+ * This activity allows the user to go the calendar view
+ * of events or the list view of events. There is also a
+ * banner image scroller, which scrolls through images
+ * of the next 5 events. This activity also is where
+ * the user can sign in to Google+.
+ * ****************************************************
+ */
 public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
 
     JSONArray jarr;
@@ -115,12 +124,6 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         }
     }
 
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    } */
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -16,6 +16,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
+/**
+ * *************************************************
+ * This class is the link between the Android device
+ * and the web server. It has methods to send and
+ * receive data.
+ * *************************************************
+ */
 public class ClientServerInterface {
 
     static InputStream is = null;
@@ -26,6 +33,7 @@ public class ClientServerInterface {
     public ClientServerInterface() {
     }
 
+    //Get JSON data from a webpage
     public JSONArray makeHttpRequest(String url) {
         DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
         HttpPost httpPost = new HttpPost(url);
@@ -64,6 +72,7 @@ public class ClientServerInterface {
         return jarr;
     }
 
+    //Send and receive JSON data from a webpage
     public JSONArray postData(String url, JSONObject jobj) {
         DefaultHttpClient httpClient = new DefaultHttpClient();
         HttpConnectionParams.setConnectionTimeout(httpClient.getParams(), 100000);

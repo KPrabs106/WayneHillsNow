@@ -30,7 +30,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-
+/**
+ * ********************************************************
+ * Displays the events in a calendar format. The dates are
+ * clickable, allowing the user to see a listing of all
+ * events on a particular day.
+ * ********************************************************
+ */
 public class CalendarActivity extends ActionBarActivity {
     int[][] eventDates;
     JSONObject jobj = null;
@@ -89,9 +95,9 @@ public class CalendarActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
+            /**Add starting date and time to the calendar**/
             try {
                 startDatetime = jobj.getString("startDate");
-                endDatetime = jobj.getString("endDate");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -123,19 +129,29 @@ public class CalendarActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
+            //Month needs to be subtracted by 1, because the Android calendar month starts at 0
             cal.set(Integer.parseInt(year), Integer.parseInt(month) - 1,
                     Integer.parseInt(day), Integer.parseInt(hour),
                     Integer.parseInt(minute));
 
             int StartDayJulian = Time.getJulianDay(cal.getTimeInMillis(),
                     TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(cal.getTimeInMillis())));
+
+            //Put the start date and time into calendar
             values.put(CalendarProvider.START, cal.getTimeInMillis());
             values.put(CalendarProvider.START_DAY, StartDayJulian);
 
+            //Store the start date into an array
             eventDates[i][0] = Integer.parseInt(year);
             eventDates[i][1] = Integer.parseInt(month);
             eventDates[i][2] = Integer.parseInt(day);
 
+            /**Add end date and time to the calendar**/
+            try {
+                endDatetime = jobj.getString("endDate");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             date = (endDatetime.split(" "))[0];
             time = (endDatetime.split(" "))[1];
 
@@ -151,9 +167,12 @@ public class CalendarActivity extends ActionBarActivity {
                     Integer.parseInt(minute));
             int endDayJulian = Time.getJulianDay(cal.getTimeInMillis(),
                     TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(cal.getTimeInMillis())));
+
+            //Put the end date and time into calendar
             values.put(CalendarProvider.END, cal.getTimeInMillis());
             values.put(CalendarProvider.END_DAY, endDayJulian);
 
+            //Store the end date into an array
             eventDates[i][3] = Integer.parseInt(year);
             eventDates[i][4] = Integer.parseInt(month);
             eventDates[i][5] = Integer.parseInt(day);
@@ -168,6 +187,10 @@ public class CalendarActivity extends ActionBarActivity {
             @Override
             public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, Day day) {
                 for (int i = 0; i < eventDates.length; i++) {
+                    /**We have the start and end dates already in an array.
+                     * We can check to see if the date the user clicked on
+                     * is between the start and end date of any event.
+                     */
                     if ((eventDates[i][0] <= day.getYear() && day.getYear() <= eventDates[i][3]) &&
                             (eventDates[i][1] <= day.getMonth() + 1 && day.getMonth() + 1 <= eventDates[i][4]) &&
                             (eventDates[i][2] <= day.getDay() && day.getDay() <= eventDates[i][5])) {
@@ -177,6 +200,8 @@ public class CalendarActivity extends ActionBarActivity {
                         bund.putInt("day", eventDates[i][2]);
                         Intent intent = new Intent(view.getContext(), ListEventActivity.class);
                         intent.putExtras(bund);
+
+                        //Start the list event activity, and give it the selected year, month, and day
                         startActivity(intent);
                     }
                 }
