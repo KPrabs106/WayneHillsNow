@@ -146,7 +146,16 @@ public class ListEventActivity extends ActionBarActivity {
         @Override
         protected Void doInBackground(String... params) {
             ClientServerInterface clientServerInterface = new ClientServerInterface();
-            jarr = clientServerInterface.postData("http://54.164.136.46/decodejson.php", json);
+            JSONArray events = clientServerInterface.postData("http://54.164.136.46/decodejson.php", json);
+
+            try {
+                jarr = new JSONArray(events.get(0).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+
             return null;
         }
     }

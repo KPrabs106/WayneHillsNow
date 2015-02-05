@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -76,6 +77,9 @@ public class CalendarActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
+        Log.e("jarr", jarr.toString());
+        Log.e("jarr", "" + jarr.length());
+
         eventDates = new int[jarr.length()][6];
         Calendar cal = Calendar.getInstance();
         TimeZone tz = TimeZone.getDefault();
@@ -84,6 +88,7 @@ public class CalendarActivity extends ActionBarActivity {
         for(int i = 0; i < jarr.length(); i++){
             try {
                 jobj = jarr.getJSONObject(i);
+                Log.e("JSON Object " + i, jobj.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
