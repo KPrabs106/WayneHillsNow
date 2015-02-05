@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-/**
- * Created by Kartik on 1/17/2015.
- */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<EventInfo> eventList;
@@ -39,7 +35,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
         SimpleDateFormat simpForm = new SimpleDateFormat("MM/dd/yyyy");
         SimpleDateFormat dispForm = new SimpleDateFormat("EEEE, MMMM dd yyyy");
-        Log.e("date", date.toString());
         day = date.substring(8, 10);
         month = date.substring(5, 7);
         year = date.substring(0, 4);
@@ -71,7 +66,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         EventInfo ei = eventList.get(i);
         eventViewHolder.vTitle.setText(ei.title);
         try {
-            Log.e("start date", ei.startDatetime);
             eventViewHolder.vDate.setText(getDisplayDate(ei.startDatetime));
         } catch (ParseException e) {
             e.printStackTrace();

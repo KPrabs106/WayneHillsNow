@@ -52,8 +52,7 @@ public class CalendarActivity extends ActionBarActivity {
         setContentView(R.layout.activity_calendar);
 
         //Stop app if there is no internet connection
-        if(!isNetworkAvailable())
-        {
+        if (!isNetworkAvailable()) {
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
             finish();
         }
@@ -77,15 +76,12 @@ public class CalendarActivity extends ActionBarActivity {
             e.printStackTrace();
         }
 
-        Log.e("jarr", jarr.toString());
-        Log.e("jarr", "" + jarr.length());
-
         eventDates = new int[jarr.length()][6];
         Calendar cal = Calendar.getInstance();
         TimeZone tz = TimeZone.getDefault();
 
         //Add every event into the calendar
-        for(int i = 0; i < jarr.length(); i++){
+        for (int i = 0; i < jarr.length(); i++) {
             try {
                 jobj = jarr.getJSONObject(i);
                 Log.e("JSON Object " + i, jobj.toString());
@@ -127,7 +123,7 @@ public class CalendarActivity extends ActionBarActivity {
                 e.printStackTrace();
             }
 
-            cal.set(Integer.parseInt(year), Integer.parseInt(month)-1,
+            cal.set(Integer.parseInt(year), Integer.parseInt(month) - 1,
                     Integer.parseInt(day), Integer.parseInt(hour),
                     Integer.parseInt(minute));
 
@@ -150,7 +146,7 @@ public class CalendarActivity extends ActionBarActivity {
             hour = time.split(":")[0];
             minute = time.split(":")[1];
 
-            cal.set(Integer.parseInt(year), Integer.parseInt(month)-1,
+            cal.set(Integer.parseInt(year), Integer.parseInt(month) - 1,
                     Integer.parseInt(day), Integer.parseInt(hour),
                     Integer.parseInt(minute));
             int endDayJulian = Time.getJulianDay(cal.getTimeInMillis(),
@@ -168,13 +164,13 @@ public class CalendarActivity extends ActionBarActivity {
         calendar.refreshCalendar();
 
         //Check if the user clicked a day that has an event
-        calendar.setOnDayClickListener( new ExtendedCalendarView.OnDayClickListener() {
+        calendar.setOnDayClickListener(new ExtendedCalendarView.OnDayClickListener() {
             @Override
             public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, Day day) {
-                for(int i = 0; i < eventDates.length; i++){
-                    if( ( eventDates[i][0] <= day.getYear() && day.getYear() <= eventDates[i][3] ) &&
-                            ( eventDates[i][1] <= day.getMonth()+1 && day.getMonth()+1 <= eventDates[i][4] ) &&
-                            ( eventDates[i][2] <= day.getDay() && day.getDay() <= eventDates[i][5]) ){
+                for (int i = 0; i < eventDates.length; i++) {
+                    if ((eventDates[i][0] <= day.getYear() && day.getYear() <= eventDates[i][3]) &&
+                            (eventDates[i][1] <= day.getMonth() + 1 && day.getMonth() + 1 <= eventDates[i][4]) &&
+                            (eventDates[i][2] <= day.getDay() && day.getDay() <= eventDates[i][5])) {
                         Bundle bund = new Bundle();
                         bund.putInt("year", eventDates[i][0]);
                         bund.putInt("month", eventDates[i][1]);
