@@ -1,5 +1,8 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +39,12 @@ public class CardListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_list);
+
+        if(!isNetworkAvailable())
+        {
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         titleTextView = (TextView) findViewById(R.id.txtTitle);
         pictureImageView = (ImageView) findViewById(R.id.picture);
@@ -117,5 +127,12 @@ public class CardListActivity extends ActionBarActivity {
             jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
             return jarr;
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

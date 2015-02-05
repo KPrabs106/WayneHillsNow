@@ -1,7 +1,10 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 
 import com.tyczj.extendedcalendarview.CalendarProvider;
@@ -48,6 +52,12 @@ public class CalendarActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
+        if(!isNetworkAvailable())
+        {
+            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         ExtendedCalendarView calendar = (ExtendedCalendarView) findViewById(R.id.calendar);
         getContentResolver().delete(CalendarProvider.CONTENT_URI, null, null);
@@ -201,5 +211,12 @@ public class CalendarActivity extends ActionBarActivity {
             jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
             return jarr;
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

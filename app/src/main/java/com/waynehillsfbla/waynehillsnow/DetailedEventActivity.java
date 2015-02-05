@@ -1,7 +1,10 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
@@ -59,6 +62,12 @@ public class DetailedEventActivity extends ListActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
+
+        if(!isNetworkAvailable())
+        {
+            Toast.makeText(this,"No Internet connection", Toast.LENGTH_LONG).show();
+            finish();
+        }
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -140,8 +149,6 @@ public class DetailedEventActivity extends ListActivity implements
 
         final Button attendButton = (Button) findViewById(R.id.attend_button);
         final Button cancelButton = (Button) findViewById(R.id.cancel_button);
-
-
 
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -360,6 +367,13 @@ public class DetailedEventActivity extends ListActivity implements
                 .addApi(Plus.API, Plus.PlusOptions.builder().build())
                 .addScope(Plus.SCOPE_PLUS_LOGIN)
                 .build();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 }
