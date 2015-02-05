@@ -55,6 +55,9 @@ public class DetailedEventActivity extends ListActivity implements
     String[] pictureAttendees;
     String[] googleIdAttendees;
     String nameCurrentUser;
+    Button attendButton;
+    Button cancelButton;
+
 
     private GoogleApiClient mGoogleApiClient;
 
@@ -147,8 +150,10 @@ public class DetailedEventActivity extends ListActivity implements
             e.printStackTrace();
         }
 
-        final Button attendButton = (Button) findViewById(R.id.attend_button);
-        final Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        attendButton = (Button) findViewById(R.id.attend_button);
+        attendButton.setVisibility(View.INVISIBLE);
+        cancelButton = (Button) findViewById(R.id.cancel_button);
+        cancelButton.setVisibility(View.INVISIBLE);
 
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,9 +246,11 @@ public class DetailedEventActivity extends ListActivity implements
 
     @Override
     public void onConnected(Bundle bundle) {
+        attendButton.setVisibility(View.VISIBLE);
+        cancelButton.setVisibility(View.VISIBLE);
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
         nameCurrentUser = currentUser.getDisplayName();
-        Log.e("Connection", "connected");
+        Log.e("Connection", ""+mGoogleApiClient.isConnected());
         try {
             userEventData.put("googleId", currentUser.getId());
         } catch (JSONException e) {
