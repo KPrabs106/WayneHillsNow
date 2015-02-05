@@ -258,12 +258,6 @@ public class DetailedEventActivity extends ListActivity implements
             attendButton.setEnabled(true);
             cancelButton.setEnabled(false);
         }
-
-        /*try {
-            userEventData.put("googleId", currentUser.getId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
     }
 
     @Override
@@ -298,8 +292,6 @@ public class DetailedEventActivity extends ListActivity implements
             JSONArray attendanceDetails = clientServerInterface.postData("http://54.164.136.46/get_attendance.php", jsonObject);
             Log.e("Attendance Details: ", attendanceDetails.toString());
 
-
-            JSONObject jobj = null;
             JSONArray jarr = null;
             try {
                 jarr = new JSONArray(attendanceDetails.get(0).toString());
@@ -314,20 +306,13 @@ public class DetailedEventActivity extends ListActivity implements
             for(int i = 0; i < jarr.length(); i++)
             {
                 try {
-                    //Log.e("Attendance details get i: ", attendanceDetails.get(i).toString());
-                    //JSONArray jarr = new JSONArray(attendanceDetails.get(0).toString());
-                    Log.e("First json array", jarr.toString());
                     JSONObject jObject = jarr.getJSONObject(i);
-                    //JSONObject jObject =  new JSONObject(attendanceDetails.get(i).toString());
                     nameAttendees[i] = jObject.getString("name");
                     pictureAttendees[i] = (jObject.getString("profilePicture")).substring(0,96) + "103";
                     googleIdAttendees[i] = jObject.getString("googleId");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Log.e("nameAttendees", Arrays.toString(nameAttendees));
-                Log.e("pictureAttendees", Arrays.toString(pictureAttendees));
-                Log.e("googleIdAttendees", Arrays.toString(googleIdAttendees));
             }
 
             return null;
