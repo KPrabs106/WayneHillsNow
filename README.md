@@ -1,5 +1,9 @@
 # WayneHillsNow
 <br>
+![Main Screen](https://i.imgur.com/aIdE0QR.jpg)
+![Calendar](https://i.imgur.com/eKpBaFa.png)
+![Event List](https://i.imgur.com/eKpBaFa.png)
+![Detailed View](https://i.imgur.com/4RmPdJL.png)
 <h2>Ways to Run App</h2>
 <h3>On a real device (Recommended)</h3>
 NOTE: Your device must be running Android 4.3 (Jelly Bean) or higher!
