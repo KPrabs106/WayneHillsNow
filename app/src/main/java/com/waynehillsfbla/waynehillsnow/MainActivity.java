@@ -46,7 +46,10 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //TODO Figure out swiping
+
         //Stop the app if there is no internet connection
+        //TODO make app close in a different way
         if (!isNetworkAvailable()) {
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
             finish();

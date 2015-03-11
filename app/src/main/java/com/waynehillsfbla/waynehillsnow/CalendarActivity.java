@@ -87,6 +87,7 @@ public class CalendarActivity extends ActionBarActivity {
         TimeZone tz = TimeZone.getDefault();
 
         //Add every event into the calendar
+        //TODO Resolve issue with missing events
         for (int i = 0; i < jarr.length(); i++) {
             try {
                 jobj = jarr.getJSONObject(i);
@@ -237,6 +238,7 @@ public class CalendarActivity extends ActionBarActivity {
     class RetrieveData extends AsyncTask<String, String, JSONArray> {
         protected JSONArray doInBackground(String... arg0) {
             jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
+            Log.e("Jarr", jarr.toString());
             return jarr;
         }
     }

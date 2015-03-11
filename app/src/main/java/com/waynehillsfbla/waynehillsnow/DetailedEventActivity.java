@@ -62,6 +62,8 @@ public class DetailedEventActivity extends ListActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
 
+        //TODO Add notifications for upcoming events
+        //TODO Section for Comments
         //Close app if there is no internet connection
         if (!isNetworkAvailable()) {
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
