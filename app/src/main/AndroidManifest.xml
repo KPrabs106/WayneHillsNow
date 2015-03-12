@@ -11,9 +11,9 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon"
-        tools:replace="android:icon,android:theme"
-        android:theme="@style/AppTheme" >
-        <meta-data
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon,android:theme">
+    <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
@@ -33,16 +33,6 @@
         <activity
             android:name=".ListEventActivity"
             android:label="@string/title_activity_list_event"
-            android:parentActivityName=".CalendarActivity">
-        </activity>
-        <activity
-            android:name=".CalendarActivity"
-            android:label="@string/title_activity_calendar"
-            android:parentActivityName=".MainActivity">
-        </activity>
-        <activity
-            android:name=".CardListActivity"
-            android:label="@string/title_activity_card_list"
             android:parentActivityName=".MainActivity">
         </activity>
         <activity
