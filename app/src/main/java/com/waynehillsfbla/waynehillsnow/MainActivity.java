@@ -6,7 +6,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -37,95 +39,32 @@ import java.util.concurrent.TimeoutException;
  */
 public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
 
+    Toolbar toolbar;
+    ViewPager viewPager;
+    ViewPagerAdapter viewPagerAdapter;
+    SlidingTabLayout slidingTabLayout;
+    CharSequence Titles[] = {"Calendar", "Events List"};
+    int numTabs = 2;
     JSONArray jarr;
     ClientServerInterface clientServerInterface = new ClientServerInterface();
     HashMap<String, String> pictureData = new HashMap<String, String>();
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //TODO Figure out swiping
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
 
-        //Stop the app if there is no internet connection
-        //TODO make app close in a different way
-        if (!isNetworkAvailable()) {
-            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
-            finish();
-        }
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, numTabs);
 
-        ImageButton listButton = (ImageButton) findViewById(R.id.buttonList);
-        ImageButton calendarButton = (ImageButton) findViewById(R.id.buttonCalendar);
-        SignInButton signInButton = (SignInButton) findViewById(R.id.signin_button);
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager.setAdapter(viewPagerAdapter);
 
+        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabs);
+        slidingTabLayout.setDistributeEvenly(true);
 
-        listButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), CardListActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        calendarButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), CalendarActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), GooglePlusSignIn.class);
-                startActivity(intent);
-            }
-        });
-
-        RetrievePictures rp = new RetrievePictures();
-        rp.execute();
-        try {
-            rp.get(2000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-
-        SliderLayout imageScroller = (SliderLayout) findViewById(R.id.slider);
-
-        JSONObject jsonObject;
-        Bundle bundle;
-
-        //Create banner image scroller and add each images
-        for (int i = 0; i < jarr.length(); i++) {
-            TextSliderView textSliderView = new TextSliderView(this);
-            bundle = textSliderView.getBundle();
-
-            try {
-                jsonObject = jarr.getJSONObject(i);
-                textSliderView.description(jsonObject.getString("title"))
-                        .image(jsonObject.getString("pictureURL"))
-                        .setScaleType(BaseSliderView.ScaleType.Fit)
-                        .setOnSliderClickListener(this);
-                bundle.putInt("Id", Integer.parseInt(jsonObject.getString("id")));
-                bundle.putString("Title", jsonObject.getString("title"));
-                bundle.putString("Type", jsonObject.getString("type"));
-                bundle.putString("Location", jsonObject.getString("location"));
-                bundle.putString("Description", jsonObject.getString("description"));
-                bundle.putString("Contact", jsonObject.getString("contact"));
-                bundle.putString("StartDate", jsonObject.getString("startDate"));
-                bundle.putString("EndDate", jsonObject.getString("endDate"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            imageScroller.addSlider(textSliderView);
-        }
+        slidingTabLayout.setViewPager(viewPager);
     }
 
 
