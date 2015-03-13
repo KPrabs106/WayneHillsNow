@@ -2,16 +2,22 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.daimajia.slider.library.SliderLayout;
@@ -39,6 +45,11 @@ import java.util.concurrent.TimeoutException;
  */
 public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
 
+    ListView drawerList;
+    ArrayAdapter<String> arrayAdapter;
+    DrawerLayout drawerLayout;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+    String activityTitle;
     Toolbar toolbar;
     ViewPager viewPager;
     ViewPagerAdapter viewPagerAdapter;
@@ -53,8 +64,45 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        drawerList = (ListView) findViewById(R.id.navList);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        String[] drawerItems = {"Sign In", "Settings", "My Events"};
+
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
+        drawerList.setAdapter(arrayAdapter);
+
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getApplicationContext(), "Clicked in nav bar", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        activityTitle = getTitle().toString();
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle("Navigation");
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(activityTitle);
+                invalidateOptionsMenu();
+            }
+
+        };
+
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, numTabs);
 
@@ -75,12 +123,28 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        actionBarDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     //Start a new activity when the banner image scroller is clicked with the event details

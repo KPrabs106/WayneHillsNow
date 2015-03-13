@@ -29,5 +29,7 @@
     <string name="circles_title">Circles</string>
     <string name="gplus">Google Plus</string>
     <string name="people_attending">People Attending</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
 </resources>
