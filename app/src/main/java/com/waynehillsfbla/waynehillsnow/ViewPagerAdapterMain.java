@@ -7,11 +7,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 /**
  * Created by Kartik on 3/10/2015.
  */
-public class ViewPagerAdapter extends FragmentStatePagerAdapter {
+public class ViewPagerAdapterMain extends FragmentStatePagerAdapter {
     CharSequence Titles[];
     int numTabs;
 
-    public ViewPagerAdapter(FragmentManager fm, CharSequence Titles[], int numTabs) {
+    public ViewPagerAdapterMain(FragmentManager fm, CharSequence Titles[], int numTabs) {
         super(fm);
         this.Titles = Titles;
         this.numTabs = numTabs;

@@ -50,12 +50,14 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     String activityTitle;
+
     Toolbar toolbar;
     ViewPager viewPager;
-    ViewPagerAdapter viewPagerAdapter;
+    ViewPagerAdapterMain viewPagerAdapter;
     SlidingTabLayout slidingTabLayout;
     CharSequence Titles[] = {"Calendar", "Events List"};
     int numTabs = 2;
+
     JSONArray jarr;
     ClientServerInterface clientServerInterface = new ClientServerInterface();
     HashMap<String, String> pictureData = new HashMap<String, String>();
@@ -103,8 +105,7 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
-
-        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(), Titles, numTabs);
+        viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), Titles, numTabs);
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         viewPager.setAdapter(viewPagerAdapter);

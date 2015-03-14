@@ -1,219 +1,27 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DetailedEventActivity">
 
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/card_view"
+    <com.waynehillsfbla.waynehillsnow.SlidingTabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="3dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp"
-        card_view:cardCornerRadius="1dp"
-        card_view:cardElevation="5dp">
+        android:background="#FFFFFF"
+        android:elevation="2dp" />
 
-        <RelativeLayout
-            android:id="@+id/layout"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@+id/frameLayout"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="bottom"
-            android:background="#000000"
-            android:orientation="vertical"
-            android:padding="1.5dp"
-            android:weightSum="1">
-
-
-            <TextView
-                android:id="@+id/txtTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:background="#660033"
-                android:text="Large Text"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@android:color/primary_text_dark" />
-
-            <RelativeLayout
-                android:id="@+id/frameLayout"
-                android:layout_width="fill_parent"
-                android:layout_height="330dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="29dp"
-                android:background="@android:color/darker_gray"
-                android:padding="2dp">
-
-                <TextView
-                    android:id="@+id/txtLocation"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/dispLoc"
-                    android:layout_gravity="left|top"
-                    android:text="[Location]"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <TextView
-                    android:id="@+id/txtDesc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/dispDesc"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_marginTop="1dp"
-                    android:text="[Description]"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <TextView
-                    android:id="@+id/dispLoc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:text="@string/loc"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <TextView
-                    android:id="@+id/dispDesc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/txtLocation"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_marginTop="17dp"
-                    android:text="@string/desc"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <TextView
-                    android:id="@+id/dispContact"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/txtDesc"
-                    android:layout_marginTop="25dp"
-                    android:text="@string/contact"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                <TextView
-                    android:id="@+id/txtContact"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/dispContact"
-                    android:layout_toEndOf="@+id/dispLoc"
-                    android:autoLink="email"
-                    android:text="[ContactInfo]"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                <TextView
-                    android:id="@+id/From"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/dispContact"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/from"
-                    android:textColor="@android:color/primary_text_light" />
-
-                <TextView
-                    android:id="@+id/txtStartDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/From"
-                    android:layout_marginLeft="10dp"
-                    android:layout_toEndOf="@+id/From"
-                    android:text="[Start Date]"
-                    android:textColor="@android:color/secondary_text_light" />
-
-                <TextView
-                    android:id="@+id/To"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/txtStartDate"
-                    android:text="@string/to"
-                    android:textColor="@android:color/primary_text_light" />
-
-                <TextView
-                    android:id="@+id/txtEndDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/txtStartDate"
-                    android:layout_alignTop="@+id/To"
-                    android:text="[End Date]"
-                    android:textColor="@android:color/secondary_text_light" />
-
-                <Button
-                    android:id="@+id/attend_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
-                    android:text="Attend" />
-
-                <Button
-                    android:id="@+id/cancel_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignStart="@+id/txtContact"
-                    android:text="Cancel" />
-
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/txtType"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/txtTitle"
-                android:layout_alignEnd="@+id/txtTitle"
-                android:text="Type"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@android:color/primary_text_dark" />
-
-
-        </RelativeLayout>
-
-
-    </android.support.v7.widget.CardView>
-
-
-    <ListView
-        android:id="@android:id/list"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/card_view"
-        android:layout_marginTop="30dp"></ListView>
+        android:layout_height="match_parent"
+        android:layout_weight="1"></android.support.v4.view.ViewPager>
 
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@android:id/list"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="42dp"
-        android:visibility="visible" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/card_view"
-        android:layout_centerHorizontal="true"
-        android:background="#660033"
-        android:text="@string/people_attending"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@android:color/primary_text_dark" />
-
-
-</RelativeLayout>
-
+</LinearLayout>
