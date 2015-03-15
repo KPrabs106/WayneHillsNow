@@ -139,6 +139,9 @@ public class DetailedEventActivity extends ActionBarActivity implements
             e.printStackTrace();
         }
 
+        TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
+        peopleAttending.setText(pictureAttendees.length + " people are attending.");
+
         //Create the list adapter that will add names and pictures to the list of those attending
         AttendeeListAdapter adapter = new AttendeeListAdapter(this, pictureAttendees);
         TwoWayView attendeeList = (TwoWayView) findViewById(R.id.lvItems);
