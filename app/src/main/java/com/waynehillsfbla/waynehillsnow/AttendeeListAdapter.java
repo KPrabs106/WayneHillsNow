@@ -22,14 +22,14 @@ import com.squareup.picasso.Picasso;
 public class AttendeeListAdapter extends ArrayAdapter<String> {
 
     private final Activity activity;
-    private final String[] names;
+    //private final String[] names;
     private final String[] pictures;
 
 
-    public AttendeeListAdapter(Activity activity, String[] names, String[] pictures) {
-        super(activity, R.layout.attendee_list, names);
+    public AttendeeListAdapter(Activity activity, String[] pictures) {
+        super(activity, R.layout.attendee_list, pictures);
         this.activity = activity;
-        this.names = names;
+        //this.names = names;
         this.pictures = pictures;
     }
 
@@ -38,8 +38,8 @@ public class AttendeeListAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater = activity.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.attendee_list, null, true);
 
-        TextView txtName = (TextView) rowView.findViewById(R.id.attendeeName);
-        txtName.setText(names[position]);
+        //TextView txtName = (TextView) rowView.findViewById(R.id.attendeeName);
+        //txtName.setText(names[position]);
 
         final ImageView profilePic = (ImageView) rowView.findViewById(R.id.attendeePicture);
         final ProgressBar progressBar = (ProgressBar) rowView.findViewById(R.id.progressBar);

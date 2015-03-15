@@ -1,12 +1,14 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.app.ListActivity;
+import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,6 +30,7 @@ import com.google.android.gms.plus.model.people.PersonBuffer;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.lucasr.twowayview.TwoWayView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,6 +39,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import it.sephiroth.android.library.widget.HListView;
+
 /**
  * ************************************************************
  * This activity displays event details in a more detailed view.
@@ -43,7 +48,7 @@ import java.util.concurrent.TimeoutException;
  * and allows users to see who all are attending events and.
  * *************************************************************
  */
-public class DetailedEventActivity extends ListActivity implements
+public class DetailedEventActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
     JSONObject userEventData = new JSONObject();
@@ -139,11 +144,9 @@ public class DetailedEventActivity extends ListActivity implements
         }
 
         //Create the list adapter that will add names and pictures to the list of those attending
-        AttendeeListAdapter adapter = new AttendeeListAdapter(this, nameAttendees, pictureAttendees);
-        setListAdapter(adapter);
-
-        ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar2);
-        progressBar.setVisibility(View.INVISIBLE);
+        AttendeeListAdapter adapter = new AttendeeListAdapter(this, pictureAttendees);
+        TwoWayView attendeeList = (TwoWayView) findViewById(R.id.lvItems);
+        attendeeList.setAdapter(adapter);
 
         //Put the eventId into another JSON Object that could be sent
         try {

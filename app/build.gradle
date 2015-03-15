@@ -31,4 +31,6 @@ dependencies {
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.daimajia.slider:library:1.1.2@aar'
     compile 'com.android.support:support-v4:21.0.+'
+    compile 'it.sephiroth.android.library.horizontallistview:hlistview:1.2.2'
+    compile 'org.lucasr.twowayview:twowayview:0.1.4'
 }
