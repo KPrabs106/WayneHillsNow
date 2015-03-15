@@ -1,7 +1,5 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.app.ListActivity;
-import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -14,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +23,7 @@ import com.google.android.gms.plus.People;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.PersonBuffer;
+import com.software.shell.fab.ActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,8 +36,6 @@ import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import it.sephiroth.android.library.widget.HListView;
 
 /**
  * ************************************************************
@@ -188,6 +184,14 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 restartActivity();
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+        ActionButton actionButton = (ActionButton) findViewById(R.id.action_button);
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO Add comments activity
             }
         });
     }

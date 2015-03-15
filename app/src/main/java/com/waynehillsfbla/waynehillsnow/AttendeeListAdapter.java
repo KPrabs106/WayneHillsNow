@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -22,24 +21,19 @@ import com.squareup.picasso.Picasso;
 public class AttendeeListAdapter extends ArrayAdapter<String> {
 
     private final Activity activity;
-    //private final String[] names;
     private final String[] pictures;
 
 
     public AttendeeListAdapter(Activity activity, String[] pictures) {
         super(activity, R.layout.attendee_list, pictures);
         this.activity = activity;
-        //this.names = names;
         this.pictures = pictures;
     }
 
-    //Set names and profile pictures of attendees from String[] of names and picture URLs
+    //Set profile pictures of attendees from String[] of picture URLs
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.attendee_list, null, true);
-
-        //TextView txtName = (TextView) rowView.findViewById(R.id.attendeeName);
-        //txtName.setText(names[position]);
 
         final ImageView profilePic = (ImageView) rowView.findViewById(R.id.attendeePicture);
         final ProgressBar progressBar = (ProgressBar) rowView.findViewById(R.id.progressBar);
