@@ -16,23 +16,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.daimajia.slider.library.SliderLayout;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-import com.daimajia.slider.library.SliderTypes.TextSliderView;
-import com.google.android.gms.common.SignInButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * ****************************************************
@@ -76,7 +68,11 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
 
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplicationContext(), "Clicked in nav bar", Toast.LENGTH_SHORT).show();
+                switch (position) {
+                    case 0:
+                        Intent intent = new Intent(view.getContext(), GooglePlusSignIn.class);
+                        startActivity(intent);
+                }
             }
         });
 

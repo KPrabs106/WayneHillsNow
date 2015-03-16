@@ -3,22 +3,20 @@
      android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
     <ImageView
+        android:id="@+id/attendeePicture"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/attendeePicture" />
+        android:layout_height="wrap_content" />
 
     <ProgressBar
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
-        android:layout_alignTop="@id/attendeePicture"
         android:layout_alignBottom="@id/attendeePicture"
         android:layout_alignLeft="@id/attendeePicture"
-        android:layout_alignRight="@id/attendeePicture"/>
+        android:layout_alignRight="@id/attendeePicture"
+        android:layout_alignTop="@id/attendeePicture" />
 
 
 </RelativeLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.waynehillsfbla.waynehillsnow" >
+    package="com.waynehillsfbla.waynehillsnow">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,13 +13,13 @@
         android:icon="@drawable/icon"
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:theme">
-    <meta-data
+        <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,16 +28,21 @@
         </activity>
         <activity
             android:name=".DetailedEventActivity"
-            android:label="@string/title_activity_detailed_event" >
-        </activity>
+            android:label="@string/title_activity_detailed_event"></activity>
         <activity
             android:name=".ListEventActivity"
             android:label="@string/title_activity_list_event"
-            android:parentActivityName=".MainActivity">
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".GooglePlusSignIn"
-            android:label="@string/title_activity_google_plus_sign_in" >
+            android:label="@string/title_activity_google_plus_sign_in"></activity>
+        <activity
+            android:name=".WriteCommentActivity"
+            android:label="@string/title_activity_write_comment"
+            android:parentActivityName=".DetailedEventActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.DetailedEventActivity" />
         </activity>
     </application>
 

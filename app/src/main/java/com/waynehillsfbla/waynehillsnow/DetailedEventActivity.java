@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
     String[] nameAttendees;
     String[] pictureAttendees;
     String[] googleIdAttendees;
+
+    String[] nameCommenters;
+    String[] pictureCommenters;
+    String[] comments;
+
     String nameCurrentUser;
     Button attendButton;
     Button cancelButton;
@@ -64,7 +70,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
         setContentView(R.layout.activity_detailed_event);
 
         //TODO Add notifications for upcoming events
-        //TODO Section for Comments
         //Close app if there is no internet connection
         if (!isNetworkAvailable()) {
             Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
@@ -74,7 +79,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        int id = extras.getInt("Id");
+        final int id = extras.getInt("Id");
         String title = extras.getString("Title");
         String type = extras.getString("Type");
         String location = extras.getString("Location");
@@ -94,6 +99,18 @@ public class DetailedEventActivity extends ActionBarActivity implements
         try {
             eventDetails.put("eventId", Integer.toString(id));
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        GetComments getComments = new GetComments();
+        getComments.execute(eventDetails);
+        try {
+            getComments.get(10000, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
             e.printStackTrace();
         }
 
@@ -141,6 +158,10 @@ public class DetailedEventActivity extends ActionBarActivity implements
 
         TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
         peopleAttending.setText(pictureAttendees.length + " people are attending.");
+
+        CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments);
+        ListView commentsList = (ListView) findViewById(R.id.commentsList);
+        commentsList.setAdapter(commentsListAdapter);
 
         //Create the list adapter that will add names and pictures to the list of those attending
         AttendeeListAdapter adapter = new AttendeeListAdapter(this, pictureAttendees);
@@ -194,7 +215,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Add comments activity
+                Bundle userEventDetails = new Bundle();
+                userEventDetails.putString("userEventDataJSON", userEventData.toString());
+                Intent writeComment = new Intent(getApplicationContext(), WriteCommentActivity.class);
+                writeComment.putExtras(userEventDetails);
+                startActivity(writeComment);
             }
         });
     }
@@ -327,6 +352,40 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    class GetComments extends AsyncTask<JSONObject, Void, Void> {
+
+        @Override
+        protected Void doInBackground(JSONObject... params) {
+            JSONObject jsonObject = params[0];
+            ClientServerInterface clientServerInterface = new ClientServerInterface();
+            JSONArray commentsDetails = clientServerInterface.postData("http://54.164.136.46/get_comments.php", jsonObject);
+
+            JSONArray jarr = null;
+            try {
+                jarr = new JSONArray(commentsDetails.get(0).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            nameCommenters = new String[jarr.length()];
+            pictureCommenters = new String[jarr.length()];
+            comments = new String[jarr.length()];
+
+            for (int i = 0; i < jarr.length(); i++) {
+                try {
+                    JSONObject jObject = jarr.getJSONObject(i);
+                    nameCommenters[i] = jObject.getString("name");
+                    pictureCommenters[i] = (jObject.getString("profilePicture")).substring(0, 96) + "103";
+                    comments[i] = jObject.getString("body");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return null;
+        }
     }
 
     //Gets names and pictures of those attending this event, given JSON Object of event id

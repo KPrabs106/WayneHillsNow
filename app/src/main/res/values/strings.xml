@@ -32,5 +32,6 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="num">11</string>
+    <string name="title_activity_write_comment">WriteCommentActivity</string>
 
 </resources>

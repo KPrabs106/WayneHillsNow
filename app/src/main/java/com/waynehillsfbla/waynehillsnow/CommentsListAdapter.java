@@ -6,51 +6,55 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
- * **************************************************************
- * Given an array of names and profile pictures of those attending
- * an event, the adapter sets the names and profile pictures in a
- * list.
- * *************************************************************
+ * Created by Kartik on 3/15/2015.
  */
-public class AttendeeListAdapter extends ArrayAdapter<String> {
+public class CommentsListAdapter extends ArrayAdapter<String> {
 
     private final Activity activity;
     private final String[] pictures;
+    private final String[] names;
+    private final String[] comments;
 
-    public AttendeeListAdapter(Activity activity, String[] pictures) {
-        super(activity, R.layout.attendee_list, pictures);
+    public CommentsListAdapter(Activity activity, String[] pictures, String[] names, String[] comments) {
+        super(activity, R.layout.comments_list, pictures);
         this.activity = activity;
         this.pictures = pictures;
+        this.comments = comments;
+        this.names = names;
     }
 
     //Set profile pictures of attendees from String[] of picture URLs
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater = activity.getLayoutInflater();
-        View rowView = inflater.inflate(R.layout.attendee_list, null, true);
+        View rowView = inflater.inflate(R.layout.comments_list, null, true);
 
-        final ImageView profilePic = (ImageView) rowView.findViewById(R.id.attendeePicture);
-        final ProgressBar progressBar = (ProgressBar) rowView.findViewById(R.id.progressBar);
+        TextView commenterName = (TextView) rowView.findViewById(R.id.commenterName);
+        commenterName.setText(names[position]);
+
+        TextView commentBody = (TextView) rowView.findViewById(R.id.commentBody);
+        commentBody.setText(comments[position]);
+
+        final ImageView profilePic = (ImageView) rowView.findViewById(R.id.commenterPicture);
 
         Picasso.with(activity.getBaseContext()).load(pictures[position]).into(profilePic, new Callback() {
             @Override
             public void onSuccess() {
                 profilePic.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.INVISIBLE);
             }
 
             @Override
             public void onError() {
                 profilePic.setVisibility(View.INVISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
             }
         });
 
         return rowView;
     }
+
 }

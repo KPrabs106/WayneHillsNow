@@ -228,6 +228,13 @@
         fab:stroke_width="1.0dp"
         fab:type="DEFAULT" />
 
+    <ListView
+        android:id="@+id/commentsList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/lvItems"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>
 
