@@ -1,5 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -76,7 +78,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
             finish();
         }
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
         final int id = extras.getInt("Id");
@@ -85,7 +87,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         String location = extras.getString("Location");
         String description = extras.getString("Description");
         String contact = extras.getString("Contact");
-        String startDate = extras.getString("StartDate");
+        final String startDate = extras.getString("StartDate");
         String endDate = extras.getString("EndDate");
 
         mGoogleApiClient = buildGoogleApiClient();
@@ -155,6 +157,27 @@ public class DetailedEventActivity extends ActionBarActivity implements
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+        Button notificationButton = (Button) findViewById(R.id.notificationButton);
+        notificationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.MONTH, Integer.parseInt(startDate.substring(5,7))-1);
+                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8,10)));
+                calendar.set(Calendar.YEAR, Integer.parseInt(startDate.substring(0,4)));
+                */
+                Intent notification = new Intent(getApplicationContext(), AlarmReceiver.class);
+
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notification, 0);
+
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+                //alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 5000, pendingIntent);
+            }
+        });
 
         TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
         peopleAttending.setText(pictureAttendees.length + " people are attending.");
