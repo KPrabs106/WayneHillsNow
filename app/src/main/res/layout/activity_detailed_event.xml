@@ -167,6 +167,19 @@
                     android:layout_alignStart="@+id/txtContact"
                     android:text="Cancel" />
 
+                <Button
+                    android:id="@+id/notificationButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/txtDesc"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/cancel_button"
+                    android:clickable="true"
+                    android:maxHeight="40dp"
+                    android:maxWidth="60dp"
+                    android:scaleType="fitXY" />
+
             </RelativeLayout>
 
             <TextView
@@ -233,7 +246,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/lvItems"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false" />
 
 
 </RelativeLayout>
