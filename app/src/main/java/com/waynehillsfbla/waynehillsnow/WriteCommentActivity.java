@@ -47,10 +47,12 @@ public class WriteCommentActivity extends ActionBarActivity {
                 PublishComment publishComment = new PublishComment();
                 publishComment.execute(commentDetails);
 
+
                 finish();
             }
         });
     }
+
 
 
     @Override

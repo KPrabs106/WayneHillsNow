@@ -64,7 +64,7 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         String[] drawerItems = {"Sign In", "Settings", "My Events"};
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
-        drawerList.setAdapter(arrayAdapter);
+        drawerList.setAdapter(arrayAdapter  );
 
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

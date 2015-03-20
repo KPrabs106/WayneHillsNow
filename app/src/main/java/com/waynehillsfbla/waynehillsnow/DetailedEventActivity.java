@@ -159,6 +159,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
         peopleAttending.setText(pictureAttendees.length + " people are attending.");
 
+
         CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments);
         ListView commentsList = (ListView) findViewById(R.id.commentsList);
         commentsList.setAdapter(commentsListAdapter);
