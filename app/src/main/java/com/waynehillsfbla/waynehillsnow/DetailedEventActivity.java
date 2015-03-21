@@ -214,6 +214,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 addAttendance.execute(userEventData);
                 cancelButton.setEnabled(true);
                 attendButton.setEnabled(false);
+                restartActivity();
                 Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
             }
         });
@@ -227,6 +228,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 removeAttendance.execute(userEventData);
                 attendButton.setEnabled(true);
                 cancelButton.setEnabled(false);
+                restartActivity();
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
 
             }
@@ -246,6 +248,17 @@ public class DetailedEventActivity extends ActionBarActivity implements
         });
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
+    }
+
+    private void restartActivity() {
+        finish();
+        startActivity(getIntent());
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

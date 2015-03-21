@@ -1,6 +1,5 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -48,19 +47,9 @@ public class WriteCommentActivity extends ActionBarActivity {
                 PublishComment publishComment = new PublishComment();
                 publishComment.execute(commentDetails);
 
-                //goBack();
-
-
+                finish();
             }
         });
-
-
-    }
-
-    private void goBack() {
-        Intent intent = new Intent(this, DetailedEventActivity.class);
-        startActivity(intent);
-
     }
 
     @Override
