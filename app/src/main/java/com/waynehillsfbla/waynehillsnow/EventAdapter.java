@@ -68,6 +68,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 bund.putString("EndDate", eventList.get(i).endDatetime);
                 Intent intent = new Intent(v.getContext(), DetailedEventActivity.class);
                 intent.putExtras(bund);
+                //Intent intent = new Intent(v.getContext(), MainActivity.class);
                 v.getContext().startActivity(intent);
             }
         });

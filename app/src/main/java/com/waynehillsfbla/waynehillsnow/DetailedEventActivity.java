@@ -182,7 +182,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
         TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
         peopleAttending.setText(pictureAttendees.length + " people are attending.");
 
-
         CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments);
         ListView commentsList = (ListView) findViewById(R.id.commentsList);
         commentsList.setAdapter(commentsListAdapter);
@@ -215,7 +214,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 addAttendance.execute(userEventData);
                 cancelButton.setEnabled(true);
                 attendButton.setEnabled(false);
-                restartActivity();
                 Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
             }
         });
@@ -229,7 +227,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 removeAttendance.execute(userEventData);
                 attendButton.setEnabled(true);
                 cancelButton.setEnabled(false);
-                restartActivity();
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
 
             }
@@ -243,9 +240,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 userEventDetails.putString("userEventDataJSON", userEventData.toString());
                 Intent writeComment = new Intent(getApplicationContext(), WriteCommentActivity.class);
                 writeComment.putExtras(userEventDetails);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(writeComment);
-                //onResume();
 
             }
         });
@@ -257,11 +252,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detailed_event, menu);
         return true;
-    }
-
-    private void restartActivity() {
-        finish();
-        startActivity(getIntent());
     }
 
     @Override
@@ -347,27 +337,9 @@ public class DetailedEventActivity extends ActionBarActivity implements
     }
 
     @Override
-    public void onClick(View v) {
-
-    }
-
-    @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
-
-    public void onPause() {
-        super.onPause();
-        mGoogleApiClient.disconnect();
-    }
-
-
-    public void onResume() {
-        super.onResume();
-        finish();
-        startActivity(getIntent());
-    }
-
 
     private GoogleApiClient buildGoogleApiClient() {
         // When we build the GoogleApiClient we specify where connected and
@@ -387,6 +359,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
     class GetComments extends AsyncTask<JSONObject, Void, Void> {
