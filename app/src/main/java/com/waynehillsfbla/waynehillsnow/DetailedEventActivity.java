@@ -243,7 +243,10 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 userEventDetails.putString("userEventDataJSON", userEventData.toString());
                 Intent writeComment = new Intent(getApplicationContext(), WriteCommentActivity.class);
                 writeComment.putExtras(userEventDetails);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(writeComment);
+                //onResume();
+
             }
         });
     }
@@ -357,6 +360,14 @@ public class DetailedEventActivity extends ActionBarActivity implements
         super.onPause();
         mGoogleApiClient.disconnect();
     }
+
+
+    public void onResume() {
+        super.onResume();
+        finish();
+        startActivity(getIntent());
+    }
+
 
     private GoogleApiClient buildGoogleApiClient() {
         // When we build the GoogleApiClient we specify where connected and
