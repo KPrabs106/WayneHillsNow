@@ -58,11 +58,7 @@ public class CalendarTab extends Fragment {
 
         try {
             rd.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
 
@@ -171,18 +167,18 @@ public class CalendarTab extends Fragment {
         calendar.setOnDayClickListener(new ExtendedCalendarView.OnDayClickListener() {
             @Override
             public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, Day day) {
-                for (int i = 0; i < eventDates.length; i++) {
+                for (int[] eventDate : eventDates) {
                     /**We have the start and end dates already in an array.
                      * We can check to see if the date the user clicked on
                      * is between the start and end date of any event.
                      */
-                    if ((eventDates[i][0] <= day.getYear() && day.getYear() <= eventDates[i][3]) &&
-                            (eventDates[i][1] <= day.getMonth() + 1 && day.getMonth() + 1 <= eventDates[i][4]) &&
-                            (eventDates[i][2] <= day.getDay() && day.getDay() <= eventDates[i][5])) {
+                    if ((eventDate[0] <= day.getYear() && day.getYear() <= eventDate[3]) &&
+                            (eventDate[1] <= day.getMonth() + 1 && day.getMonth() + 1 <= eventDate[4]) &&
+                            (eventDate[2] <= day.getDay() && day.getDay() <= eventDate[5])) {
                         Bundle bund = new Bundle();
-                        bund.putInt("year", eventDates[i][0]);
-                        bund.putInt("month", eventDates[i][1]);
-                        bund.putInt("day", eventDates[i][2]);
+                        bund.putInt("year", eventDate[0]);
+                        bund.putInt("month", eventDate[1]);
+                        bund.putInt("day", eventDate[2]);
                         Intent intent = new Intent(view.getContext(), ListEventActivity.class);
                         intent.putExtras(bund);
 

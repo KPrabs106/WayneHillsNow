@@ -19,11 +19,9 @@ public class ViewPagerAdapterMain extends FragmentStatePagerAdapter {
 
     public Fragment getItem(int position) {
         if (position == 0) {
-            CalendarTab calendarTab = new CalendarTab();
-            return calendarTab;
+            return new EventListTab();
         } else {
-            EventListTab eventListTab = new EventListTab();
-            return eventListTab;
+            return new CalendarTab();
         }
     }
 

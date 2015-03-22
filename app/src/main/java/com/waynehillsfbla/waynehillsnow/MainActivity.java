@@ -47,7 +47,7 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
     ViewPager viewPager;
     ViewPagerAdapterMain viewPagerAdapter;
     SlidingTabLayout slidingTabLayout;
-    CharSequence Titles[] = {"Calendar", "Events List"};
+    CharSequence Titles[] = {"Events List", "Calendar"};
     int numTabs = 2;
 
     JSONArray jarr;

@@ -108,11 +108,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         getComments.execute(eventDetails);
         try {
             getComments.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
 
@@ -121,11 +117,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         getAttendance.execute(eventDetails);
         try {
             getAttendance.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             e.printStackTrace();
         }
 

@@ -2,7 +2,6 @@ package com.waynehillsfbla.waynehillsnow;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
@@ -42,8 +41,6 @@ public class ClientServerInterface {
             HttpResponse httpresponse = defaultHttpClient.execute(httpPost);
             HttpEntity httpEntity = httpresponse.getEntity();
             is = httpEntity.getContent();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,7 +51,7 @@ public class ClientServerInterface {
             String line;
             try {
                 while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
+                    sb.append(line).append("\n");
                 }
                 is.close();
                 json = sb.toString();
@@ -96,7 +93,7 @@ public class ClientServerInterface {
                 String line;
                 try {
                     while ((line = reader.readLine()) != null) {
-                        sb.append(line + "\n");
+                        sb.append(line).append("\n");
                     }
                     is.close();
                     json = sb.toString();
