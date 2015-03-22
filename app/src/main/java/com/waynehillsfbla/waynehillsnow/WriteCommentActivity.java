@@ -13,7 +13,7 @@ import android.widget.EditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
+//TODO add formatting functionality
 public class WriteCommentActivity extends ActionBarActivity {
 
     JSONObject commentDetails = new JSONObject();

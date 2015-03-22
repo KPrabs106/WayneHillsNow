@@ -22,6 +22,8 @@ import java.io.UnsupportedEncodingException;
  * receive data.
  * *************************************************
  */
+
+//TODO stop using this and use Async HTTP Client Library instead
 public class ClientServerInterface {
 
     static InputStream is = null;
