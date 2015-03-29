@@ -1,15 +1,19 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +74,8 @@ public class DetailedEventActivity extends ActionBarActivity implements
     String endDate;
 
     private GoogleApiClient mGoogleApiClient;
+
+    String commentBody;
 
     //TODO Add notifications for upcoming events
     @Override
@@ -172,7 +178,8 @@ public class DetailedEventActivity extends ActionBarActivity implements
         });
 
         ActionButton actionButton = (ActionButton) findViewById(R.id.action_button);
-        actionButton.setOnClickListener(new View.OnClickListener() {
+
+        /*actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle userEventDetails = new Bundle();
@@ -182,7 +189,44 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 writeComment.putExtras(userEventDetails);
                 startActivity(writeComment);
             }
+        });*/
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter comment");
+
+// Set up the input
+        final EditText input = new EditText(this);
+// Specify the type of input expected
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+// Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                commentBody = input.getText().toString();
+                publishComment();
+            }
         });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle userEventDetails = new Bundle();
+                userEventDetails.putString("eventId", String.valueOf(id));
+                userEventDetails.putString("userId", userId);
+
+                builder.show();
+
+            }
+        });
+
     }
 
     @Override
@@ -234,6 +278,14 @@ public class DetailedEventActivity extends ActionBarActivity implements
         result = year + "-" + month + "-" + day + " " + hr + ":" + min;
 
         return dispForm.format(origForm.parse(result));
+    }
+
+    private void publishComment() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("eventId", id);
+        requestParams.put("userId", userId);
+        requestParams.put("commentBody", commentBody);
+        ClientServerInterface.post("publish_comment.php", requestParams, null);
     }
 
     @Override
