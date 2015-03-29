@@ -2,83 +2,76 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.tyczj.extendedcalendarview.CalendarProvider;
 import com.tyczj.extendedcalendarview.Day;
 import com.tyczj.extendedcalendarview.Event;
 import com.tyczj.extendedcalendarview.ExtendedCalendarView;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class CalendarTab extends Fragment {
-    int[][] eventDates;
-    JSONObject jobj = null;
-    JSONArray jarr = null;
-    ClientServerInterface clientServerInterface = new ClientServerInterface();
-    String startDatetime = "";
-    String endDatetime = "";
-    String date = "";
-    String time = "";
-    String year = "";
-    String month = "";
-    String day = "";
-    String hour = "";
-    String minute = "";
+    View v;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_calendar, container, false);
+        v = inflater.inflate(R.layout.activity_calendar, container, false);
 
+        getEvents();
 
+        return v;
+    }
+
+    public void initCalendar(JSONArray jsonArray) {
         ExtendedCalendarView calendar = (ExtendedCalendarView) v.findViewById(R.id.calendar);
         getActivity().getContentResolver().delete(CalendarProvider.CONTENT_URI, null, null);
 
         ContentValues values = new ContentValues();
 
-        //Get all the events
-        RetrieveData rd = new RetrieveData();
-        rd.execute();
+        final int[][] eventDates;
 
-        try {
-            rd.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-
-        eventDates = new int[jarr.length()][6];
+        eventDates = new int[jsonArray.length()][6];
         Calendar cal = Calendar.getInstance();
         TimeZone tz = TimeZone.getDefault();
 
+        String startDatetime = null;
+        String endDatetime = null;
+        String date;
+        String time;
+        String year;
+        String month;
+        String day;
+        String hour;
+        String minute;
+
+        JSONObject jsonObject = null;
         //Add every event into the calendar
         //TODO Resolve issue with missing events
-        for (int i = 0; i < jarr.length(); i++) {
+        for (int i = 0; i < jsonArray.length(); i++) {
             try {
-                jobj = jarr.getJSONObject(i);
-                Log.e("JSON Object " + i, jobj.toString());
+                jsonObject = jsonArray.getJSONObject(i);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             /**Add starting date and time to the calendar**/
             try {
-                startDatetime = jobj.getString("startDate");
+                startDatetime = jsonObject.getString("startDate");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -95,17 +88,17 @@ public class CalendarTab extends Fragment {
 
             values.put(CalendarProvider.COLOR, Event.COLOR_RED);
             try {
-                values.put(CalendarProvider.DESCRIPTION, jobj.getString("description"));
+                values.put(CalendarProvider.DESCRIPTION, jsonObject.getString("description"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                values.put(CalendarProvider.LOCATION, jobj.getString("location"));
+                values.put(CalendarProvider.LOCATION, jsonObject.getString("location"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                values.put(CalendarProvider.EVENT, jobj.getString("title"));
+                values.put(CalendarProvider.EVENT, jsonObject.getString("title"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -129,7 +122,7 @@ public class CalendarTab extends Fragment {
 
             /**Add end date and time to the calendar**/
             try {
-                endDatetime = jobj.getString("endDate");
+                endDatetime = jsonObject.getString("endDate");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -188,16 +181,14 @@ public class CalendarTab extends Fragment {
                 }
             }
         });
-
-        return v;
     }
 
-    //Get all the events
-    class RetrieveData extends AsyncTask<String, String, JSONArray> {
-        protected JSONArray doInBackground(String... arg0) {
-            jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
-            Log.e("Jarr", jarr.toString());
-            return jarr;
-        }
+    private void getEvents() {
+        ClientServerInterface.get("get_events.php", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                initCalendar(response);
+            }
+        });
     }
 }

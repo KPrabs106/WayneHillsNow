@@ -1,34 +1,29 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.loopj.android.http.RequestParams;
 
 //TODO add formatting functionality
 public class WriteCommentActivity extends ActionBarActivity {
 
-    JSONObject commentDetails = new JSONObject();
+    String userId;
+    String eventId;
+    String commentBody;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_comment);
-        try {
-            final JSONObject userEventData = new JSONObject(getIntent().getStringExtra("userEventDataJSON"));
-            commentDetails.put("googleId", userEventData.getString("googleId"));
-            commentDetails.put("eventId", userEventData.getString("eventId"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        eventId = getIntent().getStringExtra("eventId");
+        userId = getIntent().getStringExtra("userId");
+
 
         final EditText comment = (EditText) findViewById(R.id.commentText);
 
@@ -36,16 +31,9 @@ public class WriteCommentActivity extends ActionBarActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String commentBody = comment.getText().toString();
+                commentBody = comment.getText().toString();
 
-                try {
-                    commentDetails.put("commentBody", commentBody);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                PublishComment publishComment = new PublishComment();
-                publishComment.execute(commentDetails);
+                publishComment();
 
                 finish();
             }
@@ -74,14 +62,11 @@ public class WriteCommentActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class PublishComment extends AsyncTask<JSONObject, Void, Void> {
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            clientServerInterface.postData("http://54.164.136.46/publish_comment.php", jsonObject);
-            Log.e("Sent to publish comment", jsonObject.toString());
-            return null;
-        }
+    private void publishComment() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("eventId", eventId);
+        requestParams.put("userId", userId);
+        requestParams.put("commentBody", commentBody);
+        ClientServerInterface.post("publish_comment.php", requestParams, null);
     }
 }

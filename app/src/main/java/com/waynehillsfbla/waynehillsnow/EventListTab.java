@@ -1,6 +1,5 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,72 +11,65 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class EventListTab extends Fragment {
-    JSONArray jarr = null;
-    JSONObject jobj = null;
-    ClientServerInterface clientServerInterface = new ClientServerInterface();
     TextView titleTextView;
     ImageView pictureImageView;
     TextView dateTextView;
     TextView typeTextView;
-
+    View v;
+    RecyclerView recList;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_card_list, container, false);
+        v = inflater.inflate(R.layout.activity_card_list, container, false);
 
         titleTextView = (TextView) v.findViewById(R.id.txtTitle);
         pictureImageView = (ImageView) v.findViewById(R.id.picture);
         dateTextView = (TextView) v.findViewById(R.id.txtDate);
         typeTextView = (TextView) v.findViewById(R.id.txtType);
-
-        RetrieveData rd = new RetrieveData();
-        rd.execute();
-
-        //Wait until the JSON data from the server is received
-        try {
-            rd.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-
-        //Set up the cards
-        RecyclerView recList = (RecyclerView) v.findViewById(R.id.cardList);
+        recList = (RecyclerView) v.findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
+
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        EventAdapter ea = new EventAdapter(createList(jarr.length()));
-        recList.setAdapter(ea);
+        getEvents();
         return v;
     }
 
+    //Set up the cards
+    private void initCards(JSONArray jsonArray) {
+        EventAdapter ea = new EventAdapter(createList(jsonArray.length(), jsonArray));
+        recList.setAdapter(ea);
+    }
+
     //Give the adapter all the information about each event
-    private List<EventInfo> createList(int size) {
+    private List<EventInfo> createList(int size, JSONArray eventDetails) {
 
         List<EventInfo> result = new ArrayList<EventInfo>();
+        JSONObject jsonObject;
         for (int i = 0; i < size; i++) {
             EventInfo ei = new EventInfo();
             try {
-                jobj = jarr.getJSONObject(i);
-                ei.id = Integer.parseInt(jobj.getString("id"));
-                ei.title = jobj.getString("title");
-                ei.startDatetime = jobj.getString("startDate");
-                ei.pictureURL = jobj.getString("pictureURL");
-                ei.type = jobj.getString("type");
-                ei.contact = jobj.getString("contact");
-                ei.endDatetime = jobj.getString("endDate");
-                ei.location = jobj.getString("location");
-                ei.description = jobj.getString("description");
+                jsonObject = eventDetails.getJSONObject(i);
+                ei.id = Integer.parseInt(jsonObject.getString("id"));
+                ei.title = jsonObject.getString("title");
+                ei.startDatetime = jsonObject.getString("startDate");
+                ei.pictureURL = jsonObject.getString("pictureURL");
+                ei.type = jsonObject.getString("type");
+                ei.contact = jsonObject.getString("contact");
+                ei.endDatetime = jsonObject.getString("endDate");
+                ei.location = jsonObject.getString("location");
+                ei.description = jsonObject.getString("description");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -86,11 +78,12 @@ public class EventListTab extends Fragment {
         return result;
     }
 
-    //Get the event details
-    class RetrieveData extends AsyncTask<String, String, JSONArray> {
-        protected JSONArray doInBackground(String... arg0) {
-            jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/printresult.php");
-            return jarr;
-        }
+    private void getEvents() {
+        ClientServerInterface.get("get_events.php", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                initCards(response);
+            }
+        });
     }
 }

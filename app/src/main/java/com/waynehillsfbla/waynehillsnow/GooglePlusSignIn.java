@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -27,9 +26,7 @@ import com.google.android.gms.plus.People.LoadPeopleResult;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.PersonBuffer;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.loopj.android.http.RequestParams;
 
 
 /**
@@ -198,27 +195,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-
-        JSONObject userData = new JSONObject();
-        try {
-            userData.put("name", currentUser.getDisplayName());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            userData.put("profilePicture", currentUser.getImage().getUrl());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            userData.put("googleId", currentUser.getId());
-            Log.d("PROFILE", currentUser.getId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        AddUser addUser = new AddUser();
-        addUser.execute(userData);
+        addUser(currentUser);
 
         mStatus.setText(getResources().getString(R.string.signed_in) + " " + currentUser.getDisplayName());
 
@@ -402,15 +379,11 @@ public class GooglePlusSignIn extends FragmentActivity implements
         }
     }
 
-    //Add a user to the database of users upon sign in
-    class AddUser extends AsyncTask<JSONObject, Void, Void> {
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            clientServerInterface.postData("http://54.164.136.46/add_user.php", jsonObject);
-            return null;
-        }
+    private void addUser(Person user) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("name", user.getDisplayName());
+        requestParams.put("profilePicture", user.getImage().getUrl());
+        requestParams.put("googleId", user.getId());
+        ClientServerInterface.post("add_user.php", requestParams, null);
     }
-
 }

@@ -2,11 +2,7 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -26,19 +22,19 @@ import com.google.android.gms.plus.People;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.PersonBuffer;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.software.shell.fab.ActionButton;
 
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.lucasr.twowayview.TwoWayView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.Calendar;
 
 /**
  * ************************************************************
@@ -50,7 +46,8 @@ import java.util.concurrent.TimeoutException;
 public class DetailedEventActivity extends ActionBarActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
-    JSONObject userEventData = new JSONObject();
+    String userId;
+
     String[] nameAttendees;
     String[] pictureAttendees;
     String[] googleIdAttendees;
@@ -63,32 +60,34 @@ public class DetailedEventActivity extends ActionBarActivity implements
     Button attendButton;
     Button cancelButton;
 
+    int id;
+    String title;
+    String type;
+    String location;
+    String description;
+    String contact;
+    String startDate;
+    String endDate;
 
     private GoogleApiClient mGoogleApiClient;
 
+    //TODO Add notifications for upcoming events
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
 
-        //TODO Add notifications for upcoming events
-        //Close app if there is no internet connection
-        if (!isNetworkAvailable()) {
-            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
-            finish();
-        }
-
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        final int id = extras.getInt("Id");
-        String title = extras.getString("Title");
-        String type = extras.getString("Type");
-        String location = extras.getString("Location");
-        String description = extras.getString("Description");
-        String contact = extras.getString("Contact");
-        final String startDate = extras.getString("StartDate");
-        String endDate = extras.getString("EndDate");
+        id = extras.getInt("Id");
+        title = extras.getString("Title");
+        type = extras.getString("Type");
+        location = extras.getString("Location");
+        description = extras.getString("Description");
+        contact = extras.getString("Contact");
+        startDate = extras.getString("StartDate");
+        endDate = extras.getString("EndDate");
 
         mGoogleApiClient = buildGoogleApiClient();
         mGoogleApiClient.connect();
@@ -96,30 +95,8 @@ public class DetailedEventActivity extends ActionBarActivity implements
         Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
                 .setResultCallback(this);
 
-        //Put the event id into a JSON Object that is sent if a user clicks a button
-        JSONObject eventDetails = new JSONObject();
-        try {
-            eventDetails.put("eventId", Integer.toString(id));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        GetComments getComments = new GetComments();
-        getComments.execute(eventDetails);
-        try {
-            getComments.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-
-        //Get the names and profile pictures of those attending the event
-        GetAttendance getAttendance = new GetAttendance();
-        getAttendance.execute(eventDetails);
-        try {
-            getAttendance.get(10000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
+        getComments();
+        getAttendance();
 
         TextView txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
@@ -154,41 +131,20 @@ public class DetailedEventActivity extends ActionBarActivity implements
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, Integer.parseInt(startDate.substring(5,7))-1);
                 calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8,10)));
                 calendar.set(Calendar.YEAR, Integer.parseInt(startDate.substring(0,4)));
-                */
+
                 Intent notification = new Intent(getApplicationContext(), AlarmReceiver.class);
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notification, 0);
 
                 AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
-                //alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-                alarmManager.set(AlarmManager.RTC, System.currentTimeMillis() + 5000, pendingIntent);
+                alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
             }
         });
-
-        TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
-        peopleAttending.setText(pictureAttendees.length + " people are attending.");
-
-        CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments);
-        ListView commentsList = (ListView) findViewById(R.id.commentsList);
-        commentsList.setAdapter(commentsListAdapter);
-
-        //Create the list adapter that will add names and pictures to the list of those attending
-        AttendeeListAdapter adapter = new AttendeeListAdapter(this, pictureAttendees);
-        TwoWayView attendeeList = (TwoWayView) findViewById(R.id.lvItems);
-        attendeeList.setAdapter(adapter);
-
-        //Put the eventId into another JSON Object that could be sent
-        try {
-            userEventData.put("eventId", Integer.toString(id));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         //The attend and cancel button are invisible by default, and become visible if the user is
         //logged into Google+
@@ -202,12 +158,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AddAttendance addAttendance = new AddAttendance();
-                addAttendance.execute(userEventData);
-                cancelButton.setEnabled(true);
-                attendButton.setEnabled(false);
-                restartActivity();
-                Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
+                addAttendance();
             }
         });
 
@@ -216,13 +167,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RemoveAttendance removeAttendance = new RemoveAttendance();
-                removeAttendance.execute(userEventData);
-                attendButton.setEnabled(true);
-                cancelButton.setEnabled(false);
-                restartActivity();
-                Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
-
+                removeAttendance();
             }
         });
 
@@ -231,11 +176,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
             @Override
             public void onClick(View v) {
                 Bundle userEventDetails = new Bundle();
-                userEventDetails.putString("userEventDataJSON", userEventData.toString());
+                userEventDetails.putString("eventId", String.valueOf(id));
+                userEventDetails.putString("userId", userId);
                 Intent writeComment = new Intent(getApplicationContext(), WriteCommentActivity.class);
                 writeComment.putExtras(userEventDetails);
                 startActivity(writeComment);
-
             }
         });
     }
@@ -317,11 +262,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
 
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
         nameCurrentUser = currentUser.getDisplayName();
-        try {
-            userEventData.put("googleId", currentUser.getId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        userId = currentUser.getId();
 
         final Button attendButton = (Button) findViewById(R.id.attend_button);
         final Button cancelButton = (Button) findViewById(R.id.cancel_button);
@@ -358,108 +299,102 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 .build();
     }
 
-    //Check for internet connectivity
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
     @Override
     public void onClick(View v) {
 
     }
 
-    class GetComments extends AsyncTask<JSONObject, Void, Void> {
+    private void getComments() {
+        RequestParams requestParams = new RequestParams("eventId", id);
+        ClientServerInterface.post("get_comments.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                nameCommenters = new String[response.length()];
+                pictureCommenters = new String[response.length()];
+                comments = new String[response.length()];
 
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            JSONArray commentsDetails = clientServerInterface.postData("http://54.164.136.46/get_comments.php", jsonObject);
-
-            JSONArray jarr = null;
-            try {
-                jarr = new JSONArray(commentsDetails.get(0).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            nameCommenters = new String[jarr.length()];
-            pictureCommenters = new String[jarr.length()];
-            comments = new String[jarr.length()];
-
-            for (int i = 0; i < jarr.length(); i++) {
-                try {
-                    JSONObject jObject = jarr.getJSONObject(i);
-                    nameCommenters[i] = jObject.getString("name");
-                    pictureCommenters[i] = (jObject.getString("profilePicture")).substring(0, 96) + "103";
-                    comments[i] = jObject.getString("body");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        nameCommenters[i] = response.getJSONObject(i).getString("name");
+                        pictureCommenters[i] = (response.getJSONObject(i).getString("profilePicture")).substring(0, 96) + "103";
+                        comments[i] = response.getJSONObject(i).getString("body");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+                initComments();
             }
-
-            return null;
-        }
+        });
     }
 
-    //Gets names and pictures of those attending this event, given JSON Object of event id
-    class GetAttendance extends AsyncTask<JSONObject, Void, Void> {
+    private void initComments() {
+        CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments);
+        ListView commentsList = (ListView) findViewById(R.id.commentsList);
+        commentsList.setAdapter(commentsListAdapter);
+    }
 
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            JSONArray attendanceDetails = clientServerInterface.postData("http://54.164.136.46/get_attendance.php", jsonObject);
+    private void getAttendance() {
+        RequestParams requestParams = new RequestParams("eventId", id);
+        ClientServerInterface.post("get_attendance.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                nameAttendees = new String[response.length()];
+                pictureAttendees = new String[response.length()];
+                googleIdAttendees = new String[response.length()];
 
-            JSONArray jarr = null;
-            try {
-                jarr = new JSONArray(attendanceDetails.get(0).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            nameAttendees = new String[jarr.length()];
-            pictureAttendees = new String[jarr.length()];
-            googleIdAttendees = new String[jarr.length()];
-
-            for (int i = 0; i < jarr.length(); i++) {
-                try {
-                    JSONObject jObject = jarr.getJSONObject(i);
-                    nameAttendees[i] = jObject.getString("name");
-                    pictureAttendees[i] = (jObject.getString("profilePicture")).substring(0, 96) + "103";
-                    googleIdAttendees[i] = jObject.getString("googleId");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        nameAttendees[i] = response.getJSONObject(i).getString("name");
+                        pictureAttendees[i] = (response.getJSONObject(i).getString("profilePicture")).substring(0, 96) + "103";
+                        googleIdAttendees[i] = response.getJSONObject(i).getString("googleId");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+                TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
+                peopleAttending.setText(pictureAttendees.length + " people are attending.");
+
+                initAttendance();
             }
-
-            return null;
-        }
-
+        });
     }
 
-    //Adds user to the database, given JSON Object of user id and event id
-    class AddAttendance extends AsyncTask<JSONObject, Void, Void> {
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            clientServerInterface.postData("http://54.164.136.46/add_attendance.php", jsonObject);
-            return null;
-        }
+    private void initAttendance() {
+        //Create the list adapter that will add names and pictures to the list of those attending
+        AttendeeListAdapter adapter = new AttendeeListAdapter(this, pictureAttendees);
+        TwoWayView attendeeList = (TwoWayView) findViewById(R.id.lvItems);
+        attendeeList.setAdapter(adapter);
     }
 
-    //Removes user from the database, given JSON Object of user id and event id
-    class RemoveAttendance extends AsyncTask<JSONObject, Void, Void> {
-        @Override
-        protected Void doInBackground(JSONObject... params) {
-            JSONObject jsonObject = params[0];
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            clientServerInterface.postData("http://54.164.136.46/remove_attendance.php", jsonObject);
-            return null;
-        }
+    private void addAttendance() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("eventId", id);
+        requestParams.put("userId", userId);
+
+        ClientServerInterface.post("add_attendance.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                cancelButton.setEnabled(true);
+                attendButton.setEnabled(false);
+                restartActivity();
+                Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    private void removeAttendance() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("eventId", id);
+        requestParams.put("userId", userId);
+
+        ClientServerInterface.post("remove_attendance.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                attendButton.setEnabled(true);
+                cancelButton.setEnabled(false);
+                restartActivity();
+                Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

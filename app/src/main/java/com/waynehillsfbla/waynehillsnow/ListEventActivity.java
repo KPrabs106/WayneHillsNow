@@ -1,26 +1,21 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+
+import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * ******************************************************
@@ -29,79 +24,45 @@ import java.util.concurrent.TimeoutException;
  * ******************************************************
  */
 public class ListEventActivity extends ActionBarActivity {
-    JSONObject json = new JSONObject();
-    JSONArray jarr = new JSONArray();
-    JSONObject jobj = null;
-    PostData pd;
+    int year;
+    int month;
+    int day;
+    RecyclerView recList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_event);
 
-        //Stop app if there is no internet connection
-        if (!isNetworkAvailable()) {
-            Toast.makeText(this, "No Internet connection", Toast.LENGTH_LONG).show();
-            finish();
-        }
-
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
-        int year = extras.getInt("year");
-        int month = extras.getInt("month");
-        int day = extras.getInt("day");
+        year = extras.getInt("year");
+        month = extras.getInt("month");
+        day = extras.getInt("day");
 
-        try {
-            json.put("year", year);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            json.put("month", month);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            json.put("day", day);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        pd = new PostData();
-        pd.execute();
-
-        try {
-            pd.get(1000, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            e.printStackTrace();
-        }
-
-        RecyclerView recList = (RecyclerView) findViewById(R.id.cardList);
+        recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        EventAdapter ea = new EventAdapter(createList(jarr.length()));
-        recList.setAdapter(ea);
+        getEvents();
     }
 
-    private List<EventInfo> createList(int size) {
+    private List<EventInfo> createList(int size, JSONArray jsonArray) {
         List<EventInfo> result = new ArrayList<EventInfo>();
         for (int i = 0; i < size; i++) {
             EventInfo ei = new EventInfo();
             try {
-                jobj = jarr.getJSONObject(i);
-                ei.id = Integer.parseInt(jobj.getString("id"));
-                ei.title = jobj.getString("title");
-                ei.startDatetime = jobj.getString("startDate");
-                ei.pictureURL = jobj.getString("pictureURL");
-                ei.type = jobj.getString("type");
-                ei.contact = jobj.getString("contact");
-                ei.endDatetime = jobj.getString("endDate");
-                ei.location = jobj.getString("location");
-                ei.description = jobj.getString("description");
+                ei.id = Integer.parseInt(jsonArray.getJSONObject(i).getString("id"));
+                ei.title = jsonArray.getJSONObject(i).getString("title");
+                ei.startDatetime = jsonArray.getJSONObject(i).getString("startDate");
+                ei.pictureURL = jsonArray.getJSONObject(i).getString("pictureURL");
+                ei.type = jsonArray.getJSONObject(i).getString("type");
+                ei.contact = jsonArray.getJSONObject(i).getString("contact");
+                ei.endDatetime = jsonArray.getJSONObject(i).getString("endDate");
+                ei.location = jsonArray.getJSONObject(i).getString("location");
+                ei.description = jsonArray.getJSONObject(i).getString("description");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -112,7 +73,6 @@ public class ListEventActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        pd.cancel(true);
         finish();
     }
 
@@ -132,29 +92,21 @@ public class ListEventActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    //Check for internet connectivity
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    private void initCards(JSONArray jsonArray) {
+        EventAdapter ea = new EventAdapter(createList(jsonArray.length(), jsonArray));
+        recList.setAdapter(ea);
     }
 
-    //Get all activities for a given day
-    class PostData extends AsyncTask<String, Void, Void> {
-
-        @Override
-        protected Void doInBackground(String... params) {
-            ClientServerInterface clientServerInterface = new ClientServerInterface();
-            JSONArray events = clientServerInterface.postData("http://54.164.136.46/decodejson.php", json);
-
-            try {
-                jarr = new JSONArray(events.get(0).toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
+    private void getEvents() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("year", year);
+        requestParams.put("month", month);
+        requestParams.put("day", day);
+        ClientServerInterface.post("get_specific_events.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                initCards(response);
             }
-
-            return null;
-        }
+        });
     }
 }

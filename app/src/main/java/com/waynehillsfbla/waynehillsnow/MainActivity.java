@@ -1,11 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -21,8 +17,6 @@ import android.widget.ListView;
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -151,31 +145,5 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         Intent intent = new Intent(baseSliderView.getContext(), DetailedEventActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
-    }
-
-    //Check for internet connectivity
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    //Get picture URLs from the database and store it in a JSON Object
-    class RetrievePictures extends AsyncTask<String, String, Void> {
-
-        protected Void doInBackground(String... arg0) {
-            jarr = clientServerInterface.makeHttpRequest("http://54.164.136.46/get_pictures.php");
-            JSONObject jsonObject;
-            for (int i = 0; i < jarr.length(); i++) {
-                try {
-                    jsonObject = jarr.getJSONObject(i);
-                    pictureData.put(jsonObject.getString("title"), jsonObject.getString("pictureURL"));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-        }
     }
 }
