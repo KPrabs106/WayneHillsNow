@@ -41,7 +41,7 @@
         android:id="@+id/navList"
         android:layout_width="200dp"
         android:layout_height="match_parent"
-        android:layout_gravity="left|start"
+        android:layout_gravity="right"
         android:background="#ffeeeeee" />
 
 </android.support.v4.widget.DrawerLayout>

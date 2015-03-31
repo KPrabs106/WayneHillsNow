@@ -1,15 +1,14 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -77,16 +76,13 @@ public class DetailedEventActivity extends ActionBarActivity implements
     String contact;
     String startDate;
     String endDate;
-
-    private GoogleApiClient mGoogleApiClient;
-
     String commentBody;
-
     ListView drawerList;
     ArrayAdapter<String> arrayAdapter;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
     String activityTitle;
+    private GoogleApiClient mGoogleApiClient;
 
     //TODO Add notifications for upcoming events
     @Override
@@ -100,7 +96,10 @@ public class DetailedEventActivity extends ActionBarActivity implements
         String[] drawerItems = {"Sign In", "Settings", "My Events"};
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
+        Log.d(getPackageName(), drawerList != null ? "lvCountries is not null!" : "lvCountries is null!");
+
         drawerList.setAdapter(arrayAdapter);
+
 
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -112,20 +111,18 @@ public class DetailedEventActivity extends ActionBarActivity implements
             }
         });
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
         activityTitle = getTitle().toString();
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation");
                 invalidateOptionsMenu();
             }
 
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(activityTitle);
                 invalidateOptionsMenu();
             }
 
@@ -245,13 +242,13 @@ public class DetailedEventActivity extends ActionBarActivity implements
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter comment");
 
-// Set up the input
+        // Set up the input
         final EditText input = new EditText(this);
-// Specify the type of input expected
+        // Specify the type of input expected
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         builder.setView(input);
 
-// Set up the buttons
+        // Set up the buttons
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -329,14 +326,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
         result = year + "-" + month + "-" + day + " " + hr + ":" + min;
 
         return dispForm.format(origForm.parse(result));
-    }
-
-    private void publishComment() {
-        RequestParams requestParams = new RequestParams();
-        requestParams.put("eventId", id);
-        requestParams.put("userId", userId);
-        requestParams.put("commentBody", commentBody);
-        ClientServerInterface.post("publish_comment.php", requestParams, null);
     }
 
     @Override
@@ -497,6 +486,19 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 cancelButton.setEnabled(false);
                 restartActivity();
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void publishComment() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("eventId", id);
+        requestParams.put("userId", userId);
+        requestParams.put("commentBody", commentBody);
+        ClientServerInterface.post("publish_comment.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                restartActivity();
             }
         });
     }
