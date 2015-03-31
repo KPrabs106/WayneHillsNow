@@ -1,17 +1,22 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -77,11 +82,57 @@ public class DetailedEventActivity extends ActionBarActivity implements
 
     String commentBody;
 
+    ListView drawerList;
+    ArrayAdapter<String> arrayAdapter;
+    DrawerLayout drawerLayout;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+    String activityTitle;
+
     //TODO Add notifications for upcoming events
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
+
+        drawerList = (ListView) findViewById(R.id.navList);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        String[] drawerItems = {"Sign In", "Settings", "My Events"};
+
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
+        drawerList.setAdapter(arrayAdapter);
+
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        Intent intent = new Intent(view.getContext(), GooglePlusSignIn.class);
+                        startActivity(intent);
+                }
+            }
+        });
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        activityTitle = getTitle().toString();
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                getSupportActionBar().setTitle("Navigation");
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                getSupportActionBar().setTitle(activityTitle);
+                invalidateOptionsMenu();
+            }
+
+        };
+
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
