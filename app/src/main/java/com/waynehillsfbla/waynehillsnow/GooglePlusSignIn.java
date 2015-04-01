@@ -26,7 +26,10 @@ import com.google.android.gms.plus.People.LoadPeopleResult;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.google.android.gms.plus.model.people.PersonBuffer;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+
+import static com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable;
 
 
 /**
@@ -89,6 +92,9 @@ public class GooglePlusSignIn extends FragmentActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_plus_sign_in);
+
+        Log.e("Google Play services available", String.valueOf(isGooglePlayServicesAvailable(getApplicationContext())));
+        //getErrorDialog(isGooglePlayServicesAvailable(getApplicationContext()), this, GOOGLE_PLAY_SERVICES_VERSION_CODE).show();
 
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
@@ -195,6 +201,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        Log.e("current user", currentUser.toString());
         addUser(currentUser);
 
         mStatus.setText(getResources().getString(R.string.signed_in) + " " + currentUser.getDisplayName());
@@ -384,6 +391,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
         requestParams.put("name", user.getDisplayName());
         requestParams.put("profilePicture", user.getImage().getUrl());
         requestParams.put("googleId", user.getId());
-        ClientServerInterface.post("add_user.php", requestParams, null);
+        Log.e("request params", requestParams.toString());
+        ClientServerInterface.post("add_user.php", requestParams, new JsonHttpResponseHandler());
     }
 }

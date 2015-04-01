@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -111,8 +112,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
             }
         });
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         activityTitle = getTitle().toString();
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
@@ -466,9 +470,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         ClientServerInterface.post("add_attendance.php", requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                cancelButton.setEnabled(true);
-                attendButton.setEnabled(false);
-                restartActivity();
+                getAttendance();
                 Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
             }
         });
@@ -495,11 +497,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         requestParams.put("eventId", id);
         requestParams.put("userId", userId);
         requestParams.put("commentBody", commentBody);
-        ClientServerInterface.post("publish_comment.php", requestParams, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                restartActivity();
-            }
-        });
+        Log.e("Request Params", requestParams.toString());
+        ClientServerInterface.post("publish_comment.php", requestParams, new JsonHttpResponseHandler());
     }
 }

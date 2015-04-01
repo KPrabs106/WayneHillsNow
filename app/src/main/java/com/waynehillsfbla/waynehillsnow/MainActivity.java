@@ -70,8 +70,6 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
             }
         });
 
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
         activityTitle = getTitle().toString();
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
@@ -94,6 +92,8 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
 
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), Titles, numTabs);
 
