@@ -91,6 +91,8 @@ public class DetailedEventActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
 
+        getWeather();
+
         drawerList = (ListView) findViewById(R.id.navList);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -499,5 +501,16 @@ public class DetailedEventActivity extends ActionBarActivity implements
         requestParams.put("commentBody", commentBody);
         Log.e("Request Params", requestParams.toString());
         ClientServerInterface.post("publish_comment.php", requestParams, new JsonHttpResponseHandler());
+    }
+
+    private void getWeather() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("eventId", id);
+        ClientServerInterface.post("get_weather.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.e("response", response.toString());
+            }
+        });
     }
 }
