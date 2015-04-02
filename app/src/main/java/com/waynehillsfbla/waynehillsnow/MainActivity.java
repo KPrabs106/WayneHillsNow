@@ -43,6 +43,7 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
     SlidingTabLayout slidingTabLayout;
     CharSequence Titles[] = {"Events List", "Calendar"};
     int numTabs = 2;
+    Intent intent;
 
     JSONArray jarr;
     ClientServerInterface clientServerInterface = new ClientServerInterface();
@@ -55,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         drawerList = (ListView) findViewById(R.id.navList);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        String[] drawerItems = {"Sign In", "Settings", "My Events"};
+        String[] drawerItems = {"Sign In", "My Events", "Settings"};
 
         arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
         drawerList.setAdapter(arrayAdapter);
@@ -64,7 +65,10 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        Intent intent = new Intent(view.getContext(), GooglePlusSignIn.class);
+                        intent = new Intent(view.getContext(), GooglePlusSignIn.class);
+                        startActivity(intent);break;
+                    case 1:
+                        intent = new Intent(view.getContext(), MyEvents.class);
                         startActivity(intent);
                 }
             }
