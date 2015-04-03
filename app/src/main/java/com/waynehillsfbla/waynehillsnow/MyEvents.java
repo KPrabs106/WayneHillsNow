@@ -1,24 +1,13 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.plus.model.people.Person;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -74,6 +63,7 @@ public class MyEvents extends ActionBarActivity {
             EventInfo ei = new EventInfo();
             try {
                 jsonObject = eventDetails.getJSONObject(i);
+                /*
                 if(isAttending(userId, ei.id)) {
                     ei.id = Integer.parseInt(jsonObject.getString("id"));
                     ei.title = jsonObject.getString("title");
@@ -85,6 +75,7 @@ public class MyEvents extends ActionBarActivity {
                     ei.location = jsonObject.getString("location");
                     ei.description = jsonObject.getString("description");
                 }
+                */
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -92,27 +83,6 @@ public class MyEvents extends ActionBarActivity {
             result.add(ei);
         }
         return result;
-    }
-
-    private boolean isAttending(String user, int event) {
-        RequestParams requestParams = new RequestParams();
-        requestParams.put("eventId", eventId);
-        requestParams.put("userId", userId);
-        boolean b = false;
-
-        ClientServerInterface.get("event_users.php", requestParams, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                try {
-                    if(response.getJSONObject(1) == eventId)
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-
-
     }
 
     private void getEvents() {

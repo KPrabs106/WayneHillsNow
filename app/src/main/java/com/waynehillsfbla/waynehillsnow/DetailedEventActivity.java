@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,6 +37,7 @@ import com.software.shell.fab.ActionButton;
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.lucasr.twowayview.TwoWayView;
 
 import java.text.ParseException;
@@ -91,28 +91,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
 
-        getWeather();
-
-        drawerList = (ListView) findViewById(R.id.navList);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        String[] drawerItems = {"Sign In", "Settings", "My Events"};
-
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
-        Log.d(getPackageName(), drawerList != null ? "lvCountries is not null!" : "lvCountries is null!");
-
-        drawerList.setAdapter(arrayAdapter);
-
-
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        Intent intent = new Intent(view.getContext(), GooglePlusSignIn.class);
-                        startActivity(intent);
-                }
-            }
-        });
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -157,6 +136,7 @@ public class DetailedEventActivity extends ActionBarActivity implements
 
         getComments();
         getAttendance();
+        getWeather();
 
         TextView txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
@@ -506,11 +486,35 @@ public class DetailedEventActivity extends ActionBarActivity implements
     private void getWeather() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
+        Log.e("getting", "weather");
+        Log.e("request params", requestParams.toString());
         ClientServerInterface.post("get_weather.php", requestParams, new JsonHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                Log.e("response", response.toString());
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                initWeather(response);
             }
         });
+    }
+
+    private void initWeather(JSONObject weatherDetails) {
+        try {
+            String summary = weatherDetails.getString("summary");
+            int highTemperature = weatherDetails.getInt("temperatureMax");
+            int lowTemperature = weatherDetails.getInt("temperatureMin");
+
+
+            TextView description = (TextView) findViewById(R.id.descriptionWeather);
+            description.setText(summary);
+
+            TextView low = (TextView) findViewById(R.id.lowTemperature);
+            low.setText("" + lowTemperature);
+
+            TextView high = (TextView) findViewById(R.id.highTemperature);
+            high.setText("" + highTemperature);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        
+
     }
 }
