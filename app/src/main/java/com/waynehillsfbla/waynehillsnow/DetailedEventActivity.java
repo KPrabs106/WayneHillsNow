@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -502,7 +503,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
             int highTemperature = weatherDetails.getInt("temperatureMax");
             int lowTemperature = weatherDetails.getInt("temperatureMin");
 
-
             TextView description = (TextView) findViewById(R.id.descriptionWeather);
             description.setText(summary);
 
@@ -511,6 +511,12 @@ public class DetailedEventActivity extends ActionBarActivity implements
 
             TextView high = (TextView) findViewById(R.id.highTemperature);
             high.setText("" + highTemperature);
+
+            ImageView weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
+            String icon = weatherDetails.getString("icon");
+            icon = icon.replace('-', '_');
+            int id = getResources().getIdentifier(icon, "drawable", getPackageName());
+            weatherIcon.setImageDrawable(getResources().getDrawable(id));
         } catch (JSONException e) {
             e.printStackTrace();
         }
