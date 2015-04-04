@@ -12,7 +12,6 @@ import com.loopj.android.http.RequestParams;
  * *************************************************
  */
 
-//TODO stop using this and use Async HTTP Client Library instead
 public class ClientServerInterface {
     private static final String BASE_URL = "http://52.4.177.235/";
     private static AsyncHttpClient asyncHttpClient = new AsyncHttpClient();

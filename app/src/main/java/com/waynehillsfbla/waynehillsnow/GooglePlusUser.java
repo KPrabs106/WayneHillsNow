@@ -1,21 +1,34 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.view.View;
-
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.plus.People;
-
 /**
  * Created by Entity on 4/1/2015.
  */
-public abstract class GooglePlusUser implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
+public class GooglePlusUser {
+    private static String name;
+    private static int googleId;
+    private static String profilePictureURL;
 
+    public static String getName() {
+        return name;
+    }
 
-    private GoogleApiClient mGoogleApiClient;
+    public static void setName(String name) {
+        GooglePlusUser.name = name;
+    }
 
+    public static int getGoogleId() {
+        return googleId;
+    }
 
+    public static void setGoogleId(String googleId) {
+        GooglePlusUser.googleId = googleId;
+    }
 
+    public static String getProfilePictureURL() {
+        return profilePictureURL;
+    }
+
+    public static void setProfilePictureURL(String profilePictureURL) {
+        GooglePlusUser.profilePictureURL = profilePictureURL;
+    }
 }

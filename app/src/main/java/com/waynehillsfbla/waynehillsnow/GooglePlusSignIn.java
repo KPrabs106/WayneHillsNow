@@ -201,6 +201,9 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+        GooglePlusUser.setName(currentUser.getDisplayName());
+        GooglePlusUser.setGoogleId(currentUser.getId());
+        GooglePlusUser.setProfilePictureURL(currentUser.getImage().getUrl());
         Log.e("current user", currentUser.toString());
         addUser(currentUser);
 
