@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,14 +22,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.CommonStatusCodes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.plus.People;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
-import com.google.android.gms.plus.model.people.PersonBuffer;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.software.shell.fab.ActionButton;
@@ -53,9 +44,7 @@ import java.util.Calendar;
  * and allows users to see who all are attending events and.
  * *************************************************************
  */
-public class DetailedEventActivity extends ActionBarActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
+public class DetailedEventActivity extends ActionBarActivity {
     String userId;
 
     String[] nameAttendees;
@@ -78,13 +67,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
     String contact;
     String startDate;
     String endDate;
+
     String commentBody;
-    ListView drawerList;
-    ArrayAdapter<String> arrayAdapter;
+
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
-    String activityTitle;
-    private GoogleApiClient mGoogleApiClient;
 
     //TODO Add notifications for upcoming events
     @Override
@@ -99,7 +86,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        activityTitle = getTitle().toString();
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerOpened(View drawerView) {
@@ -111,7 +97,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 super.onDrawerClosed(view);
                 invalidateOptionsMenu();
             }
-
         };
 
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -128,12 +113,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
         contact = extras.getString("Contact");
         startDate = extras.getString("StartDate");
         endDate = extras.getString("EndDate");
-
-        mGoogleApiClient = buildGoogleApiClient();
-        mGoogleApiClient.connect();
-
-        Plus.PeopleApi.loadVisible(mGoogleApiClient, null)
-                .setResultCallback(this);
 
         getComments();
         getAttendance();
@@ -214,18 +193,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
 
         ActionButton actionButton = (ActionButton) findViewById(R.id.action_button);
 
-        /*actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle userEventDetails = new Bundle();
-                userEventDetails.putString("eventId", String.valueOf(id));
-                userEventDetails.putString("userId", userId);
-                Intent writeComment = new Intent(getApplicationContext(), WriteCommentActivity.class);
-                writeComment.putExtras(userEventDetails);
-                startActivity(writeComment);
-            }
-        });*/
-
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Enter comment");
 
@@ -258,10 +225,11 @@ public class DetailedEventActivity extends ActionBarActivity implements
                 userEventDetails.putString("userId", userId);
 
                 builder.show();
-
             }
         });
 
+        if (GooglePlusUser.isSet())
+            initGooglePlus();
     }
 
     @Override
@@ -315,33 +283,13 @@ public class DetailedEventActivity extends ActionBarActivity implements
         return dispForm.format(origForm.parse(result));
     }
 
-    @Override
-    public void onResult(People.LoadPeopleResult peopleData) {
-
-        if (peopleData.getStatus().getStatusCode() == CommonStatusCodes.SUCCESS) {
-            PersonBuffer personBuffer = peopleData.getPersonBuffer();
-            try {
-                int count = personBuffer.getCount();
-                for (int i = 0; i < count; i++) {
-                    Log.d("Display name: ", personBuffer.get(i).getDisplayName());
-                }
-            } finally {
-                personBuffer.close();
-            }
-        } else {
-            Log.e("Error requesting visible circles: ", peopleData.getStatus().toString());
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
+    private void initGooglePlus() {
         //The user is connected to Google+, which means they can now attend events
         attendButton.setVisibility(View.VISIBLE);
         cancelButton.setVisibility(View.VISIBLE);
 
-        Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-        nameCurrentUser = currentUser.getDisplayName();
-        userId = currentUser.getId();
+        nameCurrentUser = GooglePlusUser.getName();
+        userId = GooglePlusUser.getGoogleId();
 
         final Button attendButton = (Button) findViewById(R.id.attend_button);
         final Button cancelButton = (Button) findViewById(R.id.cancel_button);
@@ -354,33 +302,6 @@ public class DetailedEventActivity extends ActionBarActivity implements
             attendButton.setEnabled(true);
             cancelButton.setEnabled(false);
         }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    private GoogleApiClient buildGoogleApiClient() {
-        // When we build the GoogleApiClient we specify where connected and
-        // connection failed callbacks should be returned, which Google APIs our
-        // app uses and which OAuth 2.0 scopes our app requests.
-        return new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API, Plus.PlusOptions.builder().build())
-                .addScope(Plus.SCOPE_PLUS_LOGIN)
-                .build();
-    }
-
-    @Override
-    public void onClick(View v) {
-
     }
 
     private void getComments() {
@@ -507,10 +428,10 @@ public class DetailedEventActivity extends ActionBarActivity implements
             description.setText(summary);
 
             TextView low = (TextView) findViewById(R.id.lowTemperature);
-            low.setText("" + lowTemperature);
+            low.setText(lowTemperature + "\u00B0" + "F");
 
             TextView high = (TextView) findViewById(R.id.highTemperature);
-            high.setText("" + highTemperature);
+            high.setText(highTemperature + "\u00B0" + "F");
 
             ImageView weatherIcon = (ImageView) findViewById(R.id.weatherIcon);
             String icon = weatherDetails.getString("icon");
@@ -520,7 +441,5 @@ public class DetailedEventActivity extends ActionBarActivity implements
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        
-
     }
 }

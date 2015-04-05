@@ -93,7 +93,7 @@ public class GooglePlusSignIn extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_plus_sign_in);
 
-        Log.e("Google Play services available", String.valueOf(isGooglePlayServicesAvailable(getApplicationContext())));
+        Log.e("Play services", String.valueOf(isGooglePlayServicesAvailable(getApplicationContext())));
         //getErrorDialog(isGooglePlayServicesAvailable(getApplicationContext()), this, GOOGLE_PLAY_SERVICES_VERSION_CODE).show();
 
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
@@ -214,10 +214,6 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         // Indicate that the sign in process is complete.
         mSignInProgress = STATE_DEFAULT;
-    }
-
-    private String formatURLid(String url) {
-        return url.substring(28, 50);
     }
 
     /* onConnectionFailed is called when our Activity could not connect to Google

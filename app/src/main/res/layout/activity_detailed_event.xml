@@ -284,17 +284,20 @@
             <TextView
                 android:id="@+id/descriptionWeather"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lowTemperature" />
 
             <TextView
                 android:id="@+id/highTemperature"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/weatherIcon" />
 
             <TextView
                 android:id="@+id/lowTemperature"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/highTemperature" />
         </RelativeLayout>
     </ScrollView>
 

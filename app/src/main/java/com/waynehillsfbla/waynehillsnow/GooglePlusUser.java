@@ -5,7 +5,7 @@ package com.waynehillsfbla.waynehillsnow;
  */
 public class GooglePlusUser {
     private static String name;
-    private static int googleId;
+    private static String googleId;
     private static String profilePictureURL;
 
     public static String getName() {
@@ -16,7 +16,7 @@ public class GooglePlusUser {
         GooglePlusUser.name = name;
     }
 
-    public static int getGoogleId() {
+    public static String getGoogleId() {
         return googleId;
     }
 
@@ -30,5 +30,9 @@ public class GooglePlusUser {
 
     public static void setProfilePictureURL(String profilePictureURL) {
         GooglePlusUser.profilePictureURL = profilePictureURL;
+    }
+
+    public static boolean isSet() {
+        return name == null && googleId == null && profilePictureURL == null;
     }
 }

@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -25,10 +26,6 @@ public class MyEvents extends ActionBarActivity {
     TextView typeTextView;
     RecyclerView recList;
 
-    String userId;
-    int eventId;
-
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_events);
@@ -44,8 +41,7 @@ public class MyEvents extends ActionBarActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        getEvents();
-
+        getMyEvents();
     }
 
     //Set up the cards
@@ -63,30 +59,28 @@ public class MyEvents extends ActionBarActivity {
             EventInfo ei = new EventInfo();
             try {
                 jsonObject = eventDetails.getJSONObject(i);
-                /*
-                if(isAttending(userId, ei.id)) {
-                    ei.id = Integer.parseInt(jsonObject.getString("id"));
-                    ei.title = jsonObject.getString("title");
-                    ei.startDatetime = jsonObject.getString("startDate");
-                    ei.pictureURL = jsonObject.getString("pictureURL");
-                    ei.type = jsonObject.getString("type");
-                    ei.contact = jsonObject.getString("contact");
-                    ei.endDatetime = jsonObject.getString("endDate");
-                    ei.location = jsonObject.getString("location");
-                    ei.description = jsonObject.getString("description");
-                }
-                */
+
+                ei.id = Integer.parseInt(jsonObject.getString("id"));
+                ei.title = jsonObject.getString("title");
+                ei.startDatetime = jsonObject.getString("startDate");
+                ei.pictureURL = jsonObject.getString("pictureURL");
+                ei.type = jsonObject.getString("type");
+                ei.contact = jsonObject.getString("contact");
+                ei.endDatetime = jsonObject.getString("endDate");
+                ei.location = jsonObject.getString("location");
+                ei.description = jsonObject.getString("description");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
             result.add(ei);
         }
         return result;
     }
 
-    private void getEvents() {
-        ClientServerInterface.get("get_events.php", null, new JsonHttpResponseHandler() {
+    private void getMyEvents() {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("googleId", GooglePlusUser.getGoogleId());
+        ClientServerInterface.get("get_my_events.php", requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 initCards(response);
