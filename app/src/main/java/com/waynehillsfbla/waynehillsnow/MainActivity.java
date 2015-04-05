@@ -7,16 +7,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.daimajia.slider.library.SliderTypes.BaseSliderView;
-
-import org.json.JSONArray;
 
 import java.util.HashMap;
 
@@ -31,11 +28,8 @@ import java.util.HashMap;
  */
 public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
 
-    ListView drawerList;
-    ArrayAdapter<String> arrayAdapter;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
-    String activityTitle;
 
     Toolbar toolbar;
     ViewPager viewPager;
@@ -45,47 +39,40 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
     int numTabs = 2;
     Intent intent;
 
-    JSONArray jarr;
-    ClientServerInterface clientServerInterface = new ClientServerInterface();
+    String[] drawerItems = {"Sign In", "My Events", "Settings"};
+    int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_settings};
+
     HashMap<String, String> pictureData = new HashMap<String, String>();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        drawerList = (ListView) findViewById(R.id.navList);
+        RecyclerView drawerRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        drawerRecyclerView.setHasFixedSize(true);
+
+        RecyclerView.Adapter drawerListAdapter;
+        if (GooglePlusUser.isSet()) {
+            drawerListAdapter = new DrawerListAdapter(drawerItems, icons, GooglePlusUser.getName(), GooglePlusUser.getProfilePictureURL());
+        } else {
+            drawerListAdapter = new DrawerListAdapter(drawerItems, icons);
+        }
+
+        drawerRecyclerView.setAdapter(drawerListAdapter);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+
+        drawerRecyclerView.setLayoutManager(layoutManager);
+
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        String[] drawerItems = {"Sign In", "My Events", "Settings"};
-
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, drawerItems);
-        drawerList.setAdapter(arrayAdapter);
-
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        intent = new Intent(view.getContext(), GooglePlusSignIn.class);
-                        startActivity(intent);break;
-                    case 1:
-                        intent = new Intent(view.getContext(), MyEvents.class);
-                        startActivity(intent);
-                }
-            }
-        });
-
-        activityTitle = getTitle().toString();
 
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation");
                 invalidateOptionsMenu();
             }
 
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(activityTitle);
                 invalidateOptionsMenu();
             }
 
