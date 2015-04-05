@@ -80,7 +80,7 @@ public class MyEvents extends ActionBarActivity {
     private void getMyEvents() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("googleId", GooglePlusUser.getGoogleId());
-        ClientServerInterface.get("get_my_events.php", requestParams, new JsonHttpResponseHandler() {
+        ClientServerInterface.post("get_my_events.php", requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 initCards(response);

@@ -46,6 +46,7 @@
                 android:value="com.waynehillsfbla.waynehillsnow.DetailedEventActivity" />
         </activity>
 
+
         <service
             android:name=".NotificationService"
             android:enabled="true" />

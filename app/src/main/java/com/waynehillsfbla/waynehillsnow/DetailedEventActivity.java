@@ -2,6 +2,7 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +60,7 @@ public class DetailedEventActivity extends ActionBarActivity {
     String nameCurrentUser;
     Button attendButton;
     Button cancelButton;
+    AlertDialog.Builder commentDialog;
 
     int id;
     String title;
@@ -74,6 +77,8 @@ public class DetailedEventActivity extends ActionBarActivity {
     ActionBarDrawerToggle actionBarDrawerToggle;
 
     //TODO Add notifications for upcoming events
+    //TODO fix crash when not signed in
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,9 +174,9 @@ public class DetailedEventActivity extends ActionBarActivity {
         //The attend and cancel button are invisible by default, and become visible if the user is
         //logged into Google+
         attendButton = (Button) findViewById(R.id.attend_button);
-        attendButton.setVisibility(View.INVISIBLE);
+        //attendButton.setEnabled(false);
         cancelButton = (Button) findViewById(R.id.cancel_button);
-        cancelButton.setVisibility(View.INVISIBLE);
+        //cancelButton.setEnabled(false);
 
         //If the user clicks on the attend button, send a JSON Object of event ID and google ID to
         //the webpage, which will then process it and add the user to the database
@@ -193,27 +198,40 @@ public class DetailedEventActivity extends ActionBarActivity {
 
         ActionButton actionButton = (ActionButton) findViewById(R.id.action_button);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter comment");
+        commentDialog = new AlertDialog.Builder(this);
+        commentDialog.setTitle("Enter comment");
 
         // Set up the input
         final EditText input = new EditText(this);
         // Specify the type of input expected
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        builder.setView(input);
+        commentDialog.setView(input);
 
         // Set up the buttons
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        commentDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 commentBody = input.getText().toString();
                 publishComment();
+                dialog.dismiss();
             }
         });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        commentDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
+            }
+        });
+        commentDialog.setOnKeyListener(new Dialog.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface arg0, int keyCode,
+                                 KeyEvent event) {
+                // TODO Auto-generated method stub
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    finish();
+                    //dialog.dismiss();
+                }
+                return true;
             }
         });
 
@@ -224,11 +242,13 @@ public class DetailedEventActivity extends ActionBarActivity {
                 userEventDetails.putString("eventId", String.valueOf(id));
                 userEventDetails.putString("userId", userId);
 
-                builder.show();
+                commentDialog.show();
+                restartActivity();
             }
         });
 
-        if (GooglePlusUser.isSet())
+
+        if(GooglePlusUser.isSet())
             initGooglePlus();
     }
 
@@ -285,20 +305,20 @@ public class DetailedEventActivity extends ActionBarActivity {
 
     private void initGooglePlus() {
         //The user is connected to Google+, which means they can now attend events
-        attendButton.setVisibility(View.VISIBLE);
-        cancelButton.setVisibility(View.VISIBLE);
 
         nameCurrentUser = GooglePlusUser.getName();
         userId = GooglePlusUser.getGoogleId();
 
-        final Button attendButton = (Button) findViewById(R.id.attend_button);
-        final Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        //attendButton = (Button) findViewById(R.id.attend_button);
+        //cancelButton = (Button) findViewById(R.id.cancel_button);
 
         //If the user is already attending the event, the appropriate buttons are enabled or disabled
         if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
-            attendButton.setEnabled(false);
+            Toast.makeText(getApplicationContext(), "Case 0", Toast.LENGTH_SHORT).show();
             cancelButton.setEnabled(true);
+            attendButton.setEnabled(false);
         } else {
+            Toast.makeText(getApplicationContext(), "Case 1", Toast.LENGTH_SHORT).show();
             attendButton.setEnabled(true);
             cancelButton.setEnabled(false);
         }
@@ -357,6 +377,7 @@ public class DetailedEventActivity extends ActionBarActivity {
                 initAttendance();
             }
         });
+
     }
 
     private void initAttendance() {
@@ -369,7 +390,7 @@ public class DetailedEventActivity extends ActionBarActivity {
     private void addAttendance() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
-        requestParams.put("userId", userId);
+        requestParams.put("userId", GooglePlusUser.getGoogleId());
 
         ClientServerInterface.post("add_attendance.php", requestParams, new JsonHttpResponseHandler() {
             @Override
@@ -378,22 +399,26 @@ public class DetailedEventActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
             }
         });
+
+        Log.e(null,requestParams.toString());
     }
 
     private void removeAttendance() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
-        requestParams.put("userId", userId);
+        requestParams.put("userId", GooglePlusUser.getGoogleId());
 
         ClientServerInterface.post("remove_attendance.php", requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                attendButton.setEnabled(true);
-                cancelButton.setEnabled(false);
+                //attendButton.setEnabled(true);
+                //cancelButton.setEnabled(false);
                 restartActivity();
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
             }
         });
+
+        Log.e(null,requestParams.toString());
     }
 
     private void publishComment() {

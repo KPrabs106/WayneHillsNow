@@ -339,6 +339,10 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         mStatus.setText(R.string.status_signed_out);
 
+        GooglePlusUser.setGoogleId(null);
+        GooglePlusUser.setName(null);
+        GooglePlusUser.setProfilePictureURL(null);
+
     }
 
     @Override
