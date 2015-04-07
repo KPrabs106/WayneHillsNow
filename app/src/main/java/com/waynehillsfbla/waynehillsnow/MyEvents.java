@@ -79,7 +79,7 @@ public class MyEvents extends ActionBarActivity {
 
     private void getMyEvents() {
         RequestParams requestParams = new RequestParams();
-        requestParams.put("googleId", GooglePlusUser.getGoogleId());
+        requestParams.put("googleId", getSharedPreferences("userDetails", MODE_PRIVATE).getString("googleId", null));
         ClientServerInterface.post("get_my_events.php", requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {

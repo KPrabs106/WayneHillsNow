@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -201,10 +202,16 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-        GooglePlusUser.setName(currentUser.getDisplayName());
-        GooglePlusUser.setGoogleId(currentUser.getId());
-        GooglePlusUser.setProfilePictureURL(currentUser.getImage().getUrl());
-        Log.e("current user", currentUser.toString());
+
+        //Store the user's name, profile picture, and google ID
+        SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userDetails.edit();
+        editor.putString("displayName", currentUser.getDisplayName());
+        editor.putString("profilePictureURL", currentUser.getImage().getUrl());
+        editor.putString("googleId", currentUser.getId());
+        editor.apply();
+
+        //Add the user to the database
         addUser(currentUser);
 
         mStatus.setText(getResources().getString(R.string.signed_in) + " " + currentUser.getDisplayName());
@@ -339,10 +346,9 @@ public class GooglePlusSignIn extends FragmentActivity implements
 
         mStatus.setText(R.string.status_signed_out);
 
-        GooglePlusUser.setGoogleId(null);
-        GooglePlusUser.setName(null);
-        GooglePlusUser.setProfilePictureURL(null);
 
+        SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
+        userDetails.edit().clear().apply();
     }
 
     @Override
@@ -389,6 +395,9 @@ public class GooglePlusSignIn extends FragmentActivity implements
         }
     }
 
+    /*
+    Add the user to the database containing information of all the users who have signed in
+     */
     private void addUser(Person user) {
         RequestParams requestParams = new RequestParams();
         requestParams.put("name", user.getDisplayName());

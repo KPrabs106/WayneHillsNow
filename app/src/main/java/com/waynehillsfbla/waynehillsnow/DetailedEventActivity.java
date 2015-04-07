@@ -2,10 +2,10 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -47,6 +47,7 @@ import java.util.Calendar;
  * *************************************************************
  */
 public class DetailedEventActivity extends ActionBarActivity {
+    String nameCurrentUser;
     String userId;
 
     String[] nameAttendees;
@@ -57,7 +58,6 @@ public class DetailedEventActivity extends ActionBarActivity {
     String[] pictureCommenters;
     String[] comments;
 
-    String nameCurrentUser;
     Button attendButton;
     Button cancelButton;
     AlertDialog.Builder commentDialog;
@@ -107,6 +107,13 @@ public class DetailedEventActivity extends ActionBarActivity {
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
+        //The attend and cancel button are invisible by default, and become visible if the user is
+        //logged into Google+
+        attendButton = (Button) findViewById(R.id.attend_button);
+        attendButton.setEnabled(false);
+        cancelButton = (Button) findViewById(R.id.cancel_button);
+        cancelButton.setEnabled(false);
+
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
@@ -118,6 +125,9 @@ public class DetailedEventActivity extends ActionBarActivity {
         contact = extras.getString("Contact");
         startDate = extras.getString("StartDate");
         endDate = extras.getString("EndDate");
+
+        if (isSignedIn())
+            initGooglePlus();
 
         getComments();
         getAttendance();
@@ -157,33 +167,27 @@ public class DetailedEventActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.MONTH, Integer.parseInt(startDate.substring(5,7))-1);
-                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8,10)));
-                calendar.set(Calendar.YEAR, Integer.parseInt(startDate.substring(0,4)));
+                calendar.set(Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
+                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
+                calendar.set(Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
 
-                Intent notification = new Intent(getApplicationContext(), AlarmReceiver.class);
+                Intent notification = new Intent(DetailedEventActivity.this.getApplicationContext(), AlarmReceiver.class);
 
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notification, 0);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(DetailedEventActivity.this.getApplicationContext(), 0, notification, 0);
 
-                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                AlarmManager alarmManager = (AlarmManager) DetailedEventActivity.this.getSystemService(ALARM_SERVICE);
 
                 alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
             }
         });
 
-        //The attend and cancel button are invisible by default, and become visible if the user is
-        //logged into Google+
-        attendButton = (Button) findViewById(R.id.attend_button);
-        //attendButton.setEnabled(false);
-        cancelButton = (Button) findViewById(R.id.cancel_button);
-        //cancelButton.setEnabled(false);
 
         //If the user clicks on the attend button, send a JSON Object of event ID and google ID to
         //the webpage, which will then process it and add the user to the database
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addAttendance();
+                DetailedEventActivity.this.addAttendance();
             }
         });
 
@@ -192,7 +196,7 @@ public class DetailedEventActivity extends ActionBarActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeAttendance();
+                DetailedEventActivity.this.removeAttendance();
             }
         });
 
@@ -212,7 +216,7 @@ public class DetailedEventActivity extends ActionBarActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 commentBody = input.getText().toString();
-                publishComment();
+                DetailedEventActivity.this.publishComment();
                 dialog.dismiss();
             }
         });
@@ -222,13 +226,11 @@ public class DetailedEventActivity extends ActionBarActivity {
                 dialog.cancel();
             }
         });
-        commentDialog.setOnKeyListener(new Dialog.OnKeyListener() {
+        commentDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
             @Override
-            public boolean onKey(DialogInterface arg0, int keyCode,
-                                 KeyEvent event) {
-                // TODO Auto-generated method stub
+            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    finish();
+                    DetailedEventActivity.this.finish();
                     //dialog.dismiss();
                 }
                 return true;
@@ -243,13 +245,15 @@ public class DetailedEventActivity extends ActionBarActivity {
                 userEventDetails.putString("userId", userId);
 
                 commentDialog.show();
-                restartActivity();
+                DetailedEventActivity.this.restartActivity();
             }
         });
 
 
-        if(GooglePlusUser.isSet())
-            initGooglePlus();
+    }
+
+    private boolean isSignedIn() {
+        return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
     }
 
     @Override
@@ -303,14 +307,12 @@ public class DetailedEventActivity extends ActionBarActivity {
         return dispForm.format(origForm.parse(result));
     }
 
+    //The user is connected to Google+, which means they can now attend events
     private void initGooglePlus() {
-        //The user is connected to Google+, which means they can now attend events
 
-        nameCurrentUser = GooglePlusUser.getName();
-        userId = GooglePlusUser.getGoogleId();
-
-        //attendButton = (Button) findViewById(R.id.attend_button);
-        //cancelButton = (Button) findViewById(R.id.cancel_button);
+        SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
+        nameCurrentUser = userDetails.getString("displayName", null);
+        userId = userDetails.getString("googleId", null);
 
         //If the user is already attending the event, the appropriate buttons are enabled or disabled
         if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
@@ -390,7 +392,7 @@ public class DetailedEventActivity extends ActionBarActivity {
     private void addAttendance() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
-        requestParams.put("userId", GooglePlusUser.getGoogleId());
+        requestParams.put("userId", userId);
 
         ClientServerInterface.post("add_attendance.php", requestParams, new JsonHttpResponseHandler() {
             @Override
@@ -406,7 +408,7 @@ public class DetailedEventActivity extends ActionBarActivity {
     private void removeAttendance() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
-        requestParams.put("userId", GooglePlusUser.getGoogleId());
+        requestParams.put("userId", userId);
 
         ClientServerInterface.post("remove_attendance.php", requestParams, new JsonHttpResponseHandler() {
             @Override

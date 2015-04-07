@@ -1,6 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -52,8 +53,11 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         drawerRecyclerView.setHasFixedSize(true);
 
         RecyclerView.Adapter drawerListAdapter;
-        if (GooglePlusUser.isSet()) {
-            drawerListAdapter = new DrawerListAdapter(drawerItems, icons, GooglePlusUser.getName(), GooglePlusUser.getProfilePictureURL());
+        if (isSignedIn()) {
+            SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
+            String name = userDetails.getString("displayName", null);
+            String profilePictureURL = userDetails.getString("profilePictureURL", null);
+            drawerListAdapter = new DrawerListAdapter(drawerItems, icons, name, profilePictureURL);
         } else {
             drawerListAdapter = new DrawerListAdapter(drawerItems, icons);
         }
@@ -97,6 +101,9 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         slidingTabLayout.setViewPager(viewPager);
     }
 
+    private boolean isSignedIn() {
+        return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

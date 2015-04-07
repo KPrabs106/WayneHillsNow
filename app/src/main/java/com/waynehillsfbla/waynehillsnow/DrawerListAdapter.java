@@ -3,6 +3,7 @@ package com.waynehillsfbla.waynehillsnow;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,9 +74,10 @@ public class DrawerListAdapter extends RecyclerView.Adapter<DrawerListAdapter.Dr
                 //TODO create a settings activity
             }
         });
+        Log.e("position", String.valueOf(position));
         if (holder.holderId == 1) {
-            holder.vRowText.setText(drawerListTitles[position - 1]);
-            holder.vRowIcon.setImageResource(drawerListIcons[position - 1]);
+            holder.vRowText.setText(drawerListTitles[position]);
+            holder.vRowIcon.setImageResource(drawerListIcons[position]);
         } else {
             holder.vDisplayName.setText(displayName);
             Picasso.with(holder.vContext).load(profilePicture).into(holder.vProfilePicture);

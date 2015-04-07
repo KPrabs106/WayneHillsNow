@@ -37,14 +37,6 @@
         <activity
             android:name=".GooglePlusSignIn"
             android:label="@string/title_activity_google_plus_sign_in" />
-        <activity
-            android:name=".WriteCommentActivity"
-            android:label="@string/title_activity_write_comment"
-            android:parentActivityName=".DetailedEventActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.waynehillsfbla.waynehillsnow.DetailedEventActivity" />
-        </activity>
 
 
         <service
