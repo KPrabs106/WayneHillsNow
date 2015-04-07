@@ -76,8 +76,13 @@ public class DrawerListAdapter extends RecyclerView.Adapter<DrawerListAdapter.Dr
         });
         Log.e("position", String.valueOf(position));
         if (holder.holderId == 1) {
-            holder.vRowText.setText(drawerListTitles[position]);
-            holder.vRowIcon.setImageResource(drawerListIcons[position]);
+            if (!hasHeader) {
+                holder.vRowText.setText(drawerListTitles[position]);
+                holder.vRowIcon.setImageResource(drawerListIcons[position]);
+            } else {
+                holder.vRowText.setText(drawerListTitles[position - 1]);
+                holder.vRowIcon.setImageResource(drawerListIcons[position - 1]);
+            }
         } else {
             holder.vDisplayName.setText(displayName);
             Picasso.with(holder.vContext).load(profilePicture).into(holder.vProfilePicture);

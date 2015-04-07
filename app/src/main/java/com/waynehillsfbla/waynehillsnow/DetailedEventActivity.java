@@ -309,21 +309,9 @@ public class DetailedEventActivity extends ActionBarActivity {
 
     //The user is connected to Google+, which means they can now attend events
     private void initGooglePlus() {
-
         SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
         nameCurrentUser = userDetails.getString("displayName", null);
         userId = userDetails.getString("googleId", null);
-
-        //If the user is already attending the event, the appropriate buttons are enabled or disabled
-        if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
-            Toast.makeText(getApplicationContext(), "Case 0", Toast.LENGTH_SHORT).show();
-            cancelButton.setEnabled(true);
-            attendButton.setEnabled(false);
-        } else {
-            Toast.makeText(getApplicationContext(), "Case 1", Toast.LENGTH_SHORT).show();
-            attendButton.setEnabled(true);
-            cancelButton.setEnabled(false);
-        }
     }
 
     private void getComments() {
@@ -387,6 +375,17 @@ public class DetailedEventActivity extends ActionBarActivity {
         AttendeeListAdapter adapter = new AttendeeListAdapter(this, pictureAttendees);
         TwoWayView attendeeList = (TwoWayView) findViewById(R.id.lvItems);
         attendeeList.setAdapter(adapter);
+
+        //If the user is already attending the event, the appropriate buttons are enabled or disabled
+        if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
+            Toast.makeText(getApplicationContext(), "Case 0", Toast.LENGTH_SHORT).show();
+            cancelButton.setEnabled(true);
+            attendButton.setEnabled(false);
+        } else {
+            Toast.makeText(getApplicationContext(), "Case 1", Toast.LENGTH_SHORT).show();
+            attendButton.setEnabled(true);
+            cancelButton.setEnabled(false);
+        }
     }
 
     private void addAttendance() {
