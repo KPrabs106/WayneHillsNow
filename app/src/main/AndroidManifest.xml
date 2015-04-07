@@ -38,7 +38,6 @@
             android:name=".GooglePlusSignIn"
             android:label="@string/title_activity_google_plus_sign_in" />
 
-
         <service
             android:name=".NotificationService"
             android:enabled="true" />

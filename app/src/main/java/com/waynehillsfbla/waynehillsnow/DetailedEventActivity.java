@@ -110,9 +110,9 @@ public class DetailedEventActivity extends ActionBarActivity {
         //The attend and cancel button are invisible by default, and become visible if the user is
         //logged into Google+
         attendButton = (Button) findViewById(R.id.attend_button);
-        attendButton.setEnabled(false);
+        attendButton.setEnabled(true);
         cancelButton = (Button) findViewById(R.id.cancel_button);
-        cancelButton.setEnabled(false);
+        cancelButton.setEnabled(true);
 
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -218,6 +218,7 @@ public class DetailedEventActivity extends ActionBarActivity {
                 commentBody = input.getText().toString();
                 DetailedEventActivity.this.publishComment();
                 dialog.dismiss();
+                DetailedEventActivity.this.restartActivity();
             }
         });
         commentDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -245,7 +246,7 @@ public class DetailedEventActivity extends ActionBarActivity {
                 userEventDetails.putString("userId", userId);
 
                 commentDialog.show();
-                DetailedEventActivity.this.restartActivity();
+                //DetailedEventActivity.this.restartActivity();
             }
         });
 
@@ -377,15 +378,13 @@ public class DetailedEventActivity extends ActionBarActivity {
         attendeeList.setAdapter(adapter);
 
         //If the user is already attending the event, the appropriate buttons are enabled or disabled
-        if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
-            Toast.makeText(getApplicationContext(), "Case 0", Toast.LENGTH_SHORT).show();
+        /*if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
             cancelButton.setEnabled(true);
             attendButton.setEnabled(false);
         } else {
-            Toast.makeText(getApplicationContext(), "Case 1", Toast.LENGTH_SHORT).show();
             attendButton.setEnabled(true);
             cancelButton.setEnabled(false);
-        }
+        }*/
     }
 
     private void addAttendance() {
