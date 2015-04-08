@@ -3,6 +3,7 @@ package com.waynehillsfbla.waynehillsnow;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,15 +22,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EventListTab extends Fragment {
+public class EventListTab extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     TextView titleTextView;
     ImageView pictureImageView;
     TextView dateTextView;
     TextView typeTextView;
     View v;
     RecyclerView recList;
+    SwipeRefreshLayout swipeRefreshLayout;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_card_list, container, false);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         titleTextView = (TextView) v.findViewById(R.id.txtTitle);
         pictureImageView = (ImageView) v.findViewById(R.id.picture);
@@ -46,10 +51,16 @@ public class EventListTab extends Fragment {
         return v;
     }
 
+    @Override
+    public void onRefresh() {
+        getEvents();
+    }
+
     //Set up the cards
     private void initCards(JSONArray jsonArray) {
         EventAdapter ea = new EventAdapter(createList(jsonArray.length(), jsonArray));
         recList.setAdapter(ea);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     //Give the adapter all the information about each event

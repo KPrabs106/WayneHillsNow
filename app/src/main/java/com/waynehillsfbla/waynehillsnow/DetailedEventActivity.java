@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +47,7 @@ import java.util.Calendar;
  * and allows users to see who all are attending events and.
  * *************************************************************
  */
-public class DetailedEventActivity extends ActionBarActivity {
+public class DetailedEventActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
     String nameCurrentUser;
     String userId;
 
@@ -76,6 +77,8 @@ public class DetailedEventActivity extends ActionBarActivity {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     //TODO Add notifications for upcoming events
     //TODO fix crash when not signed in
 
@@ -83,6 +86,9 @@ public class DetailedEventActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -110,9 +116,9 @@ public class DetailedEventActivity extends ActionBarActivity {
         //The attend and cancel button are invisible by default, and become visible if the user is
         //logged into Google+
         attendButton = (Button) findViewById(R.id.attend_button);
-        attendButton.setEnabled(true);
+        attendButton.setEnabled(false);
         cancelButton = (Button) findViewById(R.id.cancel_button);
-        cancelButton.setEnabled(true);
+        cancelButton.setEnabled(false);
 
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -246,7 +252,7 @@ public class DetailedEventActivity extends ActionBarActivity {
                 userEventDetails.putString("userId", userId);
 
                 commentDialog.show();
-                //DetailedEventActivity.this.restartActivity();
+                DetailedEventActivity.this.restartActivity();
             }
         });
 
@@ -378,13 +384,13 @@ public class DetailedEventActivity extends ActionBarActivity {
         attendeeList.setAdapter(adapter);
 
         //If the user is already attending the event, the appropriate buttons are enabled or disabled
-        /*if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
+        if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
             cancelButton.setEnabled(true);
             attendButton.setEnabled(false);
         } else {
             attendButton.setEnabled(true);
             cancelButton.setEnabled(false);
-        }*/
+        }
     }
 
     private void addAttendance() {
@@ -463,8 +469,17 @@ public class DetailedEventActivity extends ActionBarActivity {
             icon = icon.replace('-', '_');
             int id = getResources().getIdentifier(icon, "drawable", getPackageName());
             weatherIcon.setImageDrawable(getResources().getDrawable(id));
+
+            swipeRefreshLayout.setRefreshing(false);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onRefresh() {
+        getComments();
+        getAttendance();
+        getWeather();
     }
 }
