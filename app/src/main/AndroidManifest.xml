@@ -38,6 +38,16 @@
             android:name=".GooglePlusSignIn"
             android:label="@string/title_activity_google_plus_sign_in" />
 
+        <receiver android:name=".StackWidgetProvider">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info" />
+        </receiver>
+
         <service
             android:name=".NotificationService"
             android:enabled="true" />
@@ -48,6 +58,11 @@
             android:name=".MyEvents"
             android:label="@string/title_activity_my_events" >
         </activity>
+
+        <service
+            android:name=".StackWidgetService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>
