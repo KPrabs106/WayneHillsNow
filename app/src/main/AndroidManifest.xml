@@ -38,6 +38,12 @@
             android:name=".GooglePlusSignIn"
             android:label="@string/title_activity_google_plus_sign_in" />
 
+        <service
+            android:name=".StackWidgetService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
         <receiver android:name=".StackWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -58,11 +64,6 @@
             android:name=".MyEvents"
             android:label="@string/title_activity_my_events" >
         </activity>
-
-        <service
-            android:name=".StackWidgetService"
-            android:enabled="true"
-            android:exported="false"></service>
     </application>
 
 </manifest>

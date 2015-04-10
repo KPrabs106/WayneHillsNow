@@ -3,10 +3,21 @@ package com.waynehillsfbla.waynehillsnow;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.SyncHttpClient;
+import com.squareup.picasso.Picasso;
+
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +28,7 @@ public class StackWidgetService extends RemoteViewsService {
     }
 
     class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
-        private static final int mCount = 10;
+        private static final int mCount = 5;
         private List<WidgetItem> mWidgetItems = new ArrayList<WidgetItem>();
         private Context mContext;
         private int mAppWidgetId;
@@ -29,14 +40,24 @@ public class StackWidgetService extends RemoteViewsService {
 
         @Override
         public void onCreate() {
-            for (int i = 0; i < mCount; i++) {
-                mWidgetItems.add(new WidgetItem(i + "!"));
-            }
         }
 
         @Override
         public void onDataSetChanged() {
-
+            SyncHttpClient syncHttpClient = new SyncHttpClient();
+            syncHttpClient.get(mContext, "http://52.4.177.235/get_events.php", null, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                    Log.e("json response", response.toString());
+                    for (int i = 0; i < response.length() || i < 5; i++) {
+                        try {
+                            mWidgetItems.add(new WidgetItem((response.getJSONObject(i)).getString("title"), response.getJSONObject(i).getString("pictureURL")));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
         }
 
         @Override
@@ -52,13 +73,19 @@ public class StackWidgetService extends RemoteViewsService {
         @Override
         public RemoteViews getViewAt(int position) {
             RemoteViews rv = new RemoteViews(mContext.getPackageName(), R.layout.widget_item);
-            rv.setTextViewText(R.id.widget_item, mWidgetItems.get(position).text);
+            rv.setTextViewText(R.id.eventName, mWidgetItems.get(position).text);
+            try {
+                Bitmap b = Picasso.with(mContext).load(mWidgetItems.get(position).imageURL).get();
+                rv.setImageViewBitmap(R.id.eventPicture, b);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             Bundle extras = new Bundle();
             extras.putInt(StackWidgetProvider.EXTRA_ITEM, position);
             Intent fillInIntent = new Intent();
             fillInIntent.putExtras(extras);
-            rv.setOnClickFillInIntent(R.id.widget_item, fillInIntent);
+            rv.setOnClickFillInIntent(R.id.stackWidgetItem, fillInIntent);
 
             return rv;
         }

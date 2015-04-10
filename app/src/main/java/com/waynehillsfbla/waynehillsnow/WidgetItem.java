@@ -5,8 +5,10 @@ package com.waynehillsfbla.waynehillsnow;
  */
 public class WidgetItem {
     public String text;
+    public String imageURL;
 
-    public WidgetItem(String text) {
+    public WidgetItem(String text, String imageURL) {
         this.text = text;
+        this.imageURL = imageURL;
     }
 }

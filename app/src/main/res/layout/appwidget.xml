@@ -3,11 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <StackView
+    <StackView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/stack_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center" />
+        android:gravity="center"
+        android:loopViews="true" />
 
     <TextView
         android:id="@+id/empty_view"
