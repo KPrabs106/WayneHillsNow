@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:icon="@drawable/icon"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon,android:theme" >
+        tools:replace="android:icon" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

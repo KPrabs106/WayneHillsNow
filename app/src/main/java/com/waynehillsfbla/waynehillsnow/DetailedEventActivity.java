@@ -193,7 +193,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         attendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DetailedEventActivity.this.addAttendance();
+                addAttendance();
             }
         });
 
@@ -202,7 +202,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DetailedEventActivity.this.removeAttendance();
+                removeAttendance();
             }
         });
 
@@ -224,7 +224,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
                 commentBody = input.getText().toString();
                 DetailedEventActivity.this.publishComment();
                 dialog.dismiss();
-                DetailedEventActivity.this.restartActivity();
+                onRefresh();
             }
         });
         commentDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -252,7 +252,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
                 userEventDetails.putString("userId", userId);
 
                 commentDialog.show();
-                DetailedEventActivity.this.restartActivity();
             }
         });
 
@@ -266,11 +265,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     @Override
     protected void onRestart() {
         super.onRestart();
-        finish();
-        startActivity(getIntent());
-    }
-
-    private void restartActivity() {
         finish();
         startActivity(getIntent());
     }
@@ -384,12 +378,14 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         attendeeList.setAdapter(adapter);
 
         //If the user is already attending the event, the appropriate buttons are enabled or disabled
-        if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
-            cancelButton.setEnabled(true);
-            attendButton.setEnabled(false);
-        } else {
-            attendButton.setEnabled(true);
-            cancelButton.setEnabled(false);
+        if(isSignedIn()) {
+            if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
+                cancelButton.setEnabled(true);
+                attendButton.setEnabled(false);
+            } else {
+                attendButton.setEnabled(true);
+                cancelButton.setEnabled(false);
+            }
         }
     }
 
@@ -417,9 +413,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         ClientServerInterface.post("remove_attendance.php", requestParams, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                //attendButton.setEnabled(true);
-                //cancelButton.setEnabled(false);
-                restartActivity();
+                getAttendance();
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
             }
         });
