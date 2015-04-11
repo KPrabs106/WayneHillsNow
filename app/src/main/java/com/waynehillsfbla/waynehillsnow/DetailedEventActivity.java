@@ -3,6 +3,7 @@ package com.waynehillsfbla.waynehillsnow;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,7 +23,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -62,6 +65,10 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     Button attendButton;
     Button cancelButton;
     AlertDialog.Builder commentDialog;
+
+    int timeBefore;
+    AlertDialog.Builder timePick;
+    NumberPicker numPick;
 
     int id;
     String title;
@@ -168,11 +175,16 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             e.printStackTrace();
         }
 
+        timePick = new AlertDialog.Builder(this);
+        timePick.setTitle("How long before to notify?");
+        numPick = new NumberPicker(this);
+        timePick.setView(numPick);
+
         Button notificationButton = (Button) findViewById(R.id.notificationButton);
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
+                /*Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
                 calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
                 calendar.set(Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
@@ -183,7 +195,9 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
                 AlarmManager alarmManager = (AlarmManager) DetailedEventActivity.this.getSystemService(ALARM_SERVICE);
 
-                alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+                alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis()-timeBefore, pendingIntent);*/
+
+                timePick.show();
             }
         });
 
