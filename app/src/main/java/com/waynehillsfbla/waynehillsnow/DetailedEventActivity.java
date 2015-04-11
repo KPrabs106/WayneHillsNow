@@ -1,9 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.app.TimePickerDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,13 +17,14 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -41,7 +40,6 @@ import org.lucasr.twowayview.TwoWayView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  * ************************************************************
@@ -268,12 +266,23 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
                 commentDialog.show();
             }
         });
-
-
     }
 
     private boolean isSignedIn() {
         return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
+    }
+
+    public void attendanceDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.requestWindowFeature(Window.FEATURE_SWIPE_TO_DISMISS);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setContentView(R.layout.attendance_dialog);
+        ListView fullAttendanceList = (ListView) dialog.findViewById(R.id.fullAttendanceList);
+        FullAttendanceAdapter fullAttendanceAdapter = new FullAttendanceAdapter(this, nameAttendees, pictureAttendees);
+        fullAttendanceList.setAdapter(fullAttendanceAdapter);
+        dialog.show();
     }
 
     @Override
@@ -392,7 +401,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         attendeeList.setAdapter(adapter);
 
         //If the user is already attending the event, the appropriate buttons are enabled or disabled
-        if(isSignedIn()) {
+        if (isSignedIn()) {
             if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
                 cancelButton.setEnabled(true);
                 attendButton.setEnabled(false);
@@ -401,6 +410,14 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
                 cancelButton.setEnabled(false);
             }
         }
+
+        attendeeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.e(null, "clicked");
+                attendanceDialog();
+            }
+        });
     }
 
     private void addAttendance() {
@@ -416,7 +433,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             }
         });
 
-        Log.e(null,requestParams.toString());
+        Log.e(null, requestParams.toString());
     }
 
     private void removeAttendance() {
@@ -432,7 +449,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             }
         });
 
-        Log.e(null,requestParams.toString());
+        Log.e(null, requestParams.toString());
     }
 
     private void publishComment() {
