@@ -84,6 +84,14 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
     SwipeRefreshLayout swipeRefreshLayout;
 
+    TextView txtTitle;
+    TextView txtType;
+    TextView txtLocation;
+    TextView txtDescription;
+    TextView txtContact;
+    TextView txtStartDate;
+    TextView txtEndDate;
+
     //TODO Add notifications for upcoming events
     //TODO fix crash when not signed in
 
@@ -144,34 +152,41 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         getAttendance();
         getWeather();
 
-        TextView txtTitle = (TextView) findViewById(R.id.txtTitle);
+        txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
 
-        TextView txtType = (TextView) findViewById(R.id.txtType);
+        txtType = (TextView) findViewById(R.id.txtType);
         txtType.setText(type);
 
-        TextView txtLocation = (TextView) findViewById(R.id.txtLocation);
+        txtLocation = (TextView) findViewById(R.id.txtLocation);
         txtLocation.setText(location);
 
-        TextView txtDescription = (TextView) findViewById(R.id.txtDesc);
+        txtDescription = (TextView) findViewById(R.id.txtDesc);
         txtDescription.setText(description);
 
-        TextView txtContact = (TextView) findViewById(R.id.txtContact);
+        txtContact = (TextView) findViewById(R.id.txtContact);
         txtContact.setText(contact);
 
-        TextView txtStartDate = (TextView) findViewById(R.id.txtStartDate);
-        try {
-            txtStartDate.setText(getDetailedDisplayDate(startDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        txtStartDate = (TextView) findViewById(R.id.txtStartDate);
+        if(startDate != null)
+        {
+            try {
+                txtStartDate.setText(getDetailedDisplayDate(startDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         TextView txtEndDate = (TextView) findViewById(R.id.txtEndDate);
-        try {
-            txtEndDate.setText(getDetailedDisplayDate(endDate));
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if(endDate != null){
+            try {
+                txtEndDate.setText(getDetailedDisplayDate(endDate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
+
+        getEventDetails();
 
         timePick = new AlertDialog.Builder(this);
         timePick.setTitle("How long before to notify?");
@@ -336,6 +351,30 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
         nameCurrentUser = userDetails.getString("displayName", null);
         userId = userDetails.getString("googleId", null);
+    }
+
+    private void getEventDetails(){
+        RequestParams requestParams = new RequestParams("eventId", id);
+        ClientServerInterface.post("get_event_details.php", requestParams, new JsonHttpResponseHandler(){
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                try {
+                    initEventDetails(response.getJSONObject(0));
+                } catch (JSONException | ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void initEventDetails(JSONObject event) throws JSONException, ParseException {
+        txtTitle.setText(event.getString("title"));
+        txtType.setText(event.getString("type"));
+        txtLocation.setText(event.getString("location"));
+        txtDescription.setText(event.getString("description"));
+        txtContact.setText(event.getString("contact"));
+        txtStartDate.setText(getDetailedDisplayDate(event.getString("startDate")));
+        txtEndDate.setText(getDetailedDisplayDate(event.getString("endDate")));
     }
 
     private void getComments() {
@@ -503,6 +542,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
     @Override
     public void onRefresh() {
+        getEventDetails();
         getComments();
         getAttendance();
         getWeather();
