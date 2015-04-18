@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -78,18 +77,12 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     String contact;
     String startDate;
     String endDate;
-    private int x;
-
     ImageView attendIcon;
     ImageView notifIcon;
-
     String commentBody;
-
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
-
     SwipeRefreshLayout swipeRefreshLayout;
-
     TextView txtTitle;
     TextView txtType;
     TextView txtLocation;
@@ -97,6 +90,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     TextView txtContact;
     TextView txtStartDate;
     TextView txtEndDate;
+    private int x;
 
     //TODO Add notifications for upcoming events
     //TODO fix crash when not signed in
@@ -116,7 +110,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         x = 75;
         Picasso.with(getApplicationContext()).load(R.drawable.notify).resize(x,x).into(notifIcon);
         Picasso.with(getApplicationContext()).load(R.drawable.attend).resize(x,x).into(attendIcon);
-        attendButton.setVisibility(View.INVISIBLE);
+        attendIcon.setVisibility(View.INVISIBLE);
         notifIcon.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
@@ -204,8 +198,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
         timePick = new AlertDialog.Builder(this);
         timePick.setTitle("How long before to notify?");
-        numPick = new NumberPicker(this);
-        timePick.setView(numPick);
+        //timePick.setView(numPick);
 
         Button notificationButton = (Button) findViewById(R.id.notificationButton);
         notificationButton.setOnClickListener(new View.OnClickListener() {
@@ -562,5 +555,12 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         getComments();
         getAttendance();
         getWeather();
+    }
+
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getExtras() != null) {
+            id = Integer.parseInt(intent.getExtras().getString("Id"));
+        }
     }
 }

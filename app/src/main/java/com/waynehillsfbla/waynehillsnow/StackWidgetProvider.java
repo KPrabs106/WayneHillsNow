@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
@@ -33,10 +34,13 @@ public class StackWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-        Intent detailedEventIntent = new Intent(context, DetailedEventActivity.class);
+        if (intent.getAction().equals(TOAST_ACTION)) {
+            Intent detailedEventIntent = new Intent(context, DetailedEventActivity.class);
         detailedEventIntent.putExtras(intent.getExtras());
+            Log.e("eventId or", String.valueOf(intent.getExtras().getInt("Id")));
         detailedEventIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(detailedEventIntent);
+        }
 
         super.onReceive(context, intent);
     }
@@ -65,6 +69,7 @@ public class StackWidgetProvider extends AppWidgetProvider {
             // setup a pending intent template, and the individual items can set a fillInIntent
             // to create unique before on an item to item basis.
             Intent toastIntent = new Intent(context, StackWidgetProvider.class);
+            toastIntent.setAction(StackWidgetProvider.TOAST_ACTION);
             toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
             PendingIntent toastPendingIntent = PendingIntent.getBroadcast(context, 0, toastIntent,
