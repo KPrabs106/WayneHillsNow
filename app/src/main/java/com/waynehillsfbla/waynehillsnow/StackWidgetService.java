@@ -84,7 +84,7 @@ public class StackWidgetService extends RemoteViewsService {
             }
 
             Bundle extras = new Bundle();
-            extras.putInt("eventId", mWidgetItems.get(position).eventId);
+            extras.putInt("Id", mWidgetItems.get(position).eventId);
             Intent fillInIntent = new Intent();
             fillInIntent.putExtras(extras);
             rv.setOnClickFillInIntent(R.id.stackWidgetItem, fillInIntent);

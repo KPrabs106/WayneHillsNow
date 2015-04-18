@@ -3,6 +3,7 @@ package com.waynehillsfbla.waynehillsnow;
 /**
  * Created by Kartik on 4/8/2015.
  */
+//TODO Add event id
 public class WidgetItem {
     public String text;
     public String imageURL;

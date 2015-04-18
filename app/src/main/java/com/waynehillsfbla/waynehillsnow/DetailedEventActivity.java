@@ -177,7 +177,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             }
         }
 
-        TextView txtEndDate = (TextView) findViewById(R.id.txtEndDate);
+        txtEndDate = (TextView) findViewById(R.id.txtEndDate);
         if(endDate != null){
             try {
                 txtEndDate.setText(getDetailedDisplayDate(endDate));

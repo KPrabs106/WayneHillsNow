@@ -6,9 +6,7 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 /**
  * Created by Kartik on 4/8/2015.
@@ -37,6 +35,7 @@ public class StackWidgetProvider extends AppWidgetProvider {
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
         Intent detailedEventIntent = new Intent(context, DetailedEventActivity.class);
         detailedEventIntent.putExtras(intent.getExtras());
+        detailedEventIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(detailedEventIntent);
 
         super.onReceive(context, intent);
