@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -90,6 +91,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     TextView txtContact;
     TextView txtStartDate;
     TextView txtEndDate;
+    RequestParams eventIdParam;
     private int x;
 
     //TODO Add notifications for upcoming events
@@ -110,8 +112,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         x = 75;
         Picasso.with(getApplicationContext()).load(R.drawable.notify).resize(x,x).into(notifIcon);
         Picasso.with(getApplicationContext()).load(R.drawable.attend).resize(x,x).into(attendIcon);
-        attendIcon.setVisibility(View.INVISIBLE);
-        notifIcon.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -152,6 +152,8 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         contact = extras.getString("Contact");
         startDate = extras.getString("StartDate");
         endDate = extras.getString("EndDate");
+
+        eventIdParam = new RequestParams("eventId", id);
 
         if (isSignedIn())
             initGooglePlus();
@@ -195,6 +197,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         }
 
         getEventDetails();
+        getLocationDetails();
 
         timePick = new AlertDialog.Builder(this);
         timePick.setTitle("How long before to notify?");
@@ -361,8 +364,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     }
 
     private void getEventDetails(){
-        RequestParams requestParams = new RequestParams("eventId", id);
-        ClientServerInterface.post("get_event_details.php", requestParams, new JsonHttpResponseHandler(){
+        ClientServerInterface.post("get_event_details.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 try {
@@ -384,9 +386,47 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         txtEndDate.setText(getDetailedDisplayDate(event.getString("endDate")));
     }
 
+    private void getLocationDetails() {
+        ClientServerInterface.post("get_location_details.php", eventIdParam, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                try {
+                    initLocationDetails(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void initLocationDetails(JSONObject location) throws JSONException {
+        Log.e("json location", location.toString());
+        String label = (String) txtLocation.getText();
+        String uriBegin = "geo:0,0?q=";
+        String query = location.getString("street_address") + ", " +
+                location.getString("city") + ", " + location.getString("state") + "(" + label + ")";
+        String encodedQuery = Uri.encode(query);
+        String uriString = uriBegin + encodedQuery;
+        final Uri locationIntentUri = Uri.parse(uriString);
+        Log.e("uri", locationIntentUri.toString());
+        txtLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("location", "clicked");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, locationIntentUri);
+                //mapIntent.setPackage("com.google.android.gms.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Log.e(null, "no mapps");
+                }
+            }
+        });
+
+    }
+
     private void getComments() {
-        RequestParams requestParams = new RequestParams("eventId", id);
-        ClientServerInterface.post("get_comments.php", requestParams, new JsonHttpResponseHandler() {
+        ClientServerInterface.post("get_comments.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 nameCommenters = new String[response.length()];
@@ -414,8 +454,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     }
 
     private void getAttendance() {
-        RequestParams requestParams = new RequestParams("eventId", id);
-        ClientServerInterface.post("get_attendance.php", requestParams, new JsonHttpResponseHandler() {
+        ClientServerInterface.post("get_attendance.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 nameAttendees = new String[response.length()];
@@ -455,7 +494,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             } else {
                 attendButton.setEnabled(true);
                 cancelButton.setEnabled(false);
-                attendIcon.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -510,11 +548,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     }
 
     private void getWeather() {
-        RequestParams requestParams = new RequestParams();
-        requestParams.put("eventId", id);
-        Log.e("getting", "weather");
-        Log.e("request params", requestParams.toString());
-        ClientServerInterface.post("get_weather.php", requestParams, new JsonHttpResponseHandler() {
+        ClientServerInterface.post("get_weather.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 initWeather(response);
@@ -552,6 +586,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     @Override
     public void onRefresh() {
         getEventDetails();
+        getLocationDetails();
         getComments();
         getAttendance();
         getWeather();

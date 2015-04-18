@@ -78,8 +78,12 @@
                                 android:layout_alignParentStart="true"
                                 android:layout_below="@+id/dispLoc"
                                 android:layout_gravity="left|top"
+                                android:clickable="true"
                                 android:text="[Location]"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:textStyle="bold" />
+
+                            <!--TODO add location pin image https://medialoot.com/item/free-vector-map-location-pins/ -->
 
                             <TextView
                                 android:id="@+id/txtDesc"
@@ -208,20 +212,22 @@
                             android:textColor="@android:color/primary_text_dark" />
 
                         <ImageView
+                            android:id="@+id/attendIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/attendIcon"
+                            android:layout_alignParentEnd="true"
                             android:layout_alignTop="@+id/txtTitle"
-                            android:layout_toStartOf="@+id/txtType"
                             android:layout_marginEnd="58dp"
-                            android:layout_alignParentEnd="true" />
+                            android:layout_toStartOf="@+id/txtType"
+                            android:visibility="gone" />
 
                         <ImageView
+                            android:id="@+id/notifIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/notifIcon"
                             android:layout_alignTop="@+id/txtTitle"
-                            android:layout_toStartOf="@+id/attendIcon" />
+                            android:layout_toStartOf="@+id/attendIcon"
+                            android:visibility="gone" />
 
                     </RelativeLayout>
 
@@ -282,6 +288,7 @@
             </RelativeLayout>
 
         </FrameLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
         <ScrollView
             android:id="@+id/navList"
@@ -320,6 +327,5 @@
             </RelativeLayout>
         </ScrollView>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
 
 </android.support.v4.widget.DrawerLayout>
