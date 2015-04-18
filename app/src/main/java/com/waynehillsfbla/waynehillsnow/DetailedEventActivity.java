@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.software.shell.fab.ActionButton;
+import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -76,6 +78,10 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     String contact;
     String startDate;
     String endDate;
+    private int x;
+
+    ImageView attendIcon;
+    ImageView notifIcon;
 
     String commentBody;
 
@@ -96,6 +102,14 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         swipeRefreshLayout.setOnRefreshListener(this);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        attendIcon = (ImageView) findViewById(R.id.attendIcon);
+        notifIcon = (ImageView) findViewById(R.id.notifIcon);
+        x = 75;
+        Picasso.with(getApplicationContext()).load(R.drawable.notify).resize(x,x).into(notifIcon);
+        Picasso.with(getApplicationContext()).load(R.drawable.attend).resize(x,x).into(attendIcon);
+        attendButton.setVisibility(View.INVISIBLE);
+        notifIcon.setVisibility(View.INVISIBLE);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -405,9 +419,11 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             if (Arrays.asList(nameAttendees).contains(nameCurrentUser)) {
                 cancelButton.setEnabled(true);
                 attendButton.setEnabled(false);
+                attendIcon.setVisibility(View.VISIBLE);
             } else {
                 attendButton.setEnabled(true);
                 cancelButton.setEnabled(false);
+                attendIcon.setVisibility(View.INVISIBLE);
             }
         }
 
