@@ -39,6 +39,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     //TODO google maps
     //TODO attend and notify icons
     //TODO notifications
+    //TODO banner image scroller
+    //TODO picstream type thing w user uploads
+    //TODO Help page
+    //TODO search
 
     //Puts the date into a more aesthetically pleasing format
     private String getDisplayDate(String date) throws ParseException {
