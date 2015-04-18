@@ -118,7 +118,7 @@
     <orderEntry type="library" exported="" name="twowayview-0.1.4" level="project" />
     <orderEntry type="library" exported="" name="play-services-nearby-7.0.0" level="project" />
     <orderEntry type="library" exported="" name="picasso-2.4.0" level="project" />
-    <orderEntry type="library" exported="" name="extendedCalendarView-unspecified" level="project" />
+    <orderEntry type="module" module-name="extendedCalendarView" exported="" />
   </component>
 </module>
 

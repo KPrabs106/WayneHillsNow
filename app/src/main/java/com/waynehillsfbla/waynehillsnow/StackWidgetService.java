@@ -51,7 +51,9 @@ public class StackWidgetService extends RemoteViewsService {
                     Log.e("json response", response.toString());
                     for (int i = 0; i < response.length() || i < 5; i++) {
                         try {
-                            mWidgetItems.add(new WidgetItem((response.getJSONObject(i)).getString("title"), response.getJSONObject(i).getString("pictureURL")));
+                            mWidgetItems.add(new WidgetItem((response.getJSONObject(i)).getString("title"),
+                                    response.getJSONObject(i).getString("pictureURL"),
+                                    Integer.parseInt(response.getJSONObject(i).getString("id"))));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -82,7 +84,7 @@ public class StackWidgetService extends RemoteViewsService {
             }
 
             Bundle extras = new Bundle();
-            extras.putInt(StackWidgetProvider.EXTRA_ITEM, position);
+            extras.putInt("Id", mWidgetItems.get(position).eventId);
             Intent fillInIntent = new Intent();
             fillInIntent.putExtras(extras);
             rv.setOnClickFillInIntent(R.id.stackWidgetItem, fillInIntent);
