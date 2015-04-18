@@ -25,6 +25,22 @@
         style="@style/AppTheme"
         >
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/attendIcon"
+            android:layout_alignTop="@+id/txtTitle"
+            android:layout_toStartOf="@+id/txtType"
+            android:layout_marginEnd="58dp"
+            android:layout_alignParentEnd="true" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/notifIcon"
+            android:layout_alignTop="@+id/txtTitle"
+            android:layout_toStartOf="@+id/attendIcon" />
+
 
         <TextView
             android:id="@+id/txtTitle"
