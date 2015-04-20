@@ -11,8 +11,14 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,7 +42,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return eventList.size();
     }
 
-    //TODO google maps
     //TODO attend and notify icons
     //TODO notifications
     //TODO banner image scroller
@@ -102,6 +107,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             }
         });
         eventViewHolder.vType.setText(ei.type);
+
+        setupAttendance(eventViewHolder, ei);
     }
 
     public EventViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -111,12 +118,40 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return new EventViewHolder(itemView);
     }
 
+    private void setupAttendance(EventViewHolder eventViewHolder, EventInfo ei) {
+        if (getGoogleId(eventViewHolder.context) != null) {
+            RequestParams requestParams = new RequestParams();
+            requestParams.put("eventId", ei.id);
+            requestParams.put("userId", getGoogleId(eventViewHolder.context));
+            ClientServerInterface.post("is_attending.php", requestParams, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    try {
+                        if (response.getBoolean("isAttending"))
+                            eventViewHolder.attendIcon.setVisibility(View.VISIBLE);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    private String getGoogleId(Context context) {
+        if (context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).contains("googleId")) {
+            return context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).getString("googleId", null);
+        }
+        return null;
+    }
+
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         protected TextView vTitle;
         protected TextView vDate;
         protected ImageView vPicture;
         protected TextView vType;
         protected ProgressBar vProgressBar;
+        protected ImageView attendIcon;
+        protected ImageView notifIcon;
         protected Context context;
 
         public EventViewHolder(View v) {
@@ -125,6 +160,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             vDate = (TextView) v.findViewById(R.id.txtDate);
             vPicture = (ImageView) v.findViewById(R.id.picture);
             vType = (TextView) v.findViewById(R.id.txtType);
+            attendIcon = (ImageView) v.findViewById(R.id.attendIcon);
+            notifIcon = (ImageView) v.findViewById(R.id.notifIcon);
             vProgressBar = (ProgressBar) v.findViewById(R.id.imgLoad);
             context = v.getContext();
         }

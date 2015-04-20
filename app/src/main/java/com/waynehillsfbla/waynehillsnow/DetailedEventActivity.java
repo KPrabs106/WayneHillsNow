@@ -414,7 +414,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             public void onClick(View v) {
                 Log.e("location", "clicked");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, locationIntentUri);
-                //mapIntent.setPackage("com.google.android.gms.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
                 } else {
