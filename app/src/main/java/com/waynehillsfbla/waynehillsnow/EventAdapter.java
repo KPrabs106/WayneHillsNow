@@ -118,7 +118,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return new EventViewHolder(itemView);
     }
 
-    private void setupAttendance(EventViewHolder eventViewHolder, EventInfo ei) {
+    private void setupAttendance(final EventViewHolder eventViewHolder, EventInfo ei) {
         if (getGoogleId(eventViewHolder.context) != null) {
             RequestParams requestParams = new RequestParams();
             requestParams.put("eventId", ei.id);
