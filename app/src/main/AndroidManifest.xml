@@ -17,14 +17,18 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="CLOUDINARY_URL"
+            android:value="cloudinary://396635679742426:hNgZT_uA8-U7rSRFS2ttNOAC07c@waynehillsnow" />
 
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--            <intent-filter>
+                            <action android:name="android.intent.action.MAIN" />
+
+                            <category android:name="android.intent.category.LAUNCHER" />
+                        </intent-filter>-->
         </activity>
         <activity
             android:name=".DetailedEventActivity"
@@ -61,7 +65,16 @@
 
         <activity
             android:name=".MyEvents"
-            android:label="@string/title_activity_my_events" >
+            android:label="@string/title_activity_my_events" ></activity>
+        <activity
+            android:name=".ImageUploadActivity"
+            android:label="@string/title_activity_image_upload">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            -
         </activity>
     </application>
 
