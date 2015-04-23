@@ -70,6 +70,8 @@ public class DrawerListAdapter extends RecyclerView.Adapter<DrawerListAdapter.Dr
                 if ((position == 2 && hasHeader) || (position == 1 && !hasHeader))
                     v.getContext().startActivity(new Intent(v.getContext(), MyEvents.class));
                 if ((position == 3 && hasHeader) || (position == 2 && !hasHeader))
+                    v.getContext().startActivity(new Intent(v.getContext(), LiveAtHills.class));
+                if ((position == 4 && hasHeader) || (position == 3 && !hasHeader))
                     v.getContext().startActivity(new Intent(v.getContext(), MainActivity.class));
                 //TODO create a settings activity
             }

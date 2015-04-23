@@ -24,11 +24,10 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
-            <!--            <intent-filter>
-                            <action android:name="android.intent.action.MAIN" />
-
-                            <category android:name="android.intent.category.LAUNCHER" />
-                        </intent-filter>-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".DetailedEventActivity"
@@ -65,16 +64,17 @@
 
         <activity
             android:name=".MyEvents"
-            android:label="@string/title_activity_my_events" ></activity>
+            android:label="@string/title_activity_my_events" />
         <activity
             android:name=".ImageUploadActivity"
-            android:label="@string/title_activity_image_upload">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -
+            android:label="@string/title_activity_image_upload"></activity>
+        <activity
+            android:name=".LiveAtHills"
+            android:label="@string/title_activity_live_at_hills"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
         </activity>
     </application>
 

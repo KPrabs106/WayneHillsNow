@@ -40,8 +40,8 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
     int numTabs = 2;
     Intent intent;
 
-    String[] drawerItems = {"Google Plus", "My Events", "Settings"};
-    int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_settings};
+    String[] drawerItems = {"Google Plus", "My Events", "Live@Hills", "Settings"};
+    int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_photos, R.drawable.ic_settings};
 
     HashMap<String, String> pictureData = new HashMap<String, String>();
 
