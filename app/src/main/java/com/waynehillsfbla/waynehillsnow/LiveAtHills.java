@@ -42,10 +42,11 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
         getUploadedPictures();
 
         ActionButton actionButton = (ActionButton) findViewById(R.id.action_button);
+        /*
         if (!isSignedIn()) {
             actionButton.setVisibility(View.INVISIBLE);
         }
-
+        */
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
