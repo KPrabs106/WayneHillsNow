@@ -146,7 +146,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
         id = extras.getInt("Id");
         title = extras.getString("Title");
-        type = extras.getString("Type");
         location = extras.getString("Location");
         description = extras.getString("Description");
         contact = extras.getString("Contact");
@@ -164,9 +163,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
-
-        txtType = (TextView) findViewById(R.id.txtType);
-        txtType.setText(type);
 
         txtLocation = (TextView) findViewById(R.id.txtLocation);
         txtLocation.setText(location);

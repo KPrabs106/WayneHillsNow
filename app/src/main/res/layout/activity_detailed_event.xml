@@ -197,19 +197,17 @@
                                 android:layout_height="wrap_content"
                                 android:layout_above="@+id/dispDesc"
                                 android:layout_alignParentEnd="true"
-                                android:text="New Button" />
+                                android:text="Notifications" />
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/locPin"
+                                android:src="@drawable/pin"
+                                android:layout_below="@+id/dispLoc"
+                                android:layout_toEndOf="@+id/txtDesc" />
 
                         </RelativeLayout>
-
-                        <TextView
-                            android:id="@+id/txtType"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@+id/txtTitle"
-                            android:layout_alignEnd="@+id/txtTitle"
-                            android:text="Type"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textColor="@android:color/primary_text_dark" />
 
                         <ImageView
                             android:id="@+id/attendIcon"
@@ -218,7 +216,6 @@
                             android:layout_alignParentEnd="true"
                             android:layout_alignTop="@+id/txtTitle"
                             android:layout_marginEnd="58dp"
-                            android:layout_toStartOf="@+id/txtType"
                             android:visibility="gone" />
 
                         <ImageView
