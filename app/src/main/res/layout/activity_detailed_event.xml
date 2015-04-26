@@ -29,6 +29,7 @@
                     android:id="@+id/card_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/tool_bar"
                     android:layout_margin="3dp"
                     android:paddingBottom="10dp"
                     android:paddingLeft="10dp"
@@ -200,12 +201,12 @@
                                 android:text="Notifications" />
 
                             <ImageView
+                                android:id="@+id/locPin"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:id="@+id/locPin"
-                                android:src="@drawable/pin"
                                 android:layout_below="@+id/dispLoc"
-                                android:layout_toEndOf="@+id/txtDesc" />
+                                android:layout_toEndOf="@+id/txtDesc"
+                                android:src="@drawable/pin" />
 
                         </RelativeLayout>
 

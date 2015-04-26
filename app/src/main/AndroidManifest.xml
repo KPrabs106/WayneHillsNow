@@ -17,9 +17,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="CLOUDINARY_URL"
-            android:value="cloudinary://396635679742426:hNgZT_uA8-U7rSRFS2ttNOAC07c@waynehillsnow" />
 
         <activity
             android:name=".MainActivity"
@@ -74,7 +71,7 @@
             android:label="@string/title_activity_my_events" />
         <activity
             android:name=".ImageUploadActivity"
-            android:label="@string/title_activity_image_upload"></activity>
+            android:label="@string/title_activity_image_upload" />
         <activity
             android:name=".LiveAtHills"
             android:label="@string/title_activity_live_at_hills"

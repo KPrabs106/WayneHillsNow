@@ -14,7 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -319,8 +319,8 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_weather) {
+            drawerLayout.openDrawer(Gravity.RIGHT);
         }
 
         return super.onOptionsItemSelected(item);
