@@ -194,9 +194,9 @@ public class ImageUploadActivity extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent imageIntent) {
         super.onActivityResult(requestCode, resultCode, imageIntent);
 
-        switch (requestCode) {
-            case SELECT_PHOTO:
+
                 if (resultCode == RESULT_OK) {
+                    if(requestCode == SELECT_PHOTO){
                     final boolean isCamera;
                     if (imageIntent == null) {
                         isCamera = true;
@@ -215,6 +215,14 @@ public class ImageUploadActivity extends ActionBarActivity {
                     } else {
                         selectedImageUri = imageIntent == null ? null : imageIntent.getData();
                     }
+                    try {
+                        imageStream = getContentResolver().openInputStream(selectedImageUri);
+                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                        imagePreview.setImageBitmap(selectedImage);
+                        uploadButton.setEnabled(true);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                     /*
                     try {
                         final Uri imageUri = imageIntent.getData();
@@ -227,14 +235,7 @@ public class ImageUploadActivity extends ActionBarActivity {
                     }*/
                 }
         }
-        try {
-            imageStream = getContentResolver().openInputStream(uploadFileUri);
-            final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-            imagePreview.setImageBitmap(selectedImage);
-            uploadButton.setEnabled(true);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+
     }
 
     @Override

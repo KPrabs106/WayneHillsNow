@@ -102,16 +102,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:layout_marginEnd="58dp"
-                android:src="@drawable/attend"
                 android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/notifIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/notify"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:layout_gravity="right" />
         </LinearLayout>
 
 

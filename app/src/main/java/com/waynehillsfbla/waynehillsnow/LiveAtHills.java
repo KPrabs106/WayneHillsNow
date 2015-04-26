@@ -32,6 +32,7 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
         setContentView(R.layout.activity_live_at_hills);
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.photoCardList);
 
         recyclerView.setHasFixedSize(true);
@@ -66,6 +67,7 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
                 initCards(response);
             }
         });
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private List<PhotoInfo> createList(int size, JSONArray photoData) {
