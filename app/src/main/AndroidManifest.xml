@@ -40,6 +40,10 @@
             android:name=".GooglePlusSignIn"
             android:label="@string/title_activity_google_plus_sign_in" />
 
+        <activity
+            android:name=".SearchActivity"
+            android:label="Search"/>
+
         <service
             android:name=".StackWidgetService"
             android:enabled="true"
