@@ -33,6 +33,7 @@ import java.util.List;
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<EventInfo> eventList;
+    private int x;
 
     public EventAdapter(List<EventInfo> eventList) {
         this.eventList = eventList;
@@ -84,6 +85,24 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 v.getContext().startActivity(intent);
             }
         });
+
+        eventViewHolder.vPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bund = new Bundle();
+                bund.putInt("Id", eventList.get(i).id);
+                bund.putString("Title", eventList.get(i).title);
+                bund.putString("Type", eventList.get(i).type);
+                bund.putString("Location", eventList.get(i).location);
+                bund.putString("Description", eventList.get(i).description);
+                bund.putString("Contact", eventList.get(i).contact);
+                bund.putString("StartDate", eventList.get(i).startDatetime);
+                bund.putString("EndDate", eventList.get(i).endDatetime);
+                Intent intent = new Intent(v.getContext(), ViewEventImage.class);
+                intent.putExtras(bund);
+                v.getContext().startActivity(intent);
+            }
+        });
         EventInfo ei = eventList.get(i);
         eventViewHolder.vTitle.setText(ei.title);
 
@@ -106,7 +125,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 eventViewHolder.vProgressBar.setVisibility(View.INVISIBLE);
             }
         });
-        eventViewHolder.vType.setText(ei.type);
+
+        x = 75;
+        Picasso.with(eventViewHolder.context).load(R.drawable.notify).resize(x,x).into(eventViewHolder.notifIcon);
+        Picasso.with(eventViewHolder.context).load(R.drawable.attend).resize(x,x).into(eventViewHolder.attendIcon);
 
         setupAttendance(eventViewHolder, ei);
     }
@@ -148,7 +170,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         protected TextView vTitle;
         protected TextView vDate;
         protected ImageView vPicture;
-        protected TextView vType;
         protected ProgressBar vProgressBar;
         protected ImageView attendIcon;
         protected ImageView notifIcon;
@@ -159,7 +180,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             vTitle = (TextView) v.findViewById(R.id.txtTitle);
             vDate = (TextView) v.findViewById(R.id.txtDate);
             vPicture = (ImageView) v.findViewById(R.id.picture);
-            vType = (TextView) v.findViewById(R.id.txtType);
             attendIcon = (ImageView) v.findViewById(R.id.attendIcon);
             notifIcon = (ImageView) v.findViewById(R.id.notifIcon);
             vProgressBar = (ProgressBar) v.findViewById(R.id.imgLoad);
