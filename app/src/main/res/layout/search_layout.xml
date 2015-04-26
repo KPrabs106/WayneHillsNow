@@ -12,7 +12,7 @@
         <include
             android:id="@+id/tool_bar"
             layout="@layout/tool_bar"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditText
             android:layout_width="267dp"

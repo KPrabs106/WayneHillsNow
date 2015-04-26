@@ -89,17 +89,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         eventViewHolder.vPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bund = new Bundle();
-                bund.putInt("Id", eventList.get(i).id);
-                bund.putString("Title", eventList.get(i).title);
-                bund.putString("Type", eventList.get(i).type);
-                bund.putString("Location", eventList.get(i).location);
-                bund.putString("Description", eventList.get(i).description);
-                bund.putString("Contact", eventList.get(i).contact);
-                bund.putString("StartDate", eventList.get(i).startDatetime);
-                bund.putString("EndDate", eventList.get(i).endDatetime);
                 Intent intent = new Intent(v.getContext(), ViewEventImage.class);
-                intent.putExtras(bund);
                 v.getContext().startActivity(intent);
             }
         });

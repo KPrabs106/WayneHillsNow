@@ -264,16 +264,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
-            }
-        });
-        commentDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface arg0, int keyCode, KeyEvent event) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    DetailedEventActivity.this.finish();
-                    //dialog.dismiss();
-                }
-                return true;
+                dialog.dismiss();
             }
         });
 
@@ -374,7 +365,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
     private void initEventDetails(JSONObject event) throws JSONException, ParseException {
         txtTitle.setText(event.getString("title"));
-        txtType.setText(event.getString("type"));
         txtLocation.setText(event.getString("location"));
         txtDescription.setText(event.getString("description"));
         txtContact.setText(event.getString("contact"));

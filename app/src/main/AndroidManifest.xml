@@ -43,6 +43,9 @@
         <activity
             android:name=".SearchActivity"
             android:label="Search"/>
+        <activity
+            android:name=".ViewEventImage"
+            android:label="View Image" />
 
         <service
             android:name=".StackWidgetService"
