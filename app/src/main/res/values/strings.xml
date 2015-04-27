@@ -36,5 +36,6 @@
     <string name="title_activity_my_events">My Events</string>
     <string name="title_activity_image_upload">ImageUploadActivity</string>
     <string name="title_activity_live_at_hills">Live@Hills</string>
+    <string name="title_activity_view_event_image">ViewEventImage</string>
 
 </resources>

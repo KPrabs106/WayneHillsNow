@@ -1,3 +1,4 @@
+
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
@@ -11,27 +12,30 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
-        <com.software.shell.fab.ActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            fab:button_color="@color/fab_material_red_500"
-            fab:button_colorPressed="@color/fab_material_red_900"
-            fab:hide_animation="@anim/fab_roll_to_down"
-            fab:image="@drawable/fab_plus_icon"
-            fab:image_size="24dp"
-            fab:shadow_color="#757575"
-            fab:shadow_radius="1.0dp"
-            fab:shadow_xOffset="0.5dp"
-            fab:shadow_yOffset="1.0dp"
-            fab:show_animation="@anim/fab_roll_from_down"
-            fab:stroke_color="@color/fab_material_blue_grey_500"
-            fab:stroke_width="1.0dp"
-            fab:type="DEFAULT" />
 
-
+    <com.software.shell.fab.ActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/fab_margin"
+        android:layout_marginEnd="@dimen/fab_margin"
+        fab:button_color="@color/fab_material_red_500"
+        fab:button_colorPressed="@color/fab_material_red_900"
+        fab:hide_animation="@anim/fab_roll_to_down"
+        fab:image="@drawable/fab_plus_icon"
+        fab:image_size="24dp"
+        fab:shadow_color="#757575"
+        fab:shadow_radius="1.0dp"
+        fab:shadow_xOffset="0.5dp"
+        fab:shadow_yOffset="1.0dp"
+        fab:show_animation="@anim/fab_roll_from_down"
+        fab:stroke_color="@color/fab_material_blue_grey_500"
+        fab:stroke_width="1.0dp"
+        fab:type="DEFAULT" />
+    
 </android.support.v4.widget.SwipeRefreshLayout>
+
+
+

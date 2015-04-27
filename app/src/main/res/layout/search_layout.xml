@@ -3,32 +3,37 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:weightSum="1">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:layout_below="@+id/tool_bar"
+        android:layout_alignParentStart="true">
 
-        <include
-            android:id="@+id/tool_bar"
-            layout="@layout/tool_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
         <EditText
-            android:layout_width="267dp"
+            android:layout_width="282dp"
             android:layout_height="wrap_content"
             android:id="@+id/input"
-            android:layout_weight="0.38"
-            android:layout_below="@+id/tool_bar"/>
+            android:layout_below="@+id/tool_bar" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enter"
             android:id="@+id/enterButton"
-            android:layout_gravity="right"
-            android:layout_below="@+id/tool_bar"/>
+            android:layout_below="@+id/tool_bar"
+            android:layout_alignParentEnd="true" />
+
+
     </LinearLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/cardList"

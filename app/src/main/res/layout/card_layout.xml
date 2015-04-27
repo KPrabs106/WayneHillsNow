@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:background="@color/primary_dark"
+            android:background="@color/primary"
             android:text="Large Text"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@android:color/primary_text_dark" />
@@ -45,13 +45,13 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="29dp"
-            android:background="@drawable/grey_texture"
+            android:background="@android:color/darker_gray"
             android:padding="2dp">
 
             <ImageView
                 android:id="@+id/picture"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
                 android:visibility="invisible"  />
@@ -73,7 +73,7 @@
             android:layout_alignParentStart="true"
             android:layout_below="@+id/frameLayout"
             android:layout_gravity="left|bottom"
-            android:background="@color/primary_dark"
+            android:background="@color/primary"
             android:text="New Text"
             android:textColor="@android:color/secondary_text_dark"  />
 

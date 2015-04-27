@@ -16,6 +16,8 @@
         <!--   theme UI controls like checkboxes and text fields-->
         <item name="@android:colorAccent">@color/accent</item>
 
+
+
     </style>
 
 </resources>

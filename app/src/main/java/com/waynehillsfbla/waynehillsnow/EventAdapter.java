@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -89,10 +90,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         eventViewHolder.vPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("pictureURL", eventList.get(i).pictureURL);
+                bundle.putString("eventName", eventList.get(i).title);
                 Intent intent = new Intent(v.getContext(), ViewEventImage.class);
+                intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
             }
         });
+
         EventInfo ei = eventList.get(i);
         eventViewHolder.vTitle.setText(ei.title);
 
@@ -101,6 +107,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
+
 
         Picasso.with(eventViewHolder.context).load(ei.pictureURL).into(eventViewHolder.vPicture, new Callback() {
             @Override

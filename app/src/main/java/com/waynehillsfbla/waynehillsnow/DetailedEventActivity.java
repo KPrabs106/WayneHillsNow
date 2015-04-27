@@ -68,7 +68,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
     int timeBefore;
     AlertDialog.Builder timePick;
-    NumberPicker numPick;
+    View numPick;
 
     int id;
     String title;
@@ -197,7 +197,8 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
         timePick = new AlertDialog.Builder(this);
         timePick.setTitle("How long before to notify?");
-        //timePick.setView(numPick);
+        numPick = findViewById(R.id.numberPick);
+        timePick.setView(numPick);
 
         Button notificationButton = (Button) findViewById(R.id.notificationButton);
         notificationButton.setOnClickListener(new View.OnClickListener() {
