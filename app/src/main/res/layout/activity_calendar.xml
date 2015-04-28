@@ -7,9 +7,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.waynehillsfbla.waynehillsnow.MainActivity">
 
-    <com.tyczj.extendedcalendarview.ExtendedCalendarView
-        android:id="@+id/calendar"
+    <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+        android:id="@+id/calendarView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <com.daimajia.slider.library.SliderLayout
+        android:id="@+id/slider"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/calendarView" />
 
 </RelativeLayout>

@@ -1,194 +1,183 @@
 package com.waynehillsfbla.waynehillsnow;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
+import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.tyczj.extendedcalendarview.CalendarProvider;
-import com.tyczj.extendedcalendarview.Day;
-import com.tyczj.extendedcalendarview.Event;
-import com.tyczj.extendedcalendarview.ExtendedCalendarView;
+import com.loopj.android.http.RequestParams;
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateChangedListener;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
-public class CalendarTab extends Fragment {
+public class CalendarTab extends Fragment implements BaseSliderView.OnSliderClickListener, OnDateChangedListener {
     View v;
+    List<CalendarDay> events;
+    SliderLayout imageScroller;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_calendar, container, false);
-
+        imageScroller = (SliderLayout) v.findViewById(R.id.slider);
         getEvents();
 
         return v;
     }
 
     public void initCalendar(JSONArray jsonArray) {
-        ExtendedCalendarView calendar = (ExtendedCalendarView) v.findViewById(R.id.calendar);
-        getActivity().getContentResolver().delete(CalendarProvider.CONTENT_URI, null, null);
+        MaterialCalendarView calendarView = (MaterialCalendarView) v.findViewById(R.id.calendarView);
+        calendarView.setOnDateChangedListener(this);
 
-        ContentValues values = new ContentValues();
-
-        final int[][] eventDates;
-
-        eventDates = new int[jsonArray.length()][6];
-        Calendar cal = Calendar.getInstance();
-        TimeZone tz = TimeZone.getDefault();
-
-        String startDatetime = null;
-        String endDatetime = null;
+        JSONObject jsonObject;
         String date;
-        String time;
-        String year;
-        String month;
-        String day;
-        String hour;
-        String minute;
-
-        JSONObject jsonObject = null;
-        //Add every event into the calendar
-        //TODO Resolve issue with missing events
+        String[] dateComponents;
+        CalendarDay eventDay;
+        events = new ArrayList<CalendarDay>();
         for (int i = 0; i < jsonArray.length(); i++) {
             try {
                 jsonObject = jsonArray.getJSONObject(i);
+                date = jsonObject.getString("startDate").split(" ")[0];
+                dateComponents = date.split("-");
+                eventDay = new CalendarDay(Integer.parseInt(dateComponents[0]), Integer.parseInt(dateComponents[1]) - 1, Integer.parseInt(dateComponents[2]));
+                events.add(eventDay);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-            /**Add starting date and time to the calendar**/
-            try {
-                startDatetime = jsonObject.getString("startDate");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            date = (startDatetime.split(" "))[0];
-            time = (startDatetime.split(" "))[1];
-
-            year = date.split("-")[0];
-            month = date.split("-")[1];
-            day = date.split("-")[2];
-
-            hour = time.split(":")[0];
-            minute = time.split(":")[1];
-
-            values.put(CalendarProvider.COLOR, Event.COLOR_RED);
-            try {
-                values.put(CalendarProvider.DESCRIPTION, jsonObject.getString("description"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                values.put(CalendarProvider.LOCATION, jsonObject.getString("location"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                values.put(CalendarProvider.EVENT, jsonObject.getString("title"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            //Month needs to be subtracted by 1, because the Android calendar month starts at 0
-            cal.set(Integer.parseInt(year), Integer.parseInt(month) - 1,
-                    Integer.parseInt(day), Integer.parseInt(hour),
-                    Integer.parseInt(minute));
-
-            int StartDayJulian = Time.getJulianDay(cal.getTimeInMillis(),
-                    TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(cal.getTimeInMillis())));
-
-            //Put the start date and time into calendar
-            values.put(CalendarProvider.START, cal.getTimeInMillis());
-            values.put(CalendarProvider.START_DAY, StartDayJulian);
-
-            //Store the start date into an array
-            eventDates[i][0] = Integer.parseInt(year);
-            eventDates[i][1] = Integer.parseInt(month);
-            eventDates[i][2] = Integer.parseInt(day);
-
-            /**Add end date and time to the calendar**/
-            try {
-                endDatetime = jsonObject.getString("endDate");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            date = (endDatetime.split(" "))[0];
-            time = (endDatetime.split(" "))[1];
-
-            year = date.split("-")[0];
-            month = date.split("-")[1];
-            day = date.split("-")[2];
-
-            hour = time.split(":")[0];
-            minute = time.split(":")[1];
-
-            cal.set(Integer.parseInt(year), Integer.parseInt(month) - 1,
-                    Integer.parseInt(day), Integer.parseInt(hour),
-                    Integer.parseInt(minute));
-            int endDayJulian = Time.getJulianDay(cal.getTimeInMillis(),
-                    TimeUnit.MILLISECONDS.toSeconds(tz.getOffset(cal.getTimeInMillis())));
-
-            //Put the end date and time into calendar
-            values.put(CalendarProvider.END, cal.getTimeInMillis());
-            values.put(CalendarProvider.END_DAY, endDayJulian);
-
-            //Store the end date into an array
-            eventDates[i][3] = Integer.parseInt(year);
-            eventDates[i][4] = Integer.parseInt(month);
-            eventDates[i][5] = Integer.parseInt(day);
-
-            getActivity().getContentResolver().insert(CalendarProvider.CONTENT_URI, values);
         }
+        CalendarDay minDay = events.get(0);
+        calendarView.setMinimumDate(new CalendarDay(minDay.getYear(), minDay.getMonth(), 1));
+        CalendarDay maxDay = events.get(events.size() - 1);
+        calendarView.setMaximumDate(new CalendarDay(maxDay.getYear(), maxDay.getMonth(), 31));
 
-        calendar.refreshCalendar();
+        Log.e("events", events.toString());
 
-        //Check if the user clicked a day that has an event
-        calendar.setOnDayClickListener(new ExtendedCalendarView.OnDayClickListener() {
+        calendarView.setSelectedDate(calendarView.getMaximumDate());
+        calendarView.setSelectedDate(calendarView.getMinimumDate());
+        calendarView.setSelectedDate(Calendar.getInstance().getTime());
+
+        calendarView.addDecorator(new HighlightDecorator(events));
+
+        calendarView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDayClicked(AdapterView<?> adapter, View view, int position, long id, Day day) {
-                for (int[] eventDate : eventDates) {
-                    /**We have the start and end dates already in an array.
-                     * We can check to see if the date the user clicked on
-                     * is between the start and end date of any event.
-                     */
-                    if ((eventDate[0] <= day.getYear() && day.getYear() <= eventDate[3]) &&
-                            (eventDate[1] <= day.getMonth() + 1 && day.getMonth() + 1 <= eventDate[4]) &&
-                            (eventDate[2] <= day.getDay() && day.getDay() <= eventDate[5])) {
-                        Bundle bund = new Bundle();
-                        bund.putInt("year", eventDate[0]);
-                        bund.putInt("month", eventDate[1]);
-                        bund.putInt("day", eventDate[2]);
-                        Intent intent = new Intent(view.getContext(), ListEventActivity.class);
-                        intent.putExtras(bund);
+            public void onClick(View v) {
 
-                        //Start the list event activity, and give it the selected year, month, and day
-                        startActivity(intent);
-                    }
-                }
+                Log.e(null, "touched " + v.toString());
+
             }
         });
+
+
+        getPictures(calendarView.getSelectedDate().getMonth() + 1);
+        //calendarView.setSelectedDate(new CalendarDay(2016, Calendar.JUNE, 10));
+        //calendarView.setSelectedDate(new CalendarDay(Calendar.getInstance().getTime().getYear(), Calendar.getInstance().getTime().getMonth()));
+
+/*
+        calendarView.addDecorator(new DayViewDecorator() {
+            @Override
+            public boolean shouldDecorate(CalendarDay calendarDay) {
+                return events.contains(calendarDay);
+            }
+
+            @Override
+            public void decorate(DayViewFacade dayViewFacade) {
+                Log.e(null, "decorating");
+                Drawable drawable = getResources().getDrawable(R.drawable.date_with_event);
+                drawable.setAlpha(225);
+                dayViewFacade.setBackgroundUnselected(drawable);
+                //dayViewFacade.setBackgroundUnselected(getResources().getDrawable(R.drawable.date_with_event));
+                //dayViewFacade.setBackgroundUnselected(new ColorDrawable(0x660033));
+                //dayViewFacade.setBackgroundUnselected(getResources().getDrawable(R.drawable.sunny));
+                //dayViewFacade.setBackground(new ColorDrawable(0x660033));
+            }
+        });
+*/
+        //calendarView.invalidateDecorators();
     }
 
     private void getEvents() {
-        ClientServerInterface.get("get_events.php", null, new JsonHttpResponseHandler() {
+        ClientServerInterface.get("get_all_events.php", null, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 initCalendar(response);
             }
         });
+    }
+
+    @Override
+    public void onSliderClick(BaseSliderView baseSliderView) {
+        Bundle bundle = baseSliderView.getBundle();
+        Intent intent = new Intent(baseSliderView.getContext(), DetailedEventActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onDateChanged(MaterialCalendarView materialCalendarView, CalendarDay calendarDay) {
+        Log.e(null, "cahnged");
+        if (events.contains(calendarDay)) {
+            Bundle bundle = new Bundle();
+            bundle.putInt("year", calendarDay.getYear());
+            bundle.putInt("month", calendarDay.getMonth() + 1);
+            bundle.putInt("day", calendarDay.getDay());
+            Intent intent = new Intent(v.getContext(), ListEventActivity.class);
+            intent.putExtras(bundle);
+
+            startActivity(intent);
+        }
+    }
+
+    private void getPictures(int month) {
+        RequestParams requestParams = new RequestParams("month", month);
+        ClientServerInterface.post("get_pictures_by_month.php", requestParams, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                initPictures(response);
+            }
+        });
+    }
+
+    private void initPictures(JSONArray pictures) {
+        JSONObject jsonObject;
+        Bundle bundle;
+        for (int i = 0; i < pictures.length(); i++) {
+            TextSliderView textSliderView = new TextSliderView(v.getContext());
+            bundle = textSliderView.getBundle();
+
+            try {
+                jsonObject = pictures.getJSONObject(i);
+                textSliderView.description(jsonObject.getString("title"))
+                        .image(jsonObject.getString("pictureURL"))
+                        .setScaleType(BaseSliderView.ScaleType.Fit)
+                        .setOnSliderClickListener(this);
+                bundle.putInt("Id", Integer.parseInt(jsonObject.getString("id")));
+                bundle.putString("Title", jsonObject.getString("title"));
+                bundle.putString("Type", jsonObject.getString("type"));
+                bundle.putString("Location", jsonObject.getString("location"));
+                bundle.putString("Description", jsonObject.getString("description"));
+                bundle.putString("Contact", jsonObject.getString("contact"));
+                bundle.putString("StartDate", jsonObject.getString("startDate"));
+                bundle.putString("EndDate", jsonObject.getString("endDate"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            imageScroller.addSlider(textSliderView);
+        }
     }
 }
