@@ -1,6 +1,8 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +40,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         photoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Bundle bundle = new Bundle();
+                bundle.putString("pictureURL", photoInfoList.get(i).pictureURL);
+                bundle.putString("eventName", photoInfoList.get(i).eventTitle);
+                Intent intent = new Intent(v.getContext(), ViewEventImage.class);
+                intent.putExtras(bundle);
+                v.getContext().startActivity(intent);
             }
         });
 

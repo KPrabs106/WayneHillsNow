@@ -33,7 +33,6 @@ public class MyEvents extends ActionBarActivity {
         titleTextView = (TextView) findViewById(R.id.txtTitle);
         pictureImageView = (ImageView) findViewById(R.id.picture);
         dateTextView = (TextView) findViewById(R.id.txtDate);
-        typeTextView = (TextView) findViewById(R.id.txtType);
         recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);

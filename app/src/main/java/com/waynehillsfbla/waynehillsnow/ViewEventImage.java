@@ -101,12 +101,6 @@ public class ViewEventImage extends ActionBarActivity {
                 .setDestinationInExternalPublicDir("/WayneHillsNow", fileName + ".jpg");
 
         downloadManager.enqueue(request);
-        try{
-            wait(999);
-        }
-        catch (InterruptedException i){
-            Log.getStackTraceString(i);
-        }
         Toast.makeText(getApplicationContext(), "Image Downloaded", Toast.LENGTH_SHORT).show();
 
     }

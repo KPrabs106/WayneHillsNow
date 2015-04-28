@@ -27,7 +27,6 @@ public class EventListTab extends Fragment implements SwipeRefreshLayout.OnRefre
     TextView titleTextView;
     ImageView pictureImageView;
     TextView dateTextView;
-    TextView typeTextView;
     View v;
     RecyclerView recList;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -40,7 +39,6 @@ public class EventListTab extends Fragment implements SwipeRefreshLayout.OnRefre
         titleTextView = (TextView) v.findViewById(R.id.txtTitle);
         pictureImageView = (ImageView) v.findViewById(R.id.picture);
         dateTextView = (TextView) v.findViewById(R.id.txtDate);
-        typeTextView = (TextView) v.findViewById(R.id.txtType);
         recList = (RecyclerView) v.findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
