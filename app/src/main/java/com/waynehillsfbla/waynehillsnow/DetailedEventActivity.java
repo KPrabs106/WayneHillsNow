@@ -84,6 +84,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     String contact;
     String startDate;
     String endDate;
+    String pictureURL;
     ImageView attendIcon;
     ImageView notifIcon;
     String commentBody;
@@ -155,6 +156,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         contact = extras.getString("Contact");
         startDate = extras.getString("StartDate");
         endDate = extras.getString("EndDate");
+        pictureURL = extras.getString("PictureURL");
 
         eventIdParam = new RequestParams("eventId", id);
 
@@ -300,11 +302,23 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
-        Intent notification = new Intent(DetailedEventActivity.this.getApplicationContext(), AlarmReceiver.class);
+        Bundle eventDetails = new Bundle();
+        eventDetails.putString("eventName", title);
+        eventDetails.putString("pictureURL", pictureURL);
+        eventDetails.putString("location", location);
+        eventDetails.putInt("id", id);
+        try {
+            eventDetails.putString("startDate", getDetailedDisplayDate(startDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(DetailedEventActivity.this.getApplicationContext(), 0, notification, 0);
+        Intent notification = new Intent(getApplicationContext(), AlarmReceiver.class);
+        notification.putExtras(eventDetails);
 
-        AlarmManager alarmManager = (AlarmManager) DetailedEventActivity.this.getSystemService(ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, notification, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
         Toast.makeText(getApplicationContext(), "Notification set.", Toast.LENGTH_SHORT).show();
@@ -347,6 +361,9 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_weather) {
             drawerLayout.openDrawer(Gravity.RIGHT);
+        } else if (id == R.id.action_refresh) {
+            swipeRefreshLayout.setRefreshing(true);
+            onRefresh();
         }
 
         return super.onOptionsItemSelected(item);
@@ -601,12 +618,5 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         getComments();
         getAttendance();
         getWeather();
-    }
-
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (intent.getExtras() != null) {
-            id = Integer.parseInt(intent.getExtras().getString("Id"));
-        }
     }
 }

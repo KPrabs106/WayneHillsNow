@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -81,6 +80,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 bund.putString("Contact", eventList.get(i).contact);
                 bund.putString("StartDate", eventList.get(i).startDatetime);
                 bund.putString("EndDate", eventList.get(i).endDatetime);
+                bund.putString("PictureURL", eventList.get(i).pictureURL);
                 Intent intent = new Intent(v.getContext(), DetailedEventActivity.class);
                 intent.putExtras(bund);
                 v.getContext().startActivity(intent);
