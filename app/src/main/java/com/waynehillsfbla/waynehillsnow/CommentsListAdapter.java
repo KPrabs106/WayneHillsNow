@@ -1,6 +1,10 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +24,8 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
     private final String[] pictures;
     private final String[] names;
     private final String[] comments;
+    private String nameCurrentUser;
+    AlertDialog.Builder deleteDialog;
 
     public CommentsListAdapter(Activity activity, String[] pictures, String[] names, String[] comments) {
         super(activity, R.layout.comments_list, pictures);
@@ -30,7 +36,7 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
     }
 
     //Set profile pictures of attendees from String[] of picture URLs
-    public View getView(int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, ViewGroup parent) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.comments_list, null, true);
 
@@ -54,7 +60,60 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
             }
         });
 
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(isSignedIn() && canDelete(position))
+                    showDeleteDialog(activity);
+
+                return true;
+            }
+        });
+
         return rowView;
+    }
+
+    private boolean isSignedIn() {
+        return activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE).contains("displayName");
+    }
+
+    private void initGooglePlus() {
+        SharedPreferences userDetails = activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+        nameCurrentUser = userDetails.getString("displayName", null);
+    }
+
+    private boolean canDelete(int position) {
+        if(isSignedIn())
+            initGooglePlus();
+        if(nameCurrentUser.equals(names[position]))
+            return true;
+        else
+            return false;
+    }
+
+    private void showDeleteDialog(Activity activity) {
+        deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(),5);
+        deleteDialog.setTitle("Delete comment?");
+
+        // Set up the buttons
+        deleteDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteComment();
+                dialog.dismiss();
+            }
+        });
+        deleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        deleteDialog.show();
+    }
+
+    private void deleteComment() {
+
     }
 
 }

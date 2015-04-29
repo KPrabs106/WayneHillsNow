@@ -37,5 +37,6 @@
     <string name="title_activity_image_upload">ImageUploadActivity</string>
     <string name="title_activity_live_at_hills">Live@Hills</string>
     <string name="title_activity_view_event_image">ViewEventImage</string>
+    <string name="send_to">Share with...</string>
 
 </resources>

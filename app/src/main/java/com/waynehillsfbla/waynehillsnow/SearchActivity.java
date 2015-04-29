@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
@@ -18,11 +19,13 @@ public class SearchActivity extends ActionBarActivity {
     RecyclerView recList;
     Toolbar toolbar;
 
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_layout);
 
         input = (EditText) findViewById(R.id.input);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
         enterButton = (Button) findViewById(R.id.enterButton);
         recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
@@ -35,6 +38,7 @@ public class SearchActivity extends ActionBarActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+
 
     }
 }

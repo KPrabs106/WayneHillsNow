@@ -1,7 +1,11 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,9 +26,14 @@ import java.util.List;
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
     private List<PhotoInfo> photoInfoList;
+    private String nameCurrentUser;
+    AlertDialog.Builder deleteDialog;
+    Activity activity;
+    PhotoInfo photoInfo;
 
-    public PhotoAdapter(List<PhotoInfo> photoInfoList) {
+    public PhotoAdapter(List<PhotoInfo> photoInfoList, Activity activity) {
         this.photoInfoList = photoInfoList;
+        this.activity = activity;
     }
 
     public int getItemCount() {
@@ -49,9 +58,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
             }
         });
 
-        PhotoInfo photoInfo = photoInfoList.get(i);
+        photoInfo = photoInfoList.get(i);
         photoViewHolder.vEventTitle.setText(photoInfo.eventTitle);
         photoViewHolder.vSubmitter.setText(photoInfo.submitterName);
+
+        photoViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if(isSignedIn() && canDelete())
+                    showDeleteDialog(activity);
+                return true;
+            }
+        });
+
+
 
         Picasso.with(photoViewHolder.vContext).load(photoInfo.pictureURL).into(photoViewHolder.vPicture, new Callback() {
             @Override
@@ -66,6 +86,49 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
                 photoViewHolder.vProgressBar.setVisibility(View.INVISIBLE);
             }
         });
+    }
+
+    private boolean isSignedIn() {
+        return activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE).contains("displayName");
+    }
+
+    private void initGooglePlus() {
+        SharedPreferences userDetails = activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+        nameCurrentUser = userDetails.getString("displayName", null);
+    }
+
+    private boolean canDelete() {
+        if(isSignedIn())
+            initGooglePlus();
+        if(nameCurrentUser.equals(photoInfo.submitterName))
+            return true;
+        else
+            return false;
+    }
+
+    private void showDeleteDialog(Activity activity) {
+        deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(),5);
+        deleteDialog.setTitle("Remove from feed?");
+
+        // Set up the buttons
+        deleteDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteImage();
+                dialog.dismiss();
+            }
+        });
+        deleteDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        deleteDialog.show();
+    }
+
+    private void deleteImage() {
+
     }
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder {

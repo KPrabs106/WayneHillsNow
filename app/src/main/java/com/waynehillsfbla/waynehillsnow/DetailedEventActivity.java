@@ -64,7 +64,9 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
     Button attendButton;
     Button cancelButton;
+    ActionButton actionButton;
     AlertDialog.Builder commentDialog;
+    EditText input;
 
     int timeBefore;
     AlertDialog.Builder timePick;
@@ -72,7 +74,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
     int id;
     String title;
-    String type;
     String location;
     String description;
     String contact;
@@ -85,7 +86,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     ActionBarDrawerToggle actionBarDrawerToggle;
     SwipeRefreshLayout swipeRefreshLayout;
     TextView txtTitle;
-    TextView txtType;
     TextView txtLocation;
     TextView txtDescription;
     TextView txtContact;
@@ -197,8 +197,19 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
         timePick = new AlertDialog.Builder(this);
         timePick.setTitle("How long before to notify?");
-        numPick = findViewById(R.id.numberPick);
+        numPick = findViewById(R.id.timeInput);
         timePick.setView(numPick);
+        timePick.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        timePick.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
 
         Button notificationButton = (Button) findViewById(R.id.notificationButton);
         notificationButton.setOnClickListener(new View.OnClickListener() {
@@ -240,13 +251,28 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             }
         });
 
-        ActionButton actionButton = (ActionButton) findViewById(R.id.action_button);
+        actionButton = (ActionButton) findViewById(R.id.action_button);
 
-        commentDialog = new AlertDialog.Builder(this);
+
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle userEventDetails = new Bundle();
+                userEventDetails.putString("eventId", String.valueOf(id));
+                userEventDetails.putString("userId", userId);
+
+                showCommentDialog();
+            }
+        });
+
+
+
+    }
+
+    private void showCommentDialog() {
+        commentDialog = new AlertDialog.Builder(this,5);
         commentDialog.setTitle("Enter comment");
-
-        // Set up the input
-        final EditText input = new EditText(this);
+        input = new EditText(this);
         // Specify the type of input expected
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         commentDialog.setView(input);
@@ -264,21 +290,10 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         commentDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
                 dialog.dismiss();
             }
         });
-
-        actionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Bundle userEventDetails = new Bundle();
-                userEventDetails.putString("eventId", String.valueOf(id));
-                userEventDetails.putString("userId", userId);
-
-                commentDialog.show();
-            }
-        });
+        commentDialog.show();
     }
 
     private boolean isSignedIn() {

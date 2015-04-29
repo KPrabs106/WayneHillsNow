@@ -93,7 +93,7 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
     }
 
     private void initCards(JSONArray data) {
-        PhotoAdapter photoAdapter = new PhotoAdapter(createList(data.length(), data));
+        PhotoAdapter photoAdapter = new PhotoAdapter(createList(data.length(), data), this);
         recyclerView.setAdapter(photoAdapter);
     }
 

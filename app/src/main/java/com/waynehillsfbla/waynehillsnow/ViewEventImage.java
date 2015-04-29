@@ -7,12 +7,14 @@ import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -38,6 +40,7 @@ public class ViewEventImage extends ActionBarActivity {
     ImageView eventPic;
     Toolbar toolbar;
     String eventName;
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,9 @@ public class ViewEventImage extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_view_event_image, menu);
+        MenuItemCompat item = (MenuItemCompat) menu.findItem(R.id.menu_item_share);
+        MenuItem = menu.findItem(R.id.menu_item_share);
+        mShareActionProvider = (ShareActionProvider) item.getActionProvider(item);
         return true;
     }
 
@@ -78,11 +84,23 @@ public class ViewEventImage extends ActionBarActivity {
             DownloadFromUrl(pictureURL, eventName);
             return true;
         }
+        else if(id == R.id.menu_item_share) {
+            shareImage();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void DownloadFromUrl(String imageURL, String fileName)  {  //this is the downloader method
+    private void shareImage() {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, pictureURL);
+        shareIntent.setType("image/jpeg");
+        startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+    }
+
+    private void DownloadFromUrl(String imageURL, String fileName)  {  //this is the downloader method
         File direct = new File(Environment.getExternalStorageDirectory() + "/WayneHillsNow");
 
         if(!direct.exists())
