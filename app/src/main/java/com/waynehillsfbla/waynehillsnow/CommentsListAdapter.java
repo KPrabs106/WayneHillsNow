@@ -24,8 +24,8 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
     private final String[] pictures;
     private final String[] names;
     private final String[] comments;
-    private String nameCurrentUser;
     AlertDialog.Builder deleteDialog;
+    private String nameCurrentUser;
 
     public CommentsListAdapter(Activity activity, String[] pictures, String[] names, String[] comments) {
         super(activity, R.layout.comments_list, pictures);
@@ -85,10 +85,8 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
     private boolean canDelete(int position) {
         if(isSignedIn())
             initGooglePlus();
-        if(nameCurrentUser.equals(names[position]))
-            return true;
-        else
-            return false;
+        //TODO use google ID to compare instead of name
+        return nameCurrentUser.equals(names[position]);
     }
 
     private void showDeleteDialog(Activity activity) {
@@ -113,7 +111,7 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
     }
 
     private void deleteComment() {
-
+        //TODO finish method to delete method
     }
 
 }

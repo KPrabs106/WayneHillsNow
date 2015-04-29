@@ -1,8 +1,5 @@
 
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/swipeRefreshLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+
 
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,10 +7,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/swipeRefreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
@@ -287,8 +288,8 @@
 
             </RelativeLayout>
 
+            </android.support.v4.widget.SwipeRefreshLayout>
         </FrameLayout>
-
 
         <ScrollView
             android:id="@+id/navList"
@@ -332,4 +333,3 @@
 
 </android.support.v4.widget.DrawerLayout>
 
-</android.support.v4.widget.SwipeRefreshLayout>

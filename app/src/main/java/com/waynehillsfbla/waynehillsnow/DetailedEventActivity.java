@@ -1,7 +1,9 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,10 +26,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.jjobes.slidedatetimepicker.SlideDateTimeListener;
+import com.github.jjobes.slidedatetimepicker.SlideDateTimePicker;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.software.shell.fab.ActionButton;
@@ -42,6 +45,8 @@ import org.lucasr.twowayview.TwoWayView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * ************************************************************
@@ -95,8 +100,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     private int x;
 
     //TODO Add notifications for upcoming events
-    //TODO fix crash when not signed in
-
+    //TODO fix navigation drawer and swiperefreshlayout conflict
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,40 +199,11 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         getEventDetails();
         getLocationDetails();
 
-        timePick = new AlertDialog.Builder(this);
-        timePick.setTitle("How long before to notify?");
-        numPick = findViewById(R.id.timeInput);
-        timePick.setView(numPick);
-        timePick.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        timePick.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
         Button notificationButton = (Button) findViewById(R.id.notificationButton);
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*Calendar calendar = Calendar.getInstance();
-                calendar.set(Calendar.MONTH, Integer.parseInt(startDate.substring(5, 7)) - 1);
-                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(startDate.substring(8, 10)));
-                calendar.set(Calendar.YEAR, Integer.parseInt(startDate.substring(0, 4)));
-
-                Intent notification = new Intent(DetailedEventActivity.this.getApplicationContext(), AlarmReceiver.class);
-
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(DetailedEventActivity.this.getApplicationContext(), 0, notification, 0);
-
-                AlarmManager alarmManager = (AlarmManager) DetailedEventActivity.this.getSystemService(ALARM_SERVICE);
-
-                alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis()-timeBefore, pendingIntent);*/
-
-                timePick.show();
+                notificationDialog();
             }
         });
 
@@ -253,7 +228,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
         actionButton = (ActionButton) findViewById(R.id.action_button);
 
-
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -264,9 +238,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
                 showCommentDialog();
             }
         });
-
-
-
     }
 
     private void showCommentDialog() {
@@ -300,7 +271,46 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
     }
 
-    public void attendanceDialog() {
+    private void notificationDialog() {
+        SlideDateTimeListener listener = new SlideDateTimeListener() {
+            @Override
+            public void onDateTimeSet(Date date) {
+                setNotification(date);
+            }
+        };
+
+        int year = Integer.parseInt(startDate.substring(0, 4));
+        int month = Integer.parseInt(startDate.substring(5, 7)) - 1;
+        int day = Integer.parseInt(startDate.substring(8, 10));
+        int hour = Integer.parseInt(startDate.substring(11, 13));
+        int minute = Integer.parseInt(startDate.substring(14, 16));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day, hour, minute);
+        Date initialDate = calendar.getTime();
+
+        new SlideDateTimePicker.Builder(getSupportFragmentManager())
+                .setListener(listener)
+                .setInitialDate(initialDate)
+                .build()
+                .show();
+    }
+
+    private void setNotification(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        Intent notification = new Intent(DetailedEventActivity.this.getApplicationContext(), AlarmReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(DetailedEventActivity.this.getApplicationContext(), 0, notification, 0);
+
+        AlarmManager alarmManager = (AlarmManager) DetailedEventActivity.this.getSystemService(ALARM_SERVICE);
+
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+        Toast.makeText(getApplicationContext(), "Notification set.", Toast.LENGTH_SHORT);
+    }
+
+    private void attendanceDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.requestWindowFeature(Window.FEATURE_SWIPE_TO_DISMISS);

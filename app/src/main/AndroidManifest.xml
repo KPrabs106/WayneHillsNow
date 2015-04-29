@@ -94,13 +94,9 @@
                 android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
         </activity>
 
-        <provider
-            android:name="com.tyczj.extendedcalendarview.CalendarProvider"
-            android:authorities="com.tyczj.extendedcalendarview.calendarprovider" />
-
         <activity
             android:name=".CalendarActivity"
-            android:label="@string/title_activity_calendar"></activity>
+            android:label="@string/title_activity_calendar" />
     </application>
 
 </manifest>
