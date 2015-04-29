@@ -66,6 +66,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     String[] nameCommenters;
     String[] pictureCommenters;
     String[] comments;
+    String[] googleIdCommenters;
 
     Button attendButton;
     Button cancelButton;
@@ -460,12 +461,14 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
                 nameCommenters = new String[response.length()];
                 pictureCommenters = new String[response.length()];
                 comments = new String[response.length()];
+                googleIdCommenters = new String[response.length()];
 
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         nameCommenters[i] = response.getJSONObject(i).getString("name");
                         pictureCommenters[i] = (response.getJSONObject(i).getString("profilePicture")).substring(0, 96) + "103";
                         comments[i] = response.getJSONObject(i).getString("body");
+                        googleIdCommenters[i] = response.getJSONObject(i).getString("googleId");
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -476,7 +479,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     }
 
     private void initComments() {
-        CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments);
+        CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments, googleIdCommenters);
         ListView commentsList = (ListView) findViewById(R.id.commentsList);
         commentsList.setAdapter(commentsListAdapter);
     }

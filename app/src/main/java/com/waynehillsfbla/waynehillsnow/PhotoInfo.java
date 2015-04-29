@@ -6,5 +6,6 @@ package com.waynehillsfbla.waynehillsnow;
 public class PhotoInfo {
     protected String eventTitle;
     protected String submitterName;
+    protected String submitterGoogleId;
     protected String pictureURL;
 }

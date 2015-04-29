@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -24,15 +26,16 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
     private final String[] pictures;
     private final String[] names;
     private final String[] comments;
+    private final String[] googleIds;
     AlertDialog.Builder deleteDialog;
-    private String nameCurrentUser;
 
-    public CommentsListAdapter(Activity activity, String[] pictures, String[] names, String[] comments) {
+    public CommentsListAdapter(Activity activity, String[] pictures, String[] names, String[] comments, String[] googleIds) {
         super(activity, R.layout.comments_list, pictures);
         this.activity = activity;
         this.pictures = pictures;
         this.comments = comments;
         this.names = names;
+        this.googleIds = googleIds;
     }
 
     //Set profile pictures of attendees from String[] of picture URLs
@@ -63,9 +66,8 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
         rowView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(isSignedIn() && canDelete(position))
-                    showDeleteDialog(activity);
-
+                if (canDelete(position))
+                    showDeleteDialog(activity, position);
                 return true;
             }
         });
@@ -77,19 +79,17 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
         return activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE).contains("displayName");
     }
 
-    private void initGooglePlus() {
-        SharedPreferences userDetails = activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
-        nameCurrentUser = userDetails.getString("displayName", null);
-    }
-
     private boolean canDelete(int position) {
-        if(isSignedIn())
-            initGooglePlus();
-        //TODO use google ID to compare instead of name
-        return nameCurrentUser.equals(names[position]);
+        if (isSignedIn()) {
+            SharedPreferences userDetails = activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+            String idCurrentUser = userDetails.getString("googleId", null);
+            return idCurrentUser.equals(googleIds[position]);
+        } else {
+            return false;
+        }
     }
 
-    private void showDeleteDialog(Activity activity) {
+    private void showDeleteDialog(Activity activity, final int position) {
         deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(),5);
         deleteDialog.setTitle("Delete comment?");
 
@@ -97,7 +97,7 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
         deleteDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteComment();
+                deleteComment(position);
                 dialog.dismiss();
             }
         });
@@ -110,8 +110,12 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
         deleteDialog.show();
     }
 
-    private void deleteComment() {
-        //TODO finish method to delete method
+    private void deleteComment(int position) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("commenterGoogleId", googleIds[position]);
+        requestParams.put("commentBody", comments[position]);
+        ClientServerInterface.post("delete_comment.php", requestParams, new JsonHttpResponseHandler());
+        activity.recreate();
     }
 
 }

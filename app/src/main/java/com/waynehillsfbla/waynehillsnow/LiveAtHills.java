@@ -6,11 +6,9 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.software.shell.fab.ActionButton;
@@ -46,8 +44,6 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
 
         getUploadedPictures();
 
-
-
         /*
         if (!isSignedIn()) {
             actionButton.setVisibility(View.INVISIBLE);
@@ -59,7 +55,6 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
                 startActivity(new Intent(getApplicationContext(), ImageUploadActivity.class));
             }
         });
-
     }
 
     private boolean isSignedIn() {
@@ -84,6 +79,7 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
                 photoInfo.eventTitle = photoData.getJSONObject(i).getString("title");
                 photoInfo.pictureURL = photoData.getJSONObject(i).getString("picture_link");
                 photoInfo.submitterName = photoData.getJSONObject(i).getString("name");
+                photoInfo.submitterGoogleId = photoData.getJSONObject(i).getString("googleId");
             } catch (JSONException e) {
                 e.printStackTrace();
             }

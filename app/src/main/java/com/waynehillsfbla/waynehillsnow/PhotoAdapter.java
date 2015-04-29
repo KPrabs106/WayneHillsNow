@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -25,11 +27,10 @@ import java.util.List;
  */
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
-    private List<PhotoInfo> photoInfoList;
-    private String nameCurrentUser;
     AlertDialog.Builder deleteDialog;
     Activity activity;
     PhotoInfo photoInfo;
+    private List<PhotoInfo> photoInfoList;
 
     public PhotoAdapter(List<PhotoInfo> photoInfoList, Activity activity) {
         this.photoInfoList = photoInfoList;
@@ -45,33 +46,31 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         return new PhotoViewHolder(itemView);
     }
 
-    public void onBindViewHolder(final PhotoViewHolder photoViewHolder, final int i) {
+    public void onBindViewHolder(final PhotoViewHolder photoViewHolder, final int position) {
         photoViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putString("pictureURL", photoInfoList.get(i).pictureURL);
-                bundle.putString("eventName", photoInfoList.get(i).eventTitle);
+                bundle.putString("pictureURL", photoInfoList.get(position).pictureURL);
+                bundle.putString("eventName", photoInfoList.get(position).eventTitle);
                 Intent intent = new Intent(v.getContext(), ViewEventImage.class);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
             }
         });
 
-        photoInfo = photoInfoList.get(i);
+        photoInfo = photoInfoList.get(position);
         photoViewHolder.vEventTitle.setText(photoInfo.eventTitle);
         photoViewHolder.vSubmitter.setText(photoInfo.submitterName);
 
         photoViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                if(isSignedIn() && canDelete())
-                    showDeleteDialog(activity);
+                if (canDelete(position))
+                    showDeleteDialog(activity, position);
                 return true;
             }
         });
-
-
 
         Picasso.with(photoViewHolder.vContext).load(photoInfo.pictureURL).into(photoViewHolder.vPicture, new Callback() {
             @Override
@@ -92,21 +91,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         return activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE).contains("displayName");
     }
 
-    private void initGooglePlus() {
-        SharedPreferences userDetails = activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
-        nameCurrentUser = userDetails.getString("displayName", null);
-    }
-
-    private boolean canDelete() {
-        if(isSignedIn())
-            initGooglePlus();
-        if(nameCurrentUser.equals(photoInfo.submitterName))
-            return true;
-        else
+    private boolean canDelete(int position) {
+        if (isSignedIn()) {
+            SharedPreferences userDetails = activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
+            String idCurrentUser = userDetails.getString("googleId", null);
+            return idCurrentUser.equals(photoInfoList.get(position).submitterGoogleId);
+        } else {
             return false;
+        }
     }
 
-    private void showDeleteDialog(Activity activity) {
+    private void showDeleteDialog(Activity activity, final int position) {
         deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(),5);
         deleteDialog.setTitle("Remove from feed?");
 
@@ -114,7 +109,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         deleteDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                deleteImage();
+                deleteImage(position);
                 dialog.dismiss();
             }
         });
@@ -127,8 +122,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         deleteDialog.show();
     }
 
-    private void deleteImage() {
-
+    private void deleteImage(int position) {
+        RequestParams requestParams = new RequestParams();
+        requestParams.put("pictureURL", photoInfoList.get(position).pictureURL);
+        ClientServerInterface.post("delete_uploaded_pictures.php", requestParams, new JsonHttpResponseHandler());
+        activity.recreate();
     }
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder {
