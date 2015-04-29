@@ -66,9 +66,9 @@ public class ViewEventImage extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_view_event_image, menu);
-        MenuItemCompat item = (MenuItemCompat) menu.findItem(R.id.menu_item_share);
+        /*MenuItemCompat item = (MenuItemCompat) menu.findItem(R.id.menu_item_share);
         MenuItem = menu.findItem(R.id.menu_item_share);
-        mShareActionProvider = (ShareActionProvider) item.getActionProvider(item);
+        mShareActionProvider = (ShareActionProvider) item.getActionProvider(item);*/
         return true;
     }
 
