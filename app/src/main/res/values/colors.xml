@@ -4,7 +4,7 @@
     <color name="white">#ffffff</color>
     <color name="primary">#660033</color>
     <color name="primary_light">#ffffff</color>
-    <color name="primary_dark">#ffffff</color>
+    <color name="primary_dark">#ff660033</color>
     <color name="accent">#6e40</color>
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>

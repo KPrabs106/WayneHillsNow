@@ -4,8 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,10 +13,18 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.daimajia.slider.library.SliderTypes.BaseSliderView;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
-import java.util.HashMap;
+import org.apache.http.Header;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ****************************************************
@@ -27,23 +35,22 @@ import java.util.HashMap;
  * the user can sign in to Google+.
  * ****************************************************
  */
-public class MainActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
+public class MainActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
 
     Toolbar toolbar;
-    ViewPager viewPager;
-    ViewPagerAdapterMain viewPagerAdapter;
-    SlidingTabLayout slidingTabLayout;
-    CharSequence Titles[] = {"Events List", "Calendar"};
-    int numTabs = 2;
     Intent intent;
 
-    String[] drawerItems = {"Google Plus", "My Events", "Live@Hills", "Search", "Help"};
-    int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_photos, R.drawable.ic_search, R.drawable.ic_help};
+    TextView titleTextView;
+    ImageView pictureImageView;
+    TextView dateTextView;
+    RecyclerView recList;
+    SwipeRefreshLayout swipeRefreshLayout;
 
-    HashMap<String, String> pictureData = new HashMap<String, String>();
+    String[] drawerItems = {"Google Plus", "My Events", "Live@Hills", "Calendar", "Search", "Help"};
+    int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_photos, R.drawable.ic_calendar, R.drawable.ic_search, R.drawable.ic_help};
 
     //TODO better search
     //TODO widget options; myevents, upcoming events
@@ -98,15 +105,65 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), Titles, numTabs);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(this);
 
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        viewPager.setAdapter(viewPagerAdapter);
+        titleTextView = (TextView) findViewById(R.id.txtTitle);
+        pictureImageView = (ImageView) findViewById(R.id.picture);
+        dateTextView = (TextView) findViewById(R.id.txtDate);
+        recList = (RecyclerView) findViewById(R.id.cardList);
+        recList.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(llm);
 
-        slidingTabLayout = (SlidingTabLayout) findViewById(R.id.tabs);
-        slidingTabLayout.setDistributeEvenly(true);
+        getEvents();
+    }
 
-        slidingTabLayout.setViewPager(viewPager);
+    @Override
+    public void onRefresh() {
+        getEvents();
+    }
+
+    //Set up the cards
+    private void initCards(JSONArray jsonArray) {
+        EventAdapter ea = new EventAdapter(createList(jsonArray.length(), jsonArray));
+        recList.setAdapter(ea);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    //Give the adapter all the information about each event
+    private List<EventInfo> createList(int size, JSONArray eventDetails) {
+        List<EventInfo> result = new ArrayList<EventInfo>();
+        JSONObject jsonObject;
+        for (int i = 0; i < size; i++) {
+            EventInfo ei = new EventInfo();
+            try {
+                jsonObject = eventDetails.getJSONObject(i);
+                ei.id = Integer.parseInt(jsonObject.getString("id"));
+                ei.title = jsonObject.getString("title");
+                ei.startDatetime = jsonObject.getString("startDate");
+                ei.pictureURL = jsonObject.getString("pictureURL");
+                ei.type = jsonObject.getString("type");
+                ei.contact = jsonObject.getString("contact");
+                ei.endDatetime = jsonObject.getString("endDate");
+                ei.location = jsonObject.getString("location");
+                ei.description = jsonObject.getString("description");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            result.add(ei);
+        }
+        return result;
+    }
+
+    private void getEvents() {
+        ClientServerInterface.get("get_events.php", null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                initCards(response);
+            }
+        });
     }
 
     private boolean isSignedIn() {
@@ -142,14 +199,5 @@ public class MainActivity extends ActionBarActivity implements BaseSliderView.On
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    //Start a new activity when the banner image scroller is clicked with the event details
-    @Override
-    public void onSliderClick(BaseSliderView baseSliderView) {
-        Bundle bundle = baseSliderView.getBundle();
-        Intent intent = new Intent(baseSliderView.getContext(), DetailedEventActivity.class);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 }
