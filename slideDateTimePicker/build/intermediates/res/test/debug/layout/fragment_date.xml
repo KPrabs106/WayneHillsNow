@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.github.jjobes.slidedatetimepicker.CustomDatePicker
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/datePicker"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:calendarViewShown="false" /><!-- From: file:/C:/Users/Kartik/Documents/Android/WayneHillsNow/slideDateTimePicker/src/main/res/layout/fragment_date.xml --><!-- From: file:/C:/Users/Kartik/Documents/Android/WayneHillsNow/slideDateTimePicker/build/intermediates/bundles/debug/res/layout/fragment_date.xml -->

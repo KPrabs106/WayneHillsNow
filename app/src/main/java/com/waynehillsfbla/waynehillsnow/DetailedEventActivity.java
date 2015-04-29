@@ -307,7 +307,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         AlarmManager alarmManager = (AlarmManager) DetailedEventActivity.this.getSystemService(ALARM_SERVICE);
 
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-        Toast.makeText(getApplicationContext(), "Notification set.", Toast.LENGTH_SHORT);
+        Toast.makeText(getApplicationContext(), "Notification set.", Toast.LENGTH_SHORT).show();
     }
 
     private void attendanceDialog() {
