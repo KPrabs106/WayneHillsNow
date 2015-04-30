@@ -24,15 +24,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class ViewImageActivity extends AppCompatActivity implements
-        ShareActionProvider.OnShareTargetSelectedListener {
+public class ViewImageActivity extends AppCompatActivity {
 
     String pictureURL;
     TouchImageView eventPic;
     Toolbar toolbar;
-    String eventName;
-    ShareActionProvider mShareActionProvider;
-    ShareActionProvider.OnShareTargetSelectedListener listener;
+    String eventName;;
 
     public static Bitmap getBitmapFromURL(String src) {
         try {
@@ -136,10 +133,4 @@ public class ViewImageActivity extends AppCompatActivity implements
 
     }
 
-    @Override
-    public boolean onShareTargetSelected(ShareActionProvider shareActionProvider, Intent intent) {
-        Toast.makeText(this, intent.getComponent().toString(),
-                Toast.LENGTH_LONG).show();
-        return(false);
-    }
 }
