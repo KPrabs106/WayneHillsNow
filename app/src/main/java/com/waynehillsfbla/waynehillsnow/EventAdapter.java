@@ -2,6 +2,7 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ****************************************************************
@@ -126,6 +128,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         Picasso.with(eventViewHolder.context).load(R.drawable.ic_notify).resize(x,x).into(eventViewHolder.notifIcon);
         Picasso.with(eventViewHolder.context).load(R.drawable.ic_attend).resize(x,x).into(eventViewHolder.attendIcon);
 
+        setupNotification(eventViewHolder, ei);
         setupAttendance(eventViewHolder, ei);
     }
 
@@ -134,6 +137,15 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 from(viewGroup.getContext()).
                 inflate(R.layout.card_layout, viewGroup, false);
         return new EventViewHolder(itemView);
+    }
+
+    private void setupNotification(final EventViewHolder eventViewHolder, EventInfo ei) {
+        SharedPreferences notifications = eventViewHolder.context.getSharedPreferences("notifications", Context.MODE_PRIVATE);
+        Map<String, ?> keys = notifications.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            if (entry.getValue() == ei.id)
+                eventViewHolder.notifIcon.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setupAttendance(final EventViewHolder eventViewHolder, EventInfo ei) {
