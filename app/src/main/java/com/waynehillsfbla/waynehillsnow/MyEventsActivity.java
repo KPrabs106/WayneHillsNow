@@ -1,10 +1,12 @@
 package com.waynehillsfbla.waynehillsnow;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -27,6 +29,13 @@ public class MyEventsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_events);
 
+        if (!isSignedIn()) {
+            Intent signInIntent = new Intent(getApplicationContext(), GooglePlusSignIn.class);
+            startActivity(signInIntent);
+            Toast.makeText(getApplicationContext(), "You need to be signed in.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -46,6 +55,11 @@ public class MyEventsActivity extends AppCompatActivity {
     private void initCards(JSONArray jsonArray) {
         EventAdapter ea = new EventAdapter(createList(jsonArray.length(), jsonArray));
         recList.setAdapter(ea);
+    }
+
+    //Check if the user is signed in
+    private boolean isSignedIn() {
+        return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
     }
 
     //Give the adapter all the information about each event
