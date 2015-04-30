@@ -50,7 +50,11 @@ public class SearchActivity extends AppCompatActivity {
             public void onClick(View v) {
                 failure.setVisibility(View.INVISIBLE);
                 progressBar.setVisibility(View.VISIBLE);
-                search(String.valueOf(input.getText()));
+                if (input.getText().length() == 0) {
+                    failure.setVisibility(View.VISIBLE);
+                } else {
+                    search(String.valueOf(input.getText()));
+                }
             }
         });
         recList = (RecyclerView) findViewById(R.id.cardList);
