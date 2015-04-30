@@ -6,15 +6,14 @@
     two tabs will be left-justified.
 -->
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/customTab"
-    android:orientation="vertical"
     android:layout_width="0dp"
     android:layout_height="50dp"
     android:layout_weight="1"
     android:background="?android:selectableItemBackground"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tabText"
