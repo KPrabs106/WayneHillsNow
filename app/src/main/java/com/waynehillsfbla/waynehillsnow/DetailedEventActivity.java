@@ -241,6 +241,8 @@ public class DetailedEventActivity extends AppCompatActivity {
         //If the user clicks on the action button, which is the "+" Button, there will be a popup
         //where the user can enter the comment
         actionButton = (ActionButton) findViewById(R.id.action_button);
+        if (!isSignedIn())
+            actionButton.setVisibility(View.INVISIBLE);
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
