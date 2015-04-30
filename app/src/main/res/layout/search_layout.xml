@@ -21,16 +21,9 @@
 
         <EditText
             android:id="@+id/input"
-            android:layout_width="282dp"
+            android:layout_width="309dp"
             android:layout_height="wrap_content"
             android:inputType="text" />
-
-        <Button
-            android:id="@+id/enterButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="true"
-            android:text="Enter" />
 
 
     </LinearLayout>
@@ -62,6 +55,15 @@
         android:text="No results found."
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:visibility="invisible" />
+
+    <ImageButton
+        android:id="@+id/enterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:src="@drawable/ic_enter"
+        android:layout_alignTop="@+id/search_area"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
 

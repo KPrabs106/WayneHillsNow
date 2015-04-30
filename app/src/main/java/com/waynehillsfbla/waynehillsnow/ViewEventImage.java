@@ -2,19 +2,25 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.app.DownloadManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Path;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.ShareActionProvider;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
-import android.widget.ShareActionProvider;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -23,6 +29,7 @@ import org.apache.http.util.ByteArrayBuffer;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -30,24 +37,27 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
 
-public class ViewEventImage extends ActionBarActivity {
+public class ViewEventImage extends AppCompatActivity implements
+        ShareActionProvider.OnShareTargetSelectedListener {
 
     String pictureURL;
-    ImageView eventPic;
+    TouchImageView eventPic;
     Toolbar toolbar;
     String eventName;
-    private ShareActionProvider mShareActionProvider;
+    ShareActionProvider mShareActionProvider;
+    ShareActionProvider.OnShareTargetSelectedListener listener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_image);
 
-        eventPic = (ImageView) findViewById(R.id.eventImage);
+        eventPic = (TouchImageView) findViewById(R.id.eventImage);
         toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
@@ -66,10 +76,12 @@ public class ViewEventImage extends ActionBarActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_view_event_image, menu);
-        /*MenuItemCompat item = (MenuItemCompat) menu.findItem(R.id.menu_item_share);
-        MenuItem = menu.findItem(R.id.menu_item_share);
-        mShareActionProvider = (ShareActionProvider) item.getActionProvider(item);*/
-        return true;
+
+        /*MenuItem item = menu.findItem(R.id.menu_item_share);
+        MenuItemCompat.getActionProvider(item);
+        mShareActionProvider = new ShareActionProvider(this);
+        MenuItemCompat.setActionProvider(item, mShareActionProvider);*/
+        return(super.onCreateOptionsMenu(menu));
     }
 
     @Override
@@ -81,26 +93,45 @@ public class ViewEventImage extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_download) {
-            DownloadFromUrl(pictureURL, eventName);
+            downloadFromUrl(pictureURL, eventName);
             return true;
         }
         else if(id == R.id.menu_item_share) {
-            shareImage();
+            shareImage(pictureURL);
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void shareImage() {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, pictureURL);
-        shareIntent.setType("image/jpeg");
-        startActivity(Intent.createChooser(shareIntent, getResources().getText(R.string.send_to)));
+    private void shareImage(String imageURL) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        Bitmap loadedImage = getBitmapFromURL(imageURL);
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), loadedImage, "", null);
+        Uri screenshotUri = Uri.parse(path);
+
+        intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+        intent.setType("image/*");
+        startActivity(Intent.createChooser(intent, "Share image via..."));
+
     }
 
-    private void DownloadFromUrl(String imageURL, String fileName)  {  //this is the downloader method
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
+    }
+
+    private void downloadFromUrl(String imageURL, String fileName)  {  //this is the downloader method
         File direct = new File(Environment.getExternalStorageDirectory() + "/WayneHillsNow");
 
         if(!direct.exists())
@@ -121,5 +152,12 @@ public class ViewEventImage extends ActionBarActivity {
         downloadManager.enqueue(request);
         Toast.makeText(getApplicationContext(), "Image Downloaded", Toast.LENGTH_SHORT).show();
 
+    }
+
+    @Override
+    public boolean onShareTargetSelected(ShareActionProvider shareActionProvider, Intent intent) {
+        Toast.makeText(this, intent.getComponent().toString(),
+                Toast.LENGTH_LONG).show();
+        return(false);
     }
 }

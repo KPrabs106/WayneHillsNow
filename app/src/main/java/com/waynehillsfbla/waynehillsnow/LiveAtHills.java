@@ -26,6 +26,7 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
     SwipeRefreshLayout swipeRefreshLayout;
     RecyclerView recyclerView;
     ActionButton actionButton;
+    LinearLayoutManager llm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +39,18 @@ public class LiveAtHills extends ActionBarActivity implements SwipeRefreshLayout
         recyclerView = (RecyclerView) findViewById(R.id.photoCardList);
 
         recyclerView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
+        llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            }
+
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                swipeRefreshLayout.setEnabled(llm.findFirstCompletelyVisibleItemPosition() == 0);
+            }
+        });
 
         getUploadedPictures();
 

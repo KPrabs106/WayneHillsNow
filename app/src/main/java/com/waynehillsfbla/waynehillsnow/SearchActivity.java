@@ -10,6 +10,7 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -30,7 +31,7 @@ import java.util.List;
 public class SearchActivity extends ActionBarActivity {
 
     EditText input;
-    Button enterButton;
+    ImageButton enterButton;
     RecyclerView recList;
     Toolbar toolbar;
     TextView failure;
@@ -45,7 +46,7 @@ public class SearchActivity extends ActionBarActivity {
 
         input = (EditText) findViewById(R.id.input);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
-        enterButton = (Button) findViewById(R.id.enterButton);
+        enterButton = (ImageButton) findViewById(R.id.enterButton);
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

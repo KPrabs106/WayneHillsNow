@@ -6,15 +6,15 @@
 
     <item
         android:id="@+id/action_download"
-        android:icon="@drawable/l_download"
+        android:icon="@drawable/ic_down"
         android:title="Download"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menu_item_share"
+        android:icon="@drawable/ic_share"
         app:showAsAction="ifRoom"
         android:title="Share"
-        android:actionProviderClass=
-            "android.widget.ShareActionProvider" />
+         />
 
 </menu>

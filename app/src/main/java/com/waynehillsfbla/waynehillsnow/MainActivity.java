@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,6 +49,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
     TextView dateTextView;
     RecyclerView recList;
     SwipeRefreshLayout swipeRefreshLayout;
+    LinearLayoutManager lin;
 
     String[] drawerItems = {"Google Plus", "My Events", "Live@Hills", "Calendar", "Search", "Help"};
     int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_photos, R.drawable.ic_calendar, R.drawable.ic_search, R.drawable.ic_help};
@@ -67,7 +69,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
         RecyclerView drawerRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         drawerRecyclerView.setHasFixedSize(true);
 
-        RecyclerView.Adapter drawerListAdapter;
+        final RecyclerView.Adapter drawerListAdapter;
         if (isSignedIn()) {
             SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
             String name = userDetails.getString("displayName", null);
@@ -76,6 +78,8 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
         } else {
             drawerListAdapter = new DrawerListAdapter(drawerItems, icons);
         }
+
+
 
         drawerRecyclerView.setAdapter(drawerListAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -113,16 +117,37 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
         dateTextView = (TextView) findViewById(R.id.txtDate);
         recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        recList.setLayoutManager(llm);
+        lin = new LinearLayoutManager(getApplicationContext());
+        lin.setOrientation(LinearLayoutManager.VERTICAL);
+        recList.setLayoutManager(lin);
+
+        recList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            }
+
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                swipeRefreshLayout.setEnabled(lin.findFirstCompletelyVisibleItemPosition() == 0);
+            }
+        });
 
         getEvents();
+
     }
 
     @Override
     public void onRefresh() {
         getEvents();
+    }
+
+    public boolean canScrollVertically(int direction) {
+        // check if scrolling up
+        if (direction < 1) {
+            boolean original = recList.canScrollVertically(direction);
+            return !original && recList.getChildAt(0) != null && recList.getChildAt(0).getTop() < 0 || original;
+        }
+        return recList.canScrollVertically(direction);
+
     }
 
     //Set up the cards
@@ -200,4 +225,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
         super.onConfigurationChanged(newConfig);
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+
+
 }

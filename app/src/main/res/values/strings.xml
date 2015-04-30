@@ -28,7 +28,7 @@
     <string name="revoke_access_button_name">Revoke</string>
     <string name="circles_title">Circles</string>
     <string name="gplus">Google Plus</string>
-    <string name="people_attending">people are attending</string>
+    <string name="people_attending"> attending</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="num">11</string>

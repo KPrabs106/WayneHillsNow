@@ -56,7 +56,7 @@ public class NotificationService extends Service {
                 Notification notification = new Notification.Builder(getApplicationContext())
                         .setContentTitle(eventName)
                         .setContentText("on " + startDate + " at " + location)
-                        .setSmallIcon(R.drawable.ic_reminder)
+                        .setSmallIcon(R.drawable.ic_notify)
                         .setLargeIcon(bitmap)
                         .setContentIntent(detailedEventActivityIntent)
                         .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
@@ -69,7 +69,7 @@ public class NotificationService extends Service {
                 Notification notification = new Notification.Builder(getApplicationContext())
                         .setContentTitle(eventName)
                         .setContentText("on " + startDate + " at " + location)
-                        .setSmallIcon(R.drawable.ic_reminder)
+                        .setSmallIcon(R.drawable.ic_notify)
                         .setLargeIcon(((BitmapDrawable) errorDrawable).getBitmap())
                         .setContentIntent(detailedEventActivityIntent)
                         .build();

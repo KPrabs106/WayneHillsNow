@@ -11,11 +11,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/swipeRefreshLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -68,12 +63,23 @@
                         <RelativeLayout
                             android:id="@+id/frameLayout"
                             android:layout_width="fill_parent"
-                            android:layout_height="280dp"
+                            android:layout_height="255dp"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
                             android:layout_marginTop="29dp"
                             android:background="@android:color/darker_gray"
                             android:padding="2dp">
+
+                            <ImageView
+                                android:id="@+id/locPin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:autoLink="map"
+                                android:src="@drawable/ic_pin"
+                                android:visibility="visible"
+                                android:layout_alignParentTop="true"
+                                android:layout_toEndOf="@+id/dispLoc"
+                                />
 
                             <TextView
                                 android:id="@+id/txtLocation"
@@ -87,7 +93,6 @@
                                 android:textAppearance="?android:attr/textAppearanceMedium"
                                 android:textStyle="bold" />
 
-                            <!--TODO add location pin image https://medialoot.com/item/free-vector-map-location-pins/ -->
 
                             <TextView
                                 android:id="@+id/txtDesc"
@@ -134,21 +139,21 @@
                                 android:id="@+id/txtContact"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignBottom="@+id/dispContact"
-                                android:layout_toEndOf="@+id/dispLoc"
                                 android:autoLink="email"
                                 android:text="[ContactInfo]"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
+                                android:textAppearance="?android:attr/textAppearanceMedium"
+                                android:layout_below="@+id/dispContact"
+                                android:layout_alignStart="@+id/dispContact"
+                                android:layout_marginLeft="2dp" />
 
                             <TextView
                                 android:id="@+id/From"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_below="@+id/dispContact"
-                                android:layout_marginTop="10dp"
                                 android:text="@string/from"
-                                android:textColor="@android:color/primary_text_light" />
+                                android:textColor="@android:color/primary_text_light"
+                                android:layout_alignBottom="@+id/cancel_button"
+                                android:layout_alignStart="@+id/To" />
 
                             <TextView
                                 android:id="@+id/txtStartDate"
@@ -182,53 +187,47 @@
                                 android:id="@+id/attend_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignParentStart="true"
-                                android:layout_marginTop="10dp"
-                                android:text="Attend" />
+                                android:text="Attend"
+                                android:layout_above="@+id/cancel_button"
+                                android:layout_alignEnd="@+id/notificationButton" />
 
                             <Button
                                 android:id="@+id/cancel_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentBottom="true"
-                                android:layout_alignStart="@+id/txtContact"
-                                android:text="Cancel" />
+                                android:text="Cancel"
+                                android:layout_below="@+id/dispContact"
+                                android:layout_alignEnd="@+id/notificationButton" />
 
-                            <Button
+                            <ImageButton
                                 android:id="@+id/notificationButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_above="@+id/dispDesc"
                                 android:layout_alignParentEnd="true"
-                                android:text="Notifications" />
-
-                            <ImageView
-                                android:id="@+id/locPin"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/dispLoc"
-                                android:layout_toEndOf="@+id/txtDesc"
-                                android:src="@drawable/pin" />
+                                android:text="Notifications"
+                                android:src="@drawable/ic_notify"/>
 
                         </RelativeLayout>
 
                         <ImageView
-                            android:id="@+id/attendIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/notifIcon"
+                            android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
-                            android:layout_alignTop="@+id/txtTitle"
-                            android:layout_marginEnd="58dp"
-                            android:visibility="gone" />
+                            android:layout_alignRight="@+id/attendIcon"
+                            android:layout_marginRight="30dp"
+                            android:visibility="invisible"/>
 
                         <ImageView
-                            android:id="@+id/notifIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignTop="@+id/txtTitle"
-                            android:layout_toStartOf="@+id/attendIcon"
-                            android:visibility="gone" />
+                            android:id="@+id/attendIcon"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginRight="3dp"
+                            android:visibility="invisible"/>
 
                     </RelativeLayout>
 
@@ -261,7 +260,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignEnd="@+id/card_view"
                     android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/lvItems" />
+                    android:fastScrollAlwaysVisible="false"
+                    android:layout_below="@+id/commentLbl" />
 
                 <com.software.shell.fab.ActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/action_button"
@@ -285,10 +285,20 @@
                     fab:stroke_width="1.0dp"
                     fab:type="DEFAULT" />
 
+                <TextView
+                    android:id="@+id/commentLbl"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#660033"
+                    android:text="Comments"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/primary_text_dark"
+                    android:layout_below="@+id/lvItems"
+                    android:layout_alignParentStart="true" />
+
 
             </RelativeLayout>
 
-            </android.support.v4.widget.SwipeRefreshLayout>
         </FrameLayout>
 
         <ScrollView

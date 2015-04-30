@@ -125,8 +125,8 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         });
 
         x = 75;
-        Picasso.with(eventViewHolder.context).load(R.drawable.notify).resize(x,x).into(eventViewHolder.notifIcon);
-        Picasso.with(eventViewHolder.context).load(R.drawable.attend).resize(x,x).into(eventViewHolder.attendIcon);
+        Picasso.with(eventViewHolder.context).load(R.drawable.ic_notify).resize(x,x).into(eventViewHolder.notifIcon);
+        Picasso.with(eventViewHolder.context).load(R.drawable.ic_attend).resize(x,x).into(eventViewHolder.attendIcon);
 
         setupAttendance(eventViewHolder, ei);
     }

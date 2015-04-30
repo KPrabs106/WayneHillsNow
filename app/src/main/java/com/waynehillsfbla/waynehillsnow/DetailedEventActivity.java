@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +23,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -55,7 +55,7 @@ import java.util.Date;
  * and allows users to see who all are attending events and.
  * *************************************************************
  */
-public class DetailedEventActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class DetailedEventActivity extends ActionBarActivity  {
     String nameCurrentUser;
     String userId;
 
@@ -70,6 +70,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
 
     Button attendButton;
     Button cancelButton;
+    ImageButton notificationButton;
     ActionButton actionButton;
     AlertDialog.Builder commentDialog;
     EditText input;
@@ -91,7 +92,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
     String commentBody;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
-    SwipeRefreshLayout swipeRefreshLayout;
     TextView txtTitle;
     TextView txtLocation;
     TextView txtDescription;
@@ -108,16 +108,13 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_event);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        swipeRefreshLayout.setOnRefreshListener(this);
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         attendIcon = (ImageView) findViewById(R.id.attendIcon);
         notifIcon = (ImageView) findViewById(R.id.notifIcon);
         x = 75;
-        Picasso.with(getApplicationContext()).load(R.drawable.notify).resize(x,x).into(notifIcon);
-        Picasso.with(getApplicationContext()).load(R.drawable.attend).resize(x,x).into(attendIcon);
+        Picasso.with(getApplicationContext()).load(R.drawable.ic_notify).resize(x,x).into(notifIcon);
+        Picasso.with(getApplicationContext()).load(R.drawable.ic_attend).resize(x,x).into(attendIcon);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
@@ -202,7 +199,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         getEventDetails();
         getLocationDetails();
 
-        Button notificationButton = (Button) findViewById(R.id.notificationButton);
+        notificationButton = (ImageButton) findViewById(R.id.notificationButton);
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -363,7 +360,6 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
         if (id == R.id.action_weather) {
             drawerLayout.openDrawer(Gravity.RIGHT);
         } else if (id == R.id.action_refresh) {
-            swipeRefreshLayout.setRefreshing(true);
             onRefresh();
         }
 
@@ -502,7 +498,7 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
                     }
                 }
                 TextView peopleAttending = (TextView) findViewById(R.id.peopleAttending);
-                peopleAttending.setText(pictureAttendees.length + " people are attending.");
+                peopleAttending.setText(pictureAttendees.length + " attending");
 
                 initAttendance();
             }
@@ -608,13 +604,11 @@ public class DetailedEventActivity extends ActionBarActivity implements SwipeRef
             int id = getResources().getIdentifier(icon, "drawable", getPackageName());
             weatherIcon.setImageDrawable(getResources().getDrawable(id));
 
-            swipeRefreshLayout.setRefreshing(false);
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    @Override
     public void onRefresh() {
         getEventDetails();
         getLocationDetails();
