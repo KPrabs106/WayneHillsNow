@@ -12,11 +12,11 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
- * **************************************************************
- * Given an array of names and profile pictures of those attending
- * an event, the adapter sets the names and profile pictures in a
- * list.
- * *************************************************************
+ * *****************************************************************
+ * Given an array of names and profile pictures of those attending  *
+ * an event, the adapter sets the names and profile pictures in a   *
+ * list.                                                            *
+ * ****************************************************************
  */
 public class AttendeeListAdapter extends ArrayAdapter<String> {
 

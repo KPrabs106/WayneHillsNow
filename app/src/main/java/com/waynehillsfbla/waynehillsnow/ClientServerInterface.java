@@ -5,11 +5,11 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
 /**
- * *************************************************
- * This class is the link between the Android device
- * and the web server. It has methods to send and
- * receive data.
- * *************************************************
+ * *********************************************
+ * This class is the link between the Android   *
+ * device and the web server. It has methods to *
+ * send and receive data.                       *
+ * ********************************************
  */
 
 public class ClientServerInterface {

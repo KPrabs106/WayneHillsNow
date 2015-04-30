@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -51,12 +50,16 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * ************************************************************
- * This activity displays event details in a more detailed view.
- * It has Google+ integration, which allows users to attend events
- * and allows users to see who all are attending events and.
- * *************************************************************
- */
+ * ******************************************************************
+ * This activity displays event details in a more detailed view.    *
+ * There's also additional details, such as the weather for the day *
+ * of the event.                                                    *
+ * It has Google+ integration, which allows users to attend events  *
+ * and allows users to see who all are attending events. It also    *
+ * allows users to post their own comments and see comments posted  *
+ * others.                                                          *
+ * Users can also get notifications for the event.                  *
+ * *****************************************************************/
 public class DetailedEventActivity extends AppCompatActivity {
     String nameCurrentUser;
     String userId;
@@ -74,6 +77,7 @@ public class DetailedEventActivity extends AppCompatActivity {
     Button cancelButton;
     ImageButton notificationButton;
     ActionButton actionButton;
+
     AlertDialog.Builder commentDialog;
     EditText input;
     ImageView locPin;
@@ -86,11 +90,15 @@ public class DetailedEventActivity extends AppCompatActivity {
     String startDate;
     String endDate;
     String pictureURL;
+
     ImageView attendIcon;
-    ImageView notifIcon;
+    ImageView notificationIcon;
+
     String commentBody;
+
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
+
     TextView txtTitle;
     TextView txtLocation;
     TextView txtDescription;
@@ -98,10 +106,7 @@ public class DetailedEventActivity extends AppCompatActivity {
     TextView txtStartDate;
     TextView txtEndDate;
     RequestParams eventIdParam;
-    private int x;
 
-    //TODO Add notifications for upcoming events
-    //TODO fix navigation drawer and swiperefreshlayout conflict
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,16 +115,18 @@ public class DetailedEventActivity extends AppCompatActivity {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         attendIcon = (ImageView) findViewById(R.id.attendIcon);
-        notifIcon = (ImageView) findViewById(R.id.notifIcon);
-        x = 75;
-        Picasso.with(getApplicationContext()).load(R.drawable.ic_notify).resize(x,x).into(notifIcon);
-        Picasso.with(getApplicationContext()).load(R.drawable.ic_attend).resize(x,x).into(attendIcon);
+        notificationIcon = (ImageView) findViewById(R.id.notifIcon);
+
+        int iconDimensions = 75;
+        Picasso.with(getApplicationContext()).load(R.drawable.ic_notify).resize(iconDimensions, iconDimensions).into(notificationIcon);
+        Picasso.with(getApplicationContext()).load(R.drawable.ic_attend).resize(iconDimensions, iconDimensions).into(attendIcon);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        //Drawer for the weather details
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -144,6 +151,7 @@ public class DetailedEventActivity extends AppCompatActivity {
 
         locPin = (ImageView) findViewById(R.id.locPin);
 
+        //Get any data in the form of a bundle
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
@@ -156,6 +164,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         endDate = extras.getString("EndDate");
         pictureURL = extras.getString("PictureURL");
 
+        //Set up a request parameter that is going to be used by many following methods
         eventIdParam = new RequestParams("eventId", id);
 
         if (isSignedIn())
@@ -166,6 +175,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         getWeather();
         initNotification();
 
+        //Set the text fields
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
 
@@ -200,6 +210,8 @@ public class DetailedEventActivity extends AppCompatActivity {
         getEventDetails();
         getLocationDetails();
 
+        //If the user clicks on the notification button, there will be a popup to select what date
+        //and time the user wants the notification
         notificationButton = (ImageButton) findViewById(R.id.notificationButton);
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,8 +238,9 @@ public class DetailedEventActivity extends AppCompatActivity {
             }
         });
 
+        //If the user clicks on the action button, which is the "+" Button, there will be a popup
+        //where the user can enter the comment
         actionButton = (ActionButton) findViewById(R.id.action_button);
-
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -240,6 +253,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         });
     }
 
+    //Creates a popup for the user to enter the comment
     private void showCommentDialog() {
         commentDialog = new AlertDialog.Builder(this,5);
         commentDialog.setTitle("Enter comment");
@@ -253,7 +267,7 @@ public class DetailedEventActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 commentBody = input.getText().toString();
-                DetailedEventActivity.this.publishComment();
+                publishComment();
                 dialog.dismiss();
                 onRefresh();
             }
@@ -267,20 +281,27 @@ public class DetailedEventActivity extends AppCompatActivity {
         commentDialog.show();
     }
 
+    //Check if the user is going to get a notification for this event
     private void initNotification() {
         SharedPreferences notifications = getSharedPreferences("notifications", Context.MODE_PRIVATE);
         Map<String, ?> keys = notifications.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            //If the event id is one of the values, then the user is going to be notified, so the
+            //notification icon should be visible
             if (entry.getValue().equals(id))
-                notifIcon.setVisibility(View.VISIBLE);
+                notificationIcon.setVisibility(View.VISIBLE);
         }
     }
 
+    //Check if the user is signed in
     private boolean isSignedIn() {
         return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
     }
 
+    //Displays a dialog with date and time picker, with initial date and time set to that of the
+    //event
     private void notificationDialog() {
+        //When the date and time are set, call the setNotification() method
         SlideDateTimeListener listener = new SlideDateTimeListener() {
             @Override
             public void onDateTimeSet(Date date) {
@@ -288,6 +309,7 @@ public class DetailedEventActivity extends AppCompatActivity {
             }
         };
 
+        //Get the start date and time of the eent
         int year = Integer.parseInt(startDate.substring(0, 4));
         int month = Integer.parseInt(startDate.substring(5, 7)) - 1;
         int day = Integer.parseInt(startDate.substring(8, 10));
@@ -305,10 +327,12 @@ public class DetailedEventActivity extends AppCompatActivity {
                 .show();
     }
 
+    //Set up the notification, given the date
     private void setNotification(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
+        //Put details of this event into a bundle
         Bundle eventDetails = new Bundle();
         eventDetails.putString("eventName", title);
         eventDetails.putString("pictureURL", pictureURL);
@@ -321,6 +345,7 @@ public class DetailedEventActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        //Set up the alarm that will be used to notify the user at the specified date and time
         Intent notification = new Intent(getApplicationContext(), AlarmReceiver.class);
         notification.putExtras(eventDetails);
 
@@ -331,19 +356,22 @@ public class DetailedEventActivity extends AppCompatActivity {
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
         Toast.makeText(getApplicationContext(), "Notification set", Toast.LENGTH_SHORT).show();
         logNotification(date);
-        notifIcon.setVisibility(View.VISIBLE);
+        notificationIcon.setVisibility(View.VISIBLE);
     }
 
+    //Store the notification in a SharedPreferences
     private void logNotification(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 
         SharedPreferences userDetails = getSharedPreferences("notifications", MODE_PRIVATE);
         SharedPreferences.Editor editor = userDetails.edit();
+        //Store the time of notification as the key and the event id as the value
         editor.putInt(String.valueOf(calendar.getTimeInMillis()), id);
         editor.apply();
     }
 
+    //Shows a popup with a full list of people attending and their profile pictures
     private void attendanceDialog() {
         final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -357,37 +385,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        finish();
-        startActivity(getIntent());
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_detailed_event, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_weather) {
-            drawerLayout.openDrawer(Gravity.RIGHT);
-        } else if (id == R.id.action_refresh) {
-            onRefresh();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
+    //Given a date, this method will create a string that is more easily readable
     private String getDetailedDisplayDate(String date) throws ParseException {
         String day, month, year, hr, min, result;
 
@@ -412,6 +410,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         userId = userDetails.getString("googleId", null);
     }
 
+    //Get all the details about this event, given only the event id
     private void getEventDetails(){
         ClientServerInterface.post("get_event_details.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
@@ -425,7 +424,16 @@ public class DetailedEventActivity extends AppCompatActivity {
         });
     }
 
+    //Set all the fields to the information obtained from the server
     private void initEventDetails(JSONObject event) throws JSONException, ParseException {
+        title = event.getString("title");
+        location = event.getString("location");
+        description = event.getString("description");
+        contact = event.getString("contact");
+        startDate = event.getString("startDate");
+        endDate = event.getString("endDate");
+        pictureURL = event.getString("pictureURL");
+
         txtTitle.setText(event.getString("title"));
         txtLocation.setText(event.getString("location"));
         txtDescription.setText(event.getString("description"));
@@ -434,6 +442,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         txtEndDate.setText(getDetailedDisplayDate(event.getString("endDate")));
     }
 
+    //Get the address of the location
     private void getLocationDetails() {
         ClientServerInterface.post("get_location_details.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
@@ -447,43 +456,42 @@ public class DetailedEventActivity extends AppCompatActivity {
         });
     }
 
+    //Make the location clickable, given address details
     private void initLocationDetails(JSONObject location) throws JSONException {
-        Log.e("json location", location.toString());
         String label = (String) txtLocation.getText();
+
+        //Encode the details into the format that Google Maps uses
         String uriBegin = "geo:0,0?q=";
         String query = location.getString("street_address") + ", " +
                 location.getString("city") + ", " + location.getString("state") + "(" + label + ")";
         String encodedQuery = Uri.encode(query);
         String uriString = uriBegin + encodedQuery;
         final Uri locationIntentUri = Uri.parse(uriString);
-        Log.e("uri", locationIntentUri.toString());
+
         txtLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("location", "clicked");
+                //If the location text is clicked, Google Maps will open up with directions
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, locationIntentUri);
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
-                } else {
-                    Log.e(null, "no mapps");
                 }
             }
         });
         locPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("location", "clicked");
+                //If the pin is clicked, Google Maps will open up with directions
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, locationIntentUri);
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(mapIntent);
-                } else {
-                    Log.e(null, "no mapps");
                 }
             }
         });
 
     }
 
+    //Gets the comments for the current event
     private void getComments() {
         ClientServerInterface.post("get_comments.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
@@ -508,12 +516,14 @@ public class DetailedEventActivity extends AppCompatActivity {
         });
     }
 
+    //Creates the commentsListAdapter
     private void initComments() {
         CommentsListAdapter commentsListAdapter = new CommentsListAdapter(this, pictureCommenters, nameCommenters, comments, googleIdCommenters);
         ListView commentsList = (ListView) findViewById(R.id.commentsList);
         commentsList.setAdapter(commentsListAdapter);
     }
 
+    //Get the people who are attending the current event
     private void getAttendance() {
         ClientServerInterface.post("get_attendance.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
@@ -540,8 +550,8 @@ public class DetailedEventActivity extends AppCompatActivity {
 
     }
 
+    //Create the list adapter that will add names and pictures to the list of those attending
     private void initAttendance() {
-        //Create the list adapter that will add names and pictures to the list of those attending
         AttendeeListAdapter adapter = new AttendeeListAdapter(this, pictureAttendees);
         TwoWayView attendeeList = (TwoWayView) findViewById(R.id.lvItems);
         attendeeList.setAdapter(adapter);
@@ -562,12 +572,14 @@ public class DetailedEventActivity extends AppCompatActivity {
         attendeeList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(null, "clicked");
+                //If the attendance list is clicked, an expanded dialog with names and profile
+                //pictures will be shown
                 attendanceDialog();
             }
         });
     }
 
+    //Adds the current user to the attending list for the current event
     private void addAttendance() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
@@ -580,10 +592,9 @@ public class DetailedEventActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "You are now attending", Toast.LENGTH_SHORT).show();
             }
         });
-
-        Log.e(null, requestParams.toString());
     }
 
+    //Removes the current user from the attending list for the current event
     private void removeAttendance() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
@@ -596,29 +607,28 @@ public class DetailedEventActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "You are no longer attending", Toast.LENGTH_SHORT).show();
             }
         });
-
-        Log.e(null, requestParams.toString());
     }
 
+    //Add the comment to the database
     private void publishComment() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("eventId", id);
         requestParams.put("userId", userId);
         requestParams.put("commentBody", commentBody);
-        Log.e("Request Params", requestParams.toString());
         ClientServerInterface.post("publish_comment.php", requestParams, new JsonHttpResponseHandler());
     }
 
+    //Get the weather for the day of the event, which will then be displayed in a drawer
     private void getWeather() {
         ClientServerInterface.post("get_weather.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                Log.e(null,response.toString());
                 initWeather(response);
             }
         });
     }
 
+    //Set the fields for weather details
     private void initWeather(JSONObject weatherDetails) {
         try {
             String summary = weatherDetails.getString("summary");
@@ -652,5 +662,36 @@ public class DetailedEventActivity extends AppCompatActivity {
         getComments();
         getAttendance();
         getWeather();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_detailed_event, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_weather) {
+            drawerLayout.openDrawer(Gravity.RIGHT);
+        } else if (id == R.id.action_refresh) {
+            onRefresh();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

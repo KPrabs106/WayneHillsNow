@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +26,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * *****************************************************
+ * Displays a calendar that highlights dates on which   *
+ * events occur.                                        *
+ * There is also a banner image scroller that scrolls   *
+ * through pictures of events in the month.             *
+ * *****************************************************
+ */
 public class CalendarActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener {
 
     SliderLayout imageScroller;
@@ -62,6 +68,7 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         getPictures(cal.get(Calendar.MONTH) + 1, cal.get(Calendar.YEAR));
     }
 
+    //Set up the calendar with dates highlighted
     private void initCalendar(JSONArray eventDetails) {
         eventDates = new ArrayList<Date>();
         JSONObject jsonObject;
@@ -70,10 +77,12 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         Calendar cal = Calendar.getInstance();
         Date startDate;
         Date endDate;
+
         for (int i = 0; i < eventDetails.length(); i++) {
             try {
                 jsonObject = eventDetails.getJSONObject(i);
 
+                //Get the start date
                 date = jsonObject.getString("startDate").split(" ")[0];
                 dateComponents = date.split("-");
                 cal.set(Calendar.YEAR, Integer.parseInt(dateComponents[0]));
@@ -85,6 +94,7 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
                 cal.set(Calendar.MILLISECOND, 0);
                 startDate = cal.getTime();
 
+                //Get the end date
                 date = jsonObject.getString("endDate").split(" ")[0];
                 dateComponents = date.split("-");
                 cal.set(Calendar.YEAR, Integer.parseInt(dateComponents[0]));
@@ -96,12 +106,14 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
                 cal.set(Calendar.MILLISECOND, 0);
                 endDate = cal.getTime();
 
+                //Add the dates to the ArrayList
                 eventDates.addAll(datesBetween(startDate, endDate));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
+        //For all the dates in the ArrayList, color the date
         for (Date eventDate : eventDates) {
             caldroidFragment.setBackgroundResourceForDate(R.color.caldroid_light_red, eventDate);
         }
@@ -111,11 +123,12 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         final CaldroidListener listener = new CaldroidListener() {
             @Override
             public void onSelectDate(Date date, View view) {
-                Log.e(null, date.toString());
+                //Check if the date selected is one of the dates that events occur on
                 if (eventDates.contains(date)) {
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTime(date);
 
+                    //Put the year, month, and day in a bundle
                     Bundle bundle = new Bundle();
                     bundle.putInt("year", calendar.get(Calendar.YEAR));
                     bundle.putInt("month", calendar.get(Calendar.MONTH) + 1);
@@ -127,6 +140,7 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
                 }
             }
 
+            //Whenever the month changes, get pictures for the events occurring in that month
             public void onChangeMonth(int month, int year) {
                 getPictures(month, year);
             }
@@ -135,6 +149,7 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         caldroidFragment.setCaldroidListener(listener);
     }
 
+    //Finds the dates that are in between two dates
     private List<Date> datesBetween(Date startDate, Date endDate) {
         List<Date> dateList = new ArrayList<Date>();
         Calendar calendar = Calendar.getInstance();
@@ -154,6 +169,7 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         return dateList;
     }
 
+    //Get all the events, including ones that occurred and ones that are going to occur
     private void getEvents() {
         ClientServerInterface.get("get_all_events.php", null, new JsonHttpResponseHandler() {
             @Override
@@ -163,6 +179,7 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         });
     }
 
+    //When the banner image scroller is clicked, open up the detailed event activity
     @Override
     public void onSliderClick(BaseSliderView baseSliderView) {
         Bundle bundle = baseSliderView.getBundle();
@@ -171,6 +188,7 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         startActivity(intent);
     }
 
+    //Get the pictures of events occurring in the given month and year
     private void getPictures(int month, int year) {
         RequestParams requestParams = new RequestParams();
         requestParams.put("month", month);
@@ -183,7 +201,9 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
         });
     }
 
+    //Put the pictures into a banner image scroller
     private void initPictures(JSONArray pictures) {
+        //Remove any existing material
         imageScroller.removeAllSliders();
 
         JSONObject jsonObject;
@@ -198,6 +218,8 @@ public class CalendarActivity extends AppCompatActivity implements BaseSliderVie
                         .image(jsonObject.getString("pictureURL"))
                         .setScaleType(BaseSliderView.ScaleType.Fit)
                         .setOnSliderClickListener(this);
+
+                //Add event details into a bundle that the detailed event activity will access
                 bundle.putInt("Id", Integer.parseInt(jsonObject.getString("id")));
                 bundle.putString("Title", jsonObject.getString("title"));
                 bundle.putString("Type", jsonObject.getString("type"));

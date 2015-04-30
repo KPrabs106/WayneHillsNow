@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 
 /**
- * Created by Kartik on 3/20/2015.
+ * *************************************
+ * Receives alarm set for notification  *
+ * **************************************
  */
 public class AlarmReceiver extends BroadcastReceiver {
 
