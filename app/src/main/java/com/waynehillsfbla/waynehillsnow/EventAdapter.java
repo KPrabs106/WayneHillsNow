@@ -143,7 +143,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         SharedPreferences notifications = eventViewHolder.context.getSharedPreferences("notifications", Context.MODE_PRIVATE);
         Map<String, ?> keys = notifications.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
-            if (entry.getValue() == ei.id)
+            if (entry.getValue().equals(ei.id))
                 eventViewHolder.notifIcon.setVisibility(View.VISIBLE);
         }
     }

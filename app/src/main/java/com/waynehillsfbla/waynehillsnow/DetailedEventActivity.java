@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -47,6 +48,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * ************************************************************
@@ -74,10 +76,6 @@ public class DetailedEventActivity extends AppCompatActivity {
     ActionButton actionButton;
     AlertDialog.Builder commentDialog;
     EditText input;
-
-    int timeBefore;
-    AlertDialog.Builder timePick;
-    View numPick;
 
     int id;
     String title;
@@ -163,6 +161,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         getComments();
         getAttendance();
         getWeather();
+        setupNotification();
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
@@ -263,6 +262,15 @@ public class DetailedEventActivity extends AppCompatActivity {
             }
         });
         commentDialog.show();
+    }
+
+    private void setupNotification() {
+        SharedPreferences notifications = getSharedPreferences("notifications", Context.MODE_PRIVATE);
+        Map<String, ?> keys = notifications.getAll();
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            if (entry.getValue().equals(id))
+                notifIcon.setVisibility(View.VISIBLE);
+        }
     }
 
     private boolean isSignedIn() {
