@@ -53,7 +53,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
                 Bundle bundle = new Bundle();
                 bundle.putString("pictureURL", photoInfoList.get(position).pictureURL);
                 bundle.putString("eventName", photoInfoList.get(position).eventTitle);
-                Intent intent = new Intent(v.getContext(), ViewEventImage.class);
+                Intent intent = new Intent(v.getContext(), ViewImageActivity.class);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
             }

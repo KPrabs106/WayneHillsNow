@@ -10,8 +10,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.util.Log;
@@ -55,7 +55,7 @@ import java.util.Date;
  * and allows users to see who all are attending events and.
  * *************************************************************
  */
-public class DetailedEventActivity extends ActionBarActivity  {
+public class DetailedEventActivity extends AppCompatActivity {
     String nameCurrentUser;
     String userId;
 
@@ -116,9 +116,8 @@ public class DetailedEventActivity extends ActionBarActivity  {
         Picasso.with(getApplicationContext()).load(R.drawable.ic_notify).resize(x,x).into(notifIcon);
         Picasso.with(getApplicationContext()).load(R.drawable.ic_attend).resize(x,x).into(attendIcon);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -206,7 +205,6 @@ public class DetailedEventActivity extends ActionBarActivity  {
                 notificationDialog();
             }
         });
-
 
         //If the user clicks on the attend button, send a JSON Object of event ID and google ID to
         //the webpage, which will then process it and add the user to the database
@@ -305,6 +303,7 @@ public class DetailedEventActivity extends ActionBarActivity  {
         eventDetails.putString("pictureURL", pictureURL);
         eventDetails.putString("location", location);
         eventDetails.putInt("id", id);
+        eventDetails.putLong("notificationTimeInMillis", calendar.getTimeInMillis());
         try {
             eventDetails.putString("startDate", getDetailedDisplayDate(startDate));
         } catch (ParseException e) {
@@ -320,6 +319,18 @@ public class DetailedEventActivity extends ActionBarActivity  {
 
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
         Toast.makeText(getApplicationContext(), "Notification set.", Toast.LENGTH_SHORT).show();
+        logNotification(date);
+        notifIcon.setVisibility(View.VISIBLE);
+    }
+
+    private void logNotification(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        SharedPreferences userDetails = getSharedPreferences("notifications", MODE_PRIVATE);
+        SharedPreferences.Editor editor = userDetails.edit();
+        editor.putInt(String.valueOf(calendar.getTimeInMillis()), id);
+        editor.apply();
     }
 
     private void attendanceDialog() {

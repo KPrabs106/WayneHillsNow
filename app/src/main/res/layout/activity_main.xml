@@ -22,17 +22,19 @@
                 android:layout_height="match_parent"
                 tools:context=".MainActivity">
 
-                <include
-                    android:id="@+id/tool_bar"
-                    layout="@layout/tool_bar"
+                <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:background="#660033"
+                    android:elevation="2dp"
+                    android:theme="@style/Base.ThemeOverlay.AppCompat.Dark" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/cardList"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tool_bar"
+                    android:layout_below="@+id/toolbar"
                     android:paddingTop="10dp" />
             </RelativeLayout>
         </FrameLayout>

@@ -8,7 +8,8 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,7 +40,7 @@ import static com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayS
  * database containing all the users.
  * ******************************************************************
  */
-public class GooglePlusSignIn extends FragmentActivity implements
+public class GooglePlusSignIn extends AppCompatActivity implements
         ConnectionCallbacks, OnConnectionFailedListener,
         ResultCallback<People.LoadPeopleResult>, View.OnClickListener {
 
@@ -93,6 +94,11 @@ public class GooglePlusSignIn extends FragmentActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_plus_sign_in);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         Log.e("Play services", String.valueOf(isGooglePlayServicesAvailable(getApplicationContext())));
         //getErrorDialog(isGooglePlayServicesAvailable(getApplicationContext()), this, GOOGLE_PLAY_SERVICES_VERSION_CODE).show();

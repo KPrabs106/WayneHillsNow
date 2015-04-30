@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -39,6 +40,7 @@ public class NotificationService extends Service {
         final String location = eventDetails.getString("location");
         final String startDate = eventDetails.getString("startDate");
         final String pictureURL = eventDetails.getString("pictureURL");
+        final long notificationTime = eventDetails.getLong("notificationTimeInMillis");
 
         Bundle bundle = new Bundle();
         bundle.putInt("Id", eventDetails.getInt("id"));
@@ -61,6 +63,12 @@ public class NotificationService extends Service {
                         .setContentIntent(detailedEventActivityIntent)
                         .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                         .build();
+
+                SharedPreferences userDetails = getSharedPreferences("notifications", MODE_PRIVATE);
+                SharedPreferences.Editor editor = userDetails.edit();
+                editor.remove(String.valueOf(notificationTime));
+                editor.apply();
+
                 notificationManager.notify(1, notification);
             }
 
@@ -73,6 +81,12 @@ public class NotificationService extends Service {
                         .setLargeIcon(((BitmapDrawable) errorDrawable).getBitmap())
                         .setContentIntent(detailedEventActivityIntent)
                         .build();
+
+                SharedPreferences userDetails = getSharedPreferences("notifications", MODE_PRIVATE);
+                SharedPreferences.Editor editor = userDetails.edit();
+                editor.remove(String.valueOf(notificationTime));
+                editor.apply();
+
                 notificationManager.notify(1, notification);
             }
 

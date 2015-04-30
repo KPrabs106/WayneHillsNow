@@ -1,9 +1,10 @@
 package com.waynehillsfbla.waynehillsnow;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,24 +20,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MyEvents extends ActionBarActivity {
+public class MyEventsActivity extends AppCompatActivity {
     TextView titleTextView;
     ImageView pictureImageView;
     TextView dateTextView;
-    TextView typeTextView;
     RecyclerView recList;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_events);
+        setContentView(R.layout.activity_my_events);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         titleTextView = (TextView) findViewById(R.id.txtTitle);
         pictureImageView = (ImageView) findViewById(R.id.picture);
         dateTextView = (TextView) findViewById(R.id.txtDate);
+
         recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
 
+        LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
