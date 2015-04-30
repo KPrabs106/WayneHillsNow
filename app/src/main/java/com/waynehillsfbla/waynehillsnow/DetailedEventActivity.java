@@ -59,7 +59,8 @@ import java.util.Map;
  * allows users to post their own comments and see comments posted  *
  * others.                                                          *
  * Users can also get notifications for the event.                  *
- * *****************************************************************/
+ * ****************************************************************
+ */
 public class DetailedEventActivity extends AppCompatActivity {
     String nameCurrentUser;
     String userId;
@@ -151,7 +152,7 @@ public class DetailedEventActivity extends AppCompatActivity {
 
         locPin = (ImageView) findViewById(R.id.locPin);
 
-        //Get any data in the form of a bundle
+        //Get any data in the form of a bundle. The only required one is id
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
@@ -189,8 +190,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         txtContact.setText(contact);
 
         txtStartDate = (TextView) findViewById(R.id.txtStartDate);
-        if(startDate != null)
-        {
+        if (startDate != null) {
             try {
                 txtStartDate.setText(getDetailedDisplayDate(startDate));
             } catch (ParseException e) {
@@ -199,7 +199,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         }
 
         txtEndDate = (TextView) findViewById(R.id.txtEndDate);
-        if(endDate != null){
+        if (endDate != null) {
             try {
                 txtEndDate.setText(getDetailedDisplayDate(endDate));
             } catch (ParseException e) {
@@ -255,7 +255,7 @@ public class DetailedEventActivity extends AppCompatActivity {
 
     //Creates a popup for the user to enter the comment
     private void showCommentDialog() {
-        commentDialog = new AlertDialog.Builder(this,5);
+        commentDialog = new AlertDialog.Builder(this, 5);
         commentDialog.setTitle("Enter comment");
         input = new EditText(this);
         // Specify the type of input expected
@@ -411,7 +411,7 @@ public class DetailedEventActivity extends AppCompatActivity {
     }
 
     //Get all the details about this event, given only the event id
-    private void getEventDetails(){
+    private void getEventDetails() {
         ClientServerInterface.post("get_event_details.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {

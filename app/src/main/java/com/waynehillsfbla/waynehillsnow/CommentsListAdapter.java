@@ -90,7 +90,7 @@ public class CommentsListAdapter extends ArrayAdapter<String> {
     }
 
     private void showDeleteDialog(Activity activity, final int position) {
-        deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(),5);
+        deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(), 5);
         deleteDialog.setTitle("Delete comment?");
 
         // Set up the buttons

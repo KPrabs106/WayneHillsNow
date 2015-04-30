@@ -31,13 +31,11 @@ import com.google.android.gms.plus.model.people.PersonBuffer;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
-import static com.google.android.gms.common.GooglePlayServicesUtil.isGooglePlayServicesAvailable;
-
 
 /**
  * ******************************************************************
- * Activity that uses Google+ to sign in users and adds users to a
- * database containing all the users.
+ * Activity that uses Google+ to sign in users and adds users to a  *
+ * database containing all the users.                               *
  * ******************************************************************
  */
 public class GooglePlusSignIn extends AppCompatActivity implements
@@ -60,21 +58,6 @@ public class GooglePlusSignIn extends AppCompatActivity implements
     // provides access to the users sign in state and Google's APIs.
     private GoogleApiClient mGoogleApiClient;
 
-    // We use mSignInProgress to track whether user has clicked sign in.
-    // mSignInProgress can be one of three values:
-    //
-    //       STATE_DEFAULT: The default state of the application before the user
-    //                      has clicked 'sign in', or after they have clicked
-    //                      'sign out'.  In this state we will not attempt to
-    //                      resolve sign in errors and so will display our
-    //                      Activity in a signed out state.
-    //       STATE_SIGN_IN: This state indicates that the user has clicked 'sign
-    //                      in', so resolve successive errors preventing sign in
-    //                      until the user has successfully authorized an account
-    //                      for our app.
-    //   STATE_IN_PROGRESS: This state indicates that we have started an intent to
-    //                      resolve an error, and so we should not start further
-    //                      intents until the current intent completes.
     private int mSignInProgress;
 
     // Used to store the PendingIntent most recently returned by Google Play
@@ -99,9 +82,6 @@ public class GooglePlusSignIn extends AppCompatActivity implements
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-        Log.e("Play services", String.valueOf(isGooglePlayServicesAvailable(getApplicationContext())));
-        //getErrorDialog(isGooglePlayServicesAvailable(getApplicationContext()), this, GOOGLE_PLAY_SERVICES_VERSION_CODE).show();
 
         mSignInButton = (SignInButton) findViewById(R.id.sign_in_button);
         mSignOutButton = (Button) findViewById(R.id.sign_out_button);
@@ -209,7 +189,7 @@ public class GooglePlusSignIn extends AppCompatActivity implements
         // Retrieve some profile information to personalize our app for the user.
         Person currentUser = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
 
-        //Store the user's name, profile picture, and google ID
+        //Store the user's name, profile picture, and google ID in a SharedPreferences
         SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
         SharedPreferences.Editor editor = userDetails.edit();
         editor.putString("displayName", currentUser.getDisplayName());

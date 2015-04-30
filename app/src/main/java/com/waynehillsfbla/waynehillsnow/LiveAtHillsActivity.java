@@ -21,7 +21,9 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This activity displays all the uploaded images
+ */
 public class LiveAtHillsActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     SwipeRefreshLayout swipeRefreshLayout;
@@ -48,6 +50,8 @@ public class LiveAtHillsActivity extends AppCompatActivity implements SwipeRefre
         llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
+
+        //Prevents conflict between scrolling and SwipeRefreshLayout
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
 
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -60,11 +64,12 @@ public class LiveAtHillsActivity extends AppCompatActivity implements SwipeRefre
 
         getUploadedPictures();
 
-        /*
+        //Only allow the user to upload pictures if they are logged in
         if (!isSignedIn()) {
             actionButton.setVisibility(View.INVISIBLE);
         }
-        */
+
+        //If the "+" Button is clicked, the Image Upload activity is started
         actionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,10 +78,12 @@ public class LiveAtHillsActivity extends AppCompatActivity implements SwipeRefre
         });
     }
 
+    //Check if the user is signed in
     private boolean isSignedIn() {
         return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
     }
 
+    //Get all uploaded pictures
     private void getUploadedPictures() {
         ClientServerInterface.post("get_uploaded_pictures.php", null, new JsonHttpResponseHandler() {
             @Override
@@ -87,6 +94,7 @@ public class LiveAtHillsActivity extends AppCompatActivity implements SwipeRefre
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    //Give the adapter all the information about the photos
     private List<PhotoInfo> createList(int size, JSONArray photoData) {
         List<PhotoInfo> result = new ArrayList<PhotoInfo>();
         for (int i = 0; i < size; i++) {
@@ -104,6 +112,7 @@ public class LiveAtHillsActivity extends AppCompatActivity implements SwipeRefre
         return result;
     }
 
+    //Set up the cards
     private void initCards(JSONArray data) {
         PhotoAdapter photoAdapter = new PhotoAdapter(createList(data.length(), data), this);
         recyclerView.setAdapter(photoAdapter);

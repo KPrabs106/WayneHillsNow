@@ -4,335 +4,334 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <FrameLayout
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="#660033"
+                android:elevation="2dp"
+                android:theme="@style/Base.ThemeOverlay.AppCompat.Dark" />
 
-                <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#660033"
-                    android:elevation="2dp"
-                    android:theme="@style/Base.ThemeOverlay.AppCompat.Dark" />
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/toolbar"
+                android:layout_margin="3dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                card_view:cardCornerRadius="1dp"
+                card_view:cardElevation="5dp">
 
-                <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/card_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/toolbar"
-                    android:layout_margin="3dp"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingTop="10dp"
-                    card_view:cardCornerRadius="1dp"
-                    card_view:cardElevation="5dp">
+                <RelativeLayout
+                    android:id="@+id/layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_below="@+id/frameLayout"
+                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="bottom"
+                    android:background="#000000"
+                    android:orientation="vertical"
+                    android:padding="1.5dp"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/txtTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:background="#660033"
+                        android:text="Large Text"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@android:color/primary_text_dark" />
 
                     <RelativeLayout
-                        android:id="@+id/layout"
+                        android:id="@+id/frameLayout"
                         android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_below="@+id/frameLayout"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="bottom"
-                        android:background="#000000"
-                        android:orientation="vertical"
-                        android:padding="1.5dp"
-                        android:weightSum="1">
+                        android:layout_height="255dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginTop="29dp"
+                        android:background="@android:color/darker_gray"
+                        android:padding="2dp">
+
+                        <ImageView
+                            android:id="@+id/locPin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_toEndOf="@+id/dispLoc"
+                            android:autoLink="map"
+                            android:src="@drawable/ic_pin"
+                            android:visibility="visible" />
 
                         <TextView
-                            android:id="@+id/txtTitle"
-                            android:layout_width="match_parent"
+                            android:id="@+id/txtLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/dispLoc"
+                            android:layout_gravity="left|top"
+                            android:clickable="true"
+                            android:text="[Location]"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textStyle="bold" />
+
+
+                        <TextView
+                            android:id="@+id/txtDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/dispDesc"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="1dp"
+                            android:text="[Description]"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                        <TextView
+                            android:id="@+id/dispLoc"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:layout_alignParentTop="true"
-                            android:background="#660033"
-                            android:text="Large Text"
-                            android:textAppearance="?android:attr/textAppearanceLarge"
-                            android:textColor="@android:color/primary_text_dark" />
+                            android:text="@string/loc"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                        <RelativeLayout
-                            android:id="@+id/frameLayout"
-                            android:layout_width="fill_parent"
-                            android:layout_height="255dp"
+                        <TextView
+                            android:id="@+id/dispDesc"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginTop="29dp"
-                            android:background="@android:color/darker_gray"
-                            android:padding="2dp">
+                            android:layout_below="@+id/txtLocation"
+                            android:layout_gravity="left|center_vertical"
+                            android:layout_marginTop="13dp"
+                            android:text="@string/desc"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                            <ImageView
-                                android:id="@+id/locPin"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:layout_toEndOf="@+id/dispLoc"
-                                android:autoLink="map"
-                                android:src="@drawable/ic_pin"
-                                android:visibility="visible"
-                                />
-
-                            <TextView
-                                android:id="@+id/txtLocation"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_below="@+id/dispLoc"
-                                android:layout_gravity="left|top"
-                                android:clickable="true"
-                                android:text="[Location]"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textStyle="bold" />
-
-
-                            <TextView
-                                android:id="@+id/txtDesc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_below="@+id/dispDesc"
-                                android:layout_gravity="left|center_vertical"
-                                android:layout_marginTop="1dp"
-                                android:text="[Description]"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                            <TextView
-                                android:id="@+id/dispLoc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentTop="true"
-                                android:text="@string/loc"
-                                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                            <TextView
-                                android:id="@+id/dispDesc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_below="@+id/txtLocation"
-                                android:layout_gravity="left|center_vertical"
-                                android:layout_marginTop="13dp"
-                                android:text="@string/desc"
-                                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                            <TextView
-                                android:id="@+id/dispContact"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_below="@+id/txtDesc"
-                                android:layout_marginTop="7dp"
-                                android:text="@string/contact"
-                                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-                            <TextView
-                                android:id="@+id/txtContact"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignStart="@+id/dispContact"
-                                android:layout_below="@+id/dispContact"
-                                android:layout_marginLeft="2dp"
-                                android:autoLink="email"
-                                android:text="[ContactInfo]"
-                                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-                            <TextView
-                                android:id="@+id/From"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignBottom="@+id/cancel_button"
-                                android:layout_alignStart="@+id/To"
-                                android:text="@string/from"
-                                android:textColor="@android:color/primary_text_light" />
-
-                            <TextView
-                                android:id="@+id/txtStartDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignTop="@+id/From"
-                                android:layout_marginLeft="10dp"
-                                android:layout_toEndOf="@+id/From"
-                                android:text="[Start Date]"
-                                android:textColor="@android:color/secondary_text_light" />
-
-                            <TextView
-                                android:id="@+id/To"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_below="@+id/txtStartDate"
-                                android:text="@string/to"
-                                android:textColor="@android:color/primary_text_light" />
-
-                            <TextView
-                                android:id="@+id/txtEndDate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignStart="@+id/txtStartDate"
-                                android:layout_alignTop="@+id/To"
-                                android:text="[End Date]"
-                                android:textColor="@android:color/secondary_text_light" />
-
-                            <Button
-                                android:id="@+id/attend_button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_above="@+id/cancel_button"
-                                android:layout_alignEnd="@+id/notificationButton"
-                                android:text="Attend" />
-
-                            <Button
-                                android:id="@+id/cancel_button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignEnd="@+id/notificationButton"
-                                android:layout_below="@+id/dispContact"
-                                android:text="Cancel" />
-
-                            <ImageButton
-                                android:id="@+id/notificationButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_above="@+id/dispDesc"
-                                android:layout_alignParentEnd="true"
-                                android:src="@drawable/ic_notify"
-                                android:text="Notifications" />
-
-                        </RelativeLayout>
-
-                        <ImageView
-                            android:id="@+id/notifIcon"
+                        <TextView
+                            android:id="@+id/dispContact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignRight="@+id/attendIcon"
-                            android:layout_marginRight="30dp"
-                            android:visibility="invisible"/>
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/txtDesc"
+                            android:layout_marginTop="7dp"
+                            android:text="@string/contact"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-                        <ImageView
-                            android:id="@+id/attendIcon"
+                        <TextView
+                            android:id="@+id/txtContact"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/dispContact"
+                            android:layout_below="@+id/dispContact"
+                            android:layout_marginLeft="2dp"
+                            android:autoLink="email"
+                            android:text="[ContactInfo]"
+                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                        <TextView
+                            android:id="@+id/From"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/cancel_button"
+                            android:layout_alignStart="@+id/To"
+                            android:text="@string/from"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <TextView
+                            android:id="@+id/txtStartDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/From"
+                            android:layout_marginLeft="10dp"
+                            android:layout_toEndOf="@+id/From"
+                            android:text="[Start Date]"
+                            android:textColor="@android:color/secondary_text_light" />
+
+                        <TextView
+                            android:id="@+id/To"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/txtStartDate"
+                            android:text="@string/to"
+                            android:textColor="@android:color/primary_text_light" />
+
+                        <TextView
+                            android:id="@+id/txtEndDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignStart="@+id/txtStartDate"
+                            android:layout_alignTop="@+id/To"
+                            android:text="[End Date]"
+                            android:textColor="@android:color/secondary_text_light" />
+
+                        <Button
+                            android:id="@+id/attend_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_above="@+id/cancel_button"
+                            android:layout_alignEnd="@+id/notificationButton"
+                            android:text="Attend" />
+
+                        <Button
+                            android:id="@+id/cancel_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignEnd="@+id/notificationButton"
+                            android:layout_below="@+id/dispContact"
+                            android:text="Cancel" />
+
+                        <ImageButton
+                            android:id="@+id/notificationButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_above="@+id/dispDesc"
                             android:layout_alignParentEnd="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginRight="3dp"
-                            android:visibility="invisible"/>
+                            android:src="@drawable/ic_notify"
+                            android:text="Notifications" />
 
                     </RelativeLayout>
 
-                </android.support.v7.widget.CardView>
+                    <ImageView
+                        android:id="@+id/notifIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignRight="@+id/attendIcon"
+                        android:layout_marginRight="30dp"
+                        android:visibility="invisible" />
 
-                <TextView
-                    android:id="@+id/peopleAttending"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/card_view"
-                    android:background="#660033"
-                    android:text="@string/people_attending"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@android:color/primary_text_dark" />
+                    <ImageView
+                        android:id="@+id/attendIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginRight="3dp"
+                        android:visibility="invisible" />
 
-                <org.lucasr.twowayview.TwoWayView xmlns:android="http://schemas.android.com/apk/res/android"
-                    xmlns:tools="http://schemas.android.com/tools"
-                    android:id="@+id/lvItems"
-                    style="@style/TwoWayView"
-                    android:layout_width="match_parent"
-                    android:layout_height="37dp"
-                    android:layout_below="@+id/peopleAttending"
-                    android:drawSelectorOnTop="false"
-                    tools:context=".DetailedEventActivity" />
+                </RelativeLayout>
 
+            </android.support.v7.widget.CardView>
 
-                <ListView
-                    android:id="@+id/commentsList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignEnd="@+id/card_view"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@+id/commentLbl"
-                    android:fastScrollAlwaysVisible="false" />
-
-                <com.software.shell.fab.ActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/action_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginBottom="@dimen/fab_margin"
-                    android:layout_marginEnd="@dimen/fab_margin"
-                    fab:button_color="@color/fab_material_red_500"
-                    fab:button_colorPressed="@color/fab_material_red_900"
-                    fab:hide_animation="@anim/fab_roll_to_down"
-                    fab:image="@drawable/fab_plus_icon"
-                    fab:image_size="24dp"
-                    fab:shadow_color="#757575"
-                    fab:shadow_radius="1.0dp"
-                    fab:shadow_xOffset="0.5dp"
-                    fab:shadow_yOffset="1.0dp"
-                    fab:show_animation="@anim/fab_roll_from_down"
-                    fab:stroke_color="@color/fab_material_blue_grey_500"
-                    fab:stroke_width="1.0dp"
-                    fab:type="DEFAULT" />
-
-                <TextView
-                    android:id="@+id/commentLbl"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_below="@+id/lvItems"
-                    android:background="#660033"
-                    android:text="Comments"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="@android:color/primary_text_dark" />
-
-
-            </RelativeLayout>
-
-        </FrameLayout>
-
-        <ScrollView
-            android:id="@+id/navList"
-            android:layout_width="200dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:background="#ffeeeeee">
-
-            <RelativeLayout
+            <TextView
+                android:id="@+id/peopleAttending"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/card_view"
+                android:background="#660033"
+                android:text="@string/people_attending"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/primary_text_dark" />
 
-                <ImageView
-                    android:id="@+id/weatherIcon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="weatherIcon" />
+            <org.lucasr.twowayview.TwoWayView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/lvItems"
+                style="@style/TwoWayView"
+                android:layout_width="match_parent"
+                android:layout_height="37dp"
+                android:layout_below="@+id/peopleAttending"
+                android:drawSelectorOnTop="false"
+                tools:context=".DetailedEventActivity" />
 
-                <TextView
-                    android:id="@+id/descriptionWeather"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/lowTemperature" />
 
-                <TextView
-                    android:id="@+id/highTemperature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/weatherIcon" />
+            <ListView
+                android:id="@+id/commentsList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/card_view"
+                android:layout_alignParentBottom="true"
+                android:layout_below="@+id/commentLbl"
+                android:fastScrollAlwaysVisible="false" />
 
-                <TextView
-                    android:id="@+id/lowTemperature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/highTemperature" />
-            </RelativeLayout>
-        </ScrollView>
+            <com.software.shell.fab.ActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/action_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="@dimen/fab_margin"
+                android:layout_marginEnd="@dimen/fab_margin"
+                fab:button_color="@color/fab_material_red_500"
+                fab:button_colorPressed="@color/fab_material_red_900"
+                fab:hide_animation="@anim/fab_roll_to_down"
+                fab:image="@drawable/fab_plus_icon"
+                fab:image_size="24dp"
+                fab:shadow_color="#757575"
+                fab:shadow_radius="1.0dp"
+                fab:shadow_xOffset="0.5dp"
+                fab:shadow_yOffset="1.0dp"
+                fab:show_animation="@anim/fab_roll_from_down"
+                fab:stroke_color="@color/fab_material_blue_grey_500"
+                fab:stroke_width="1.0dp"
+                fab:type="DEFAULT" />
+
+            <TextView
+                android:id="@+id/commentLbl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/lvItems"
+                android:background="#660033"
+                android:text="Comments"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/primary_text_dark" />
+
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <ScrollView
+        android:id="@+id/navList"
+        android:layout_width="200dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="right"
+        android:background="#ffeeeeee">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/weatherIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="weatherIcon" />
+
+            <TextView
+                android:id="@+id/descriptionWeather"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lowTemperature" />
+
+            <TextView
+                android:id="@+id/highTemperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/weatherIcon" />
+
+            <TextView
+                android:id="@+id/lowTemperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/highTemperature" />
+        </RelativeLayout>
+    </ScrollView>
 </android.support.v4.widget.DrawerLayout>
 

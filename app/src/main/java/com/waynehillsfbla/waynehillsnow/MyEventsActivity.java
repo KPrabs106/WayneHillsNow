@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -19,11 +17,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This activity displays the events that the user is attending
+ */
 public class MyEventsActivity extends AppCompatActivity {
-    TextView titleTextView;
-    ImageView pictureImageView;
-    TextView dateTextView;
     RecyclerView recList;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +31,6 @@ public class MyEventsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-
-        titleTextView = (TextView) findViewById(R.id.txtTitle);
-        pictureImageView = (ImageView) findViewById(R.id.picture);
-        dateTextView = (TextView) findViewById(R.id.txtDate);
 
         recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
@@ -69,7 +62,6 @@ public class MyEventsActivity extends AppCompatActivity {
                 ei.title = jsonObject.getString("title");
                 ei.startDatetime = jsonObject.getString("startDate");
                 ei.pictureURL = jsonObject.getString("pictureURL");
-                ei.type = jsonObject.getString("type");
                 ei.contact = jsonObject.getString("contact");
                 ei.endDatetime = jsonObject.getString("endDate");
                 ei.location = jsonObject.getString("location");
@@ -82,6 +74,7 @@ public class MyEventsActivity extends AppCompatActivity {
         return result;
     }
 
+    //Get the events that a particular user is attending
     private void getMyEvents() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("googleId", getSharedPreferences("userDetails", MODE_PRIVATE).getString("googleId", null));

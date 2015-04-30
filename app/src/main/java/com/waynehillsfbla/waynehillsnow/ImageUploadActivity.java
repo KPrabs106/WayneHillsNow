@@ -42,7 +42,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * This activity allows the user to upload a photo they might have, from either their gallery
+ * or take a picture using their camera, for a specific event, and this photo is then uploaded to
+ * Imgur, a popular image hosting website. The link for this photo is then added to the database.
+ */
 public class ImageUploadActivity extends AppCompatActivity {
 
     private final int SELECT_PHOTO = 1;
@@ -80,11 +84,6 @@ public class ImageUploadActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                /*
-                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                photoPickerIntent.setType("image/*");
-                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
-                */
             }
         });
 
@@ -132,6 +131,8 @@ public class ImageUploadActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
+        //The drawable from the ImageView is converted to a bitmap, and then to a byte array, and then encoded,
+        //and sent as a request parameter to the Imgur website.
         Bitmap bitmap = ((BitmapDrawable) imagePreview.getDrawable()).getBitmap();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
@@ -147,6 +148,7 @@ public class ImageUploadActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 try {
+                    //Get the Imgur URL for the image
                     imageURL = response.getJSONObject("data").getString("link");
                     showDialog();
                 } catch (JSONException e) {
@@ -156,6 +158,8 @@ public class ImageUploadActivity extends AppCompatActivity {
         });
     }
 
+    //Send the image URL, event ID, and google ID of submitter to the webpage, which will then add
+    //it to the database
     private void logImage(String eventTitle) {
         RequestParams requestParams = new RequestParams();
         requestParams.add("imageURL", imageURL);
@@ -166,6 +170,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         finish();
     }
 
+    //Find out which event the user selected this photo for
     private void showDialog() {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
         b.setTitle("Select Event");
@@ -179,6 +184,7 @@ public class ImageUploadActivity extends AppCompatActivity {
         b.show();
     }
 
+    //Get the events in the past month which the user could have pictures of
     private void getPastEvents() {
         ClientServerInterface.get("get_past_events.php", null, new JsonHttpResponseHandler() {
             @Override
@@ -201,35 +207,38 @@ public class ImageUploadActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent imageIntent) {
         super.onActivityResult(requestCode, resultCode, imageIntent);
 
-                if (resultCode == RESULT_OK) {
-                    if(requestCode == SELECT_PHOTO){
-                    final boolean isCamera;
-                    if (imageIntent == null) {
-                        isCamera = true;
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_PHOTO) {
+                //Get the URI
+                final boolean isCamera;
+                if (imageIntent == null) {
+                    isCamera = true;
+                } else {
+                    final String action = imageIntent.getAction();
+                    if (action == null) {
+                        isCamera = false;
                     } else {
-                        final String action = imageIntent.getAction();
-                        if (action == null) {
-                            isCamera = false;
-                        } else {
-                            isCamera = action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
-                        }
-                    }
-
-                    Uri selectedImageUri;
-                    if (isCamera) {
-                        selectedImageUri = uploadFileUri;
-                    } else {
-                        selectedImageUri = imageIntent == null ? null : imageIntent.getData();
-                    }
-                    try {
-                        imageStream = getContentResolver().openInputStream(selectedImageUri);
-                        final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
-                        imagePreview.setImageBitmap(selectedImage);
-                        uploadButton.setEnabled(true);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
+                        isCamera = action.equals(MediaStore.ACTION_IMAGE_CAPTURE);
                     }
                 }
+
+                Uri selectedImageUri;
+                if (isCamera) {
+                    selectedImageUri = uploadFileUri;
+                } else {
+                    selectedImageUri = imageIntent == null ? null : imageIntent.getData();
+                }
+
+                //Get the Bitmap from the URI, and set it to the ImageView
+                try {
+                    imageStream = getContentResolver().openInputStream(selectedImageUri);
+                    final Bitmap selectedImage = BitmapFactory.decodeStream(imageStream);
+                    imagePreview.setImageBitmap(selectedImage);
+                    uploadButton.setEnabled(true);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

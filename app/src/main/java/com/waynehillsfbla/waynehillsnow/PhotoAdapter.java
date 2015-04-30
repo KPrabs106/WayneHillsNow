@@ -23,7 +23,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 /**
- * Created by Kartik on 4/21/2015.
+ * Given information about an uploaded photo, this adapter adds the information
+ * to the cards.
  */
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
@@ -63,6 +64,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         photoViewHolder.vEventTitle.setText(photoInfo.eventTitle);
         photoViewHolder.vSubmitter.setText(photoInfo.submitterName);
 
+        //Users can delete the images they upload, if they long click
         photoViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -87,10 +89,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         });
     }
 
+    //Check if the user is signed in
     private boolean isSignedIn() {
         return activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE).contains("displayName");
     }
 
+    //Check if the user who wants to delete is the same as the user who uploaded
     private boolean canDelete(int position) {
         if (isSignedIn()) {
             SharedPreferences userDetails = activity.getSharedPreferences("userDetails", Context.MODE_PRIVATE);
@@ -101,8 +105,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         }
     }
 
+    //Confirm that the user wants to delete the uploaded image
     private void showDeleteDialog(Activity activity, final int position) {
-        deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(),5);
+        deleteDialog = new AlertDialog.Builder(activity.getWindow().getContext(), 5);
         deleteDialog.setTitle("Remove from feed?");
 
         // Set up the buttons
@@ -122,6 +127,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
         deleteDialog.show();
     }
 
+    //Give the webpage the URL of the picture, and the entry in the database will be deleted
     private void deleteImage(int position) {
         RequestParams requestParams = new RequestParams();
         requestParams.put("pictureURL", photoInfoList.get(position).pictureURL);

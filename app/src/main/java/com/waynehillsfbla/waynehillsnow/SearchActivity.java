@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Sudharshan on 4/19/2015.
+ * This activity allows the user to search for events, both ones that have occurred and those
+ * that are upcoming.
  */
 public class SearchActivity extends AppCompatActivity {
 
@@ -70,6 +71,7 @@ public class SearchActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
+    //Query the database for an event with the given name
     private void search(String searchTerm) {
         RequestParams requestParams = new RequestParams("search", searchTerm);
         ClientServerInterface.post("search.php", requestParams, new JsonHttpResponseHandler() {
@@ -103,7 +105,6 @@ public class SearchActivity extends AppCompatActivity {
                 ei.title = jsonObject.getString("title");
                 ei.startDatetime = jsonObject.getString("startDate");
                 ei.pictureURL = jsonObject.getString("pictureURL");
-                ei.type = jsonObject.getString("type");
                 ei.contact = jsonObject.getString("contact");
                 ei.endDatetime = jsonObject.getString("endDate");
                 ei.location = jsonObject.getString("location");

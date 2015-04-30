@@ -16,12 +16,12 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/toolbar">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/photoCardList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/toolbar" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/photoCardList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/toolbar" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

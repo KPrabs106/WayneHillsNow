@@ -45,6 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.72"
             android:adjustViewBounds="true" />
-    </LinearLayout>
 
+    </LinearLayout>
 </RelativeLayout>

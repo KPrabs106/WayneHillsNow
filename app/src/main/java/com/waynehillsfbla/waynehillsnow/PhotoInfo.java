@@ -1,7 +1,7 @@
 package com.waynehillsfbla.waynehillsnow;
 
 /**
- * Created by Kartik on 4/21/2015.
+ * This class represents uploaded photo info
  */
 public class PhotoInfo {
     protected String eventTitle;

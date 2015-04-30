@@ -27,15 +27,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ****************************************************************
- * Given information about events, this adapter adds the information
- * to the cards.
- * ****************************************************************
+ * *********************************************************
+ * Given information about events, this adapter adds the    *
+ * information to the cards.                                *
+ * ********************************************************
  */
 public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHolder> {
 
     private List<EventInfo> eventList;
-    private int x;
+    private int iconDimension;
 
     public EventAdapter(List<EventInfo> eventList) {
         this.eventList = eventList;
@@ -44,13 +44,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     public int getItemCount() {
         return eventList.size();
     }
-
-    //TODO attend and notify icons
-    //TODO notifications
-    //TODO banner image scroller
-    //TODO picstream type thing w user uploads
-    //TODO Help page
-    //TODO search
 
     //Puts the date into a more aesthetically pleasing format
     private String getDisplayDate(String date) throws ParseException {
@@ -76,7 +69,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 Bundle bund = new Bundle();
                 bund.putInt("Id", eventList.get(i).id);
                 bund.putString("Title", eventList.get(i).title);
-                bund.putString("Type", eventList.get(i).type);
                 bund.putString("Location", eventList.get(i).location);
                 bund.putString("Description", eventList.get(i).description);
                 bund.putString("Contact", eventList.get(i).contact);
@@ -89,6 +81,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             }
         });
 
+        //Clicking on the picture takes the user to the View Image activity
         eventViewHolder.vPicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,12 +117,12 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
             }
         });
 
-        x = 75;
-        Picasso.with(eventViewHolder.context).load(R.drawable.ic_notify).resize(x,x).into(eventViewHolder.notifIcon);
-        Picasso.with(eventViewHolder.context).load(R.drawable.ic_attend).resize(x,x).into(eventViewHolder.attendIcon);
+        iconDimension = 75;
+        Picasso.with(eventViewHolder.context).load(R.drawable.ic_notify).resize(iconDimension, iconDimension).into(eventViewHolder.notifIcon);
+        Picasso.with(eventViewHolder.context).load(R.drawable.ic_attend).resize(iconDimension, iconDimension).into(eventViewHolder.attendIcon);
 
-        setupNotification(eventViewHolder, ei);
-        setupAttendance(eventViewHolder, ei);
+        setupNotificationIcon(eventViewHolder, ei);
+        setupAttendanceIcon(eventViewHolder, ei);
     }
 
     public EventViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -139,7 +132,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return new EventViewHolder(itemView);
     }
 
-    private void setupNotification(final EventViewHolder eventViewHolder, EventInfo ei) {
+    //Check in the SharedPreferences that stores notification information if the user is going to
+    //be notified, and if so, make the icon visible
+    private void setupNotificationIcon(final EventViewHolder eventViewHolder, EventInfo ei) {
         SharedPreferences notifications = eventViewHolder.context.getSharedPreferences("notifications", Context.MODE_PRIVATE);
         Map<String, ?> keys = notifications.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
@@ -148,7 +143,9 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
-    private void setupAttendance(final EventViewHolder eventViewHolder, EventInfo ei) {
+    //Check if the user is going to attend the event by querying the webpage, which then returns
+    //a boolean. If the user is attending, then the attending icon becomes visible
+    private void setupAttendanceIcon(final EventViewHolder eventViewHolder, EventInfo ei) {
         if (getGoogleId(eventViewHolder.context) != null) {
             RequestParams requestParams = new RequestParams();
             requestParams.put("eventId", ei.id);
@@ -167,6 +164,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         }
     }
 
+    //Get the Google ID from the SharedPreferences of the current logged in user
     private String getGoogleId(Context context) {
         if (context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).contains("googleId")) {
             return context.getSharedPreferences("userDetails", Context.MODE_PRIVATE).getString("googleId", null);

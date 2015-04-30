@@ -11,10 +11,11 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.Arrays;
-
 /**
- * Created by Kartik on 4/10/2015.
+ * *****************************************************************
+ * Given an array of names and profile pictures of those attending, *
+ * this adapter displays the information.                           *
+ * *****************************************************************
  */
 public class FullAttendanceAdapter extends ArrayAdapter<String> {
     private final Activity activity;
@@ -23,12 +24,9 @@ public class FullAttendanceAdapter extends ArrayAdapter<String> {
 
     public FullAttendanceAdapter(Activity activity, String[] names, String[] profilePictures) {
         super(activity, R.layout.full_attendance_list);
-        Log.e(null, "constuctor");
         this.activity = activity;
         this.names = names;
         this.profilePictures = profilePictures;
-        Log.e(null, Arrays.toString(names));
-        Log.e(null, Arrays.toString(profilePictures));
     }
 
     public View getView(int position, View view, ViewGroup parent) {

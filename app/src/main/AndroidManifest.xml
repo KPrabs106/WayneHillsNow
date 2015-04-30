@@ -54,6 +54,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
         </activity>
+
         <activity
             android:name=".SearchActivity"
             android:label="Search"
@@ -62,7 +63,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
         </activity>
-
 
         <activity
             android:name=".ViewImageActivity"
@@ -103,6 +103,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
         </activity>
+
         <activity
             android:name=".ImageUploadActivity"
             android:label="@string/title_activity_image_upload"
@@ -111,6 +112,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.waynehillsfbla.waynehillsnow.LiveAtHillsActivity" />
         </activity>
+
         <activity
             android:name=".LiveAtHillsActivity"
             android:label="@string/title_activity_live_at_hills"
@@ -129,5 +131,4 @@
                 android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
         </activity>
     </application>
-
 </manifest>

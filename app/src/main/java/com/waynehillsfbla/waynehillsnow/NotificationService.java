@@ -16,7 +16,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 /**
- * Created by Kartik on 3/20/2015.
+ * This service is responsible for notifying the user.
  */
 public class NotificationService extends Service {
 
@@ -42,6 +42,7 @@ public class NotificationService extends Service {
         final String pictureURL = eventDetails.getString("pictureURL");
         final long notificationTime = eventDetails.getLong("notificationTimeInMillis");
 
+        //Put the event ID into a bundle and add it to the intent
         Bundle bundle = new Bundle();
         bundle.putInt("Id", eventDetails.getInt("id"));
 
@@ -49,6 +50,7 @@ public class NotificationService extends Service {
         detailedViewIntent.putExtras(bundle);
         detailedViewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
+        //Create the pending intent
         detailedEventActivityIntent = PendingIntent.getActivity(getApplicationContext(), 0, detailedViewIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         notificationManager = (NotificationManager) getApplicationContext().getSystemService(NOTIFICATION_SERVICE);
 
@@ -64,6 +66,8 @@ public class NotificationService extends Service {
                         .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                         .build();
 
+                //Since the user has been notified, remove the key-value pair from the
+                //SharedPreferences
                 SharedPreferences userDetails = getSharedPreferences("notifications", MODE_PRIVATE);
                 SharedPreferences.Editor editor = userDetails.edit();
                 editor.remove(String.valueOf(notificationTime));
@@ -82,6 +86,8 @@ public class NotificationService extends Service {
                         .setContentIntent(detailedEventActivityIntent)
                         .build();
 
+                //Since the user has been notified, remove the key-value pair from the
+                //SharedPreferences
                 SharedPreferences userDetails = getSharedPreferences("notifications", MODE_PRIVATE);
                 SharedPreferences.Editor editor = userDetails.edit();
                 editor.remove(String.valueOf(notificationTime));

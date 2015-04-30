@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -48,7 +47,6 @@ public class StackWidgetService extends RemoteViewsService {
             syncHttpClient.get(mContext, "http://52.4.177.235/get_events.php", null, new JsonHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    Log.e("json response", response.toString());
                     for (int i = 0; i < response.length() || i < 5; i++) {
                         try {
                             mWidgetItems.add(new WidgetItem((response.getJSONObject(i)).getString("title"),

@@ -13,8 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -28,11 +26,7 @@ import java.util.List;
 
 /**
  * ****************************************************
- * This activity allows the user to go the calendar view
- * of events or the list view of events. There is also a
- * banner image scroller, which scrolls through images
- * of the next 5 events. This activity also is where
- * the user can sign in to Google+.
+ * This activity displays all the upcoming events.
  * ****************************************************
  */
 public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -42,18 +36,12 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     Intent intent;
 
-    TextView titleTextView;
-    ImageView pictureImageView;
-    TextView dateTextView;
     RecyclerView recList;
     SwipeRefreshLayout swipeRefreshLayout;
     LinearLayoutManager lin;
 
-    String[] drawerItems = {"Google Plus", "My Events", "Calendar","Live@Hills", "Search"};
+    String[] drawerItems = {"Google Plus", "My Events", "Calendar", "Live@Hills", "Search"};
     int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_calendar, R.drawable.ic_photos, R.drawable.ic_search};
-
-    //TODO weather drawer layout
-
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         drawerRecyclerView.setHasFixedSize(true);
 
         final RecyclerView.Adapter drawerListAdapter;
+
+        //If the user is signed in, then they will have a header in the navigation drawer
         if (isSignedIn()) {
             SharedPreferences userDetails = getSharedPreferences("userDetails", MODE_PRIVATE);
             String name = userDetails.getString("displayName", null);
@@ -71,8 +61,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         } else {
             drawerListAdapter = new DrawerListAdapter(drawerItems, icons);
         }
-
-
 
         drawerRecyclerView.setAdapter(drawerListAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -102,20 +90,19 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        //Set up the SwipeRefreshLayout
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        titleTextView = (TextView) findViewById(R.id.txtTitle);
-        pictureImageView = (ImageView) findViewById(R.id.picture);
-        dateTextView = (TextView) findViewById(R.id.txtDate);
+        //Set up the RecyclerView for the card events
         recList = (RecyclerView) findViewById(R.id.cardList);
         recList.setHasFixedSize(true);
         lin = new LinearLayoutManager(getApplicationContext());
         lin.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(lin);
 
+        //Prevent scrolling and the SwipeRefreshLayout from interfering with each other
         recList.setOnScrollListener(new RecyclerView.OnScrollListener() {
-
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             }
 
@@ -125,22 +112,11 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
 
         getEvents();
-
     }
 
     @Override
     public void onRefresh() {
         getEvents();
-    }
-
-    public boolean canScrollVertically(int direction) {
-        // check if scrolling up
-        if (direction < 1) {
-            boolean original = recList.canScrollVertically(direction);
-            return !original && recList.getChildAt(0) != null && recList.getChildAt(0).getTop() < 0 || original;
-        }
-        return recList.canScrollVertically(direction);
-
     }
 
     //Set up the cards
@@ -162,7 +138,6 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
                 ei.title = jsonObject.getString("title");
                 ei.startDatetime = jsonObject.getString("startDate");
                 ei.pictureURL = jsonObject.getString("pictureURL");
-                ei.type = jsonObject.getString("type");
                 ei.contact = jsonObject.getString("contact");
                 ei.endDatetime = jsonObject.getString("endDate");
                 ei.location = jsonObject.getString("location");
@@ -175,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         return result;
     }
 
+    //Get the upcoming events
     private void getEvents() {
         ClientServerInterface.get("get_events.php", null, new JsonHttpResponseHandler() {
             @Override
@@ -184,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         });
     }
 
+    //Check if the user is signed in
     private boolean isSignedIn() {
         return getSharedPreferences("userDetails", MODE_PRIVATE).contains("displayName");
     }
@@ -213,7 +190,4 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         super.onConfigurationChanged(newConfig);
         actionBarDrawerToggle.onConfigurationChanged(newConfig);
     }
-
-
-
 }

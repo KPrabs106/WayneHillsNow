@@ -22,7 +22,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
+/**
+ * This activity shows a larger image, and allows the user to
+ * download it and to share it.
+ */
 public class ViewImageActivity extends AppCompatActivity {
 
     String pictureURL;
@@ -40,7 +43,6 @@ public class ViewImageActivity extends AppCompatActivity {
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
             return myBitmap;
         } catch (IOException e) {
-            // Log exception
             return null;
         }
     }
@@ -62,7 +64,6 @@ public class ViewImageActivity extends AppCompatActivity {
         pictureURL = extras.getString("pictureURL");
         eventName = extras.getString("eventName");
         Picasso.with(getApplicationContext()).load(pictureURL).into(eventPic);
-
     }
 
     @Override
@@ -70,11 +71,7 @@ public class ViewImageActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_view_event_image, menu);
 
-        /*MenuItem item = menu.findItem(R.id.menu_item_share);
-        MenuItemCompat.getActionProvider(item);
-        mShareActionProvider = new ShareActionProvider(this);
-        MenuItemCompat.setActionProvider(item, mShareActionProvider);*/
-        return(super.onCreateOptionsMenu(menu));
+        return (super.onCreateOptionsMenu(menu));
     }
 
     @Override
@@ -88,8 +85,7 @@ public class ViewImageActivity extends AppCompatActivity {
         if (id == R.id.action_download) {
             downloadFromUrl(pictureURL, eventName);
             return true;
-        }
-        else if(id == R.id.menu_item_share) {
+        } else if (id == R.id.menu_item_share) {
             shareImage(pictureURL);
             return true;
         }
@@ -97,6 +93,7 @@ public class ViewImageActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Provides a chooser for the user to share the image
     private void shareImage(String imageURL) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         Bitmap loadedImage = getBitmapFromURL(imageURL);
@@ -106,13 +103,13 @@ public class ViewImageActivity extends AppCompatActivity {
         intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
         intent.setType("image/*");
         startActivity(Intent.createChooser(intent, "Share image via..."));
-
     }
 
-    private void downloadFromUrl(String imageURL, String fileName)  {  //this is the downloader method
+    //Download the image from a URL
+    private void downloadFromUrl(String imageURL, String fileName) {
         File direct = new File(Environment.getExternalStorageDirectory() + "/WayneHillsNow");
 
-        if(!direct.exists())
+        if (!direct.exists())
             direct.mkdirs();
 
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
@@ -122,14 +119,12 @@ public class ViewImageActivity extends AppCompatActivity {
 
         request.setAllowedNetworkTypes(
                 DownloadManager.Request.NETWORK_WIFI
-                |   DownloadManager.Request.NETWORK_MOBILE)
+                        | DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverRoaming(false).setTitle(eventName)
                 .setDescription("Cover image for " + eventName)
                 .setDestinationInExternalPublicDir("/WayneHillsNow", fileName + ".jpg");
 
         downloadManager.enqueue(request);
         Toast.makeText(getApplicationContext(), "Image Downloaded", Toast.LENGTH_SHORT).show();
-
     }
-
 }

@@ -6,15 +6,11 @@ import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.RemoteViews;
 
-/**
- * Created by Kartik on 4/8/2015.
- */
+
 public class StackWidgetProvider extends AppWidgetProvider {
-    public static final String TOAST_ACTION = "com.example.android.stackwidget.TOAST_ACTION";
-    public static final String EXTRA_ITEM = "com.example.android.stackwidget.EXTRA_ITEM";
+    public static final String DETAILED_VIEW = "com.example.android.stackwidget.DETAILED_VIEW";
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
@@ -34,12 +30,11 @@ public class StackWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         AppWidgetManager mgr = AppWidgetManager.getInstance(context);
-        if (intent.getAction().equals(TOAST_ACTION)) {
+        if (intent.getAction().equals(DETAILED_VIEW)) {
             Intent detailedEventIntent = new Intent(context, DetailedEventActivity.class);
-        detailedEventIntent.putExtras(intent.getExtras());
-            Log.e("eventId or", String.valueOf(intent.getExtras().getInt("Id")));
-        detailedEventIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(detailedEventIntent);
+            detailedEventIntent.putExtras(intent.getExtras());
+            detailedEventIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            context.startActivity(detailedEventIntent);
         }
 
         super.onReceive(context, intent);
@@ -68,13 +63,13 @@ public class StackWidgetProvider extends AppWidgetProvider {
             // cannot setup their own pending intents, instead, the collection as a whole can
             // setup a pending intent template, and the individual items can set a fillInIntent
             // to create unique before on an item to item basis.
-            Intent toastIntent = new Intent(context, StackWidgetProvider.class);
-            toastIntent.setAction(StackWidgetProvider.TOAST_ACTION);
-            toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+            Intent detailedViewIntent = new Intent(context, StackWidgetProvider.class);
+            detailedViewIntent.setAction(StackWidgetProvider.DETAILED_VIEW);
+            detailedViewIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-            PendingIntent toastPendingIntent = PendingIntent.getBroadcast(context, 0, toastIntent,
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, detailedViewIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
-            rv.setPendingIntentTemplate(R.id.stack_view, toastPendingIntent);
+            rv.setPendingIntentTemplate(R.id.stack_view, pendingIntent);
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], rv);
         }

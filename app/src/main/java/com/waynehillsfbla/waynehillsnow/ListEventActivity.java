@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ******************************************************
- * This activity presents the events in a list of cards.
- * It gets the event information from the database.
- * ******************************************************
+ * ******************************************************************
+ * This activity starts when a user has clicked on the calendar,    *
+ * and displays the events that are on the clicked day.             *
+ * ****************************************************************
  */
 public class ListEventActivity extends AppCompatActivity {
     int year;
@@ -40,6 +40,7 @@ public class ListEventActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        //Get the year, month, and day of the clicked on date
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         year = extras.getInt("year");
@@ -55,6 +56,7 @@ public class ListEventActivity extends AppCompatActivity {
         getEvents();
     }
 
+    //Supply the adapter with all the information
     private List<EventInfo> createList(int size, JSONArray jsonArray) {
         List<EventInfo> result = new ArrayList<EventInfo>();
         for (int i = 0; i < size; i++) {
@@ -64,7 +66,6 @@ public class ListEventActivity extends AppCompatActivity {
                 ei.title = jsonArray.getJSONObject(i).getString("title");
                 ei.startDatetime = jsonArray.getJSONObject(i).getString("startDate");
                 ei.pictureURL = jsonArray.getJSONObject(i).getString("pictureURL");
-                ei.type = jsonArray.getJSONObject(i).getString("type");
                 ei.contact = jsonArray.getJSONObject(i).getString("contact");
                 ei.endDatetime = jsonArray.getJSONObject(i).getString("endDate");
                 ei.location = jsonArray.getJSONObject(i).getString("location");
@@ -82,7 +83,6 @@ public class ListEventActivity extends AppCompatActivity {
         finish();
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -93,11 +93,13 @@ public class ListEventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Set up the cards
     private void initCards(JSONArray jsonArray) {
         EventAdapter ea = new EventAdapter(createList(jsonArray.length(), jsonArray));
         recList.setAdapter(ea);
     }
 
+    //Get the events that are on a particular date
     private void getEvents() {
         RequestParams requestParams = new RequestParams();
         requestParams.put("year", year);
