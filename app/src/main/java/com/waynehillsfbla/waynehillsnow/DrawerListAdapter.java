@@ -94,7 +94,7 @@ public class DrawerListAdapter extends RecyclerView.Adapter<DrawerListAdapter.Dr
             }
         } else {
             holder.vDisplayName.setText(displayName);
-            Picasso.with(holder.vContext).load(profilePicture).into(holder.vProfilePicture);
+            Picasso.with(holder.vContext).load(profilePicture.substring(0, 96) + "150").into(holder.vProfilePicture);
         }
     }
 
