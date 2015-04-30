@@ -24,38 +24,54 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".DetailedEventActivity"
             android:label="@string/title_activity_detailed_event"
-            android:parentActivityName=".MainActivity" />
-
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
+        </activity>
 
         <activity
             android:name=".ListEventActivity"
             android:label="@string/title_activity_list_event"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".CalendarActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.CalendarActivity" />
+        </activity>
+
         <activity
             android:name=".GooglePlusSignIn"
-            android:label="@string/title_activity_google_plus_sign_in" />
+            android:label="@string/title_activity_google_plus_sign_in"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
+        </activity>
         <activity
             android:name=".SearchActivity"
             android:label="Search"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
+        </activity>
 
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
 
         <activity
             android:name=".ViewImageActivity"
-            android:label="Event Image" />
+            android:label="Event Image"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
+        </activity>
 
         <service
             android:name=".StackWidgetService"
@@ -81,10 +97,20 @@
 
         <activity
             android:name=".MyEventsActivity"
-            android:label="@string/title_activity_my_events" />
+            android:label="@string/title_activity_my_events"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
+        </activity>
         <activity
             android:name=".ImageUploadActivity"
-            android:label="@string/title_activity_image_upload" />
+            android:label="@string/title_activity_image_upload"
+            android:parentActivityName=".LiveAtHillsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.LiveAtHillsActivity" />
+        </activity>
         <activity
             android:name=".LiveAtHillsActivity"
             android:label="@string/title_activity_live_at_hills"
@@ -96,7 +122,12 @@
 
         <activity
             android:name=".CalendarActivity"
-            android:label="@string/title_activity_calendar" />
+            android:label="@string/title_activity_calendar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

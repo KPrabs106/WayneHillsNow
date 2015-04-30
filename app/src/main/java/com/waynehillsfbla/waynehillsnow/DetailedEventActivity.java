@@ -164,7 +164,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         getComments();
         getAttendance();
         getWeather();
-        setupNotification();
+        initNotification();
 
         txtTitle = (TextView) findViewById(R.id.txtTitle);
         txtTitle.setText(title);
@@ -267,7 +267,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         commentDialog.show();
     }
 
-    private void setupNotification() {
+    private void initNotification() {
         SharedPreferences notifications = getSharedPreferences("notifications", Context.MODE_PRIVATE);
         Map<String, ?> keys = notifications.getAll();
         for (Map.Entry<String, ?> entry : keys.entrySet()) {
@@ -646,6 +646,7 @@ public class DetailedEventActivity extends AppCompatActivity {
     }
 
     public void onRefresh() {
+        initNotification();
         getEventDetails();
         getLocationDetails();
         getComments();

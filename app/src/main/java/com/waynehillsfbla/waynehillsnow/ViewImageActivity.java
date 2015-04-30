@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,7 +28,7 @@ public class ViewImageActivity extends AppCompatActivity {
     String pictureURL;
     TouchImageView eventPic;
     Toolbar toolbar;
-    String eventName;;
+    String eventName;
 
     public static Bitmap getBitmapFromURL(String src) {
         try {
@@ -53,10 +52,10 @@ public class ViewImageActivity extends AppCompatActivity {
 
         eventPic = (TouchImageView) findViewById(R.id.eventImage);
 
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        //setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
