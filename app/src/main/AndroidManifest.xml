@@ -66,7 +66,7 @@
 
         <activity
             android:name=".ViewImageActivity"
-            android:label="Event Image"
+            android:label="View Image"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

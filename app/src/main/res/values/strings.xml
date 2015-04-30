@@ -18,7 +18,7 @@
     <string name="contact">Contact:</string>
     <string name="cal">Calendar</string>
     <string name="list">Event List</string>
-    <string name="title_activity_google_plus_sign_in">GooglePlusSignIn</string>
+    <string name="title_activity_google_plus_sign_in">Google Plus Sign In</string>
     <string name="status_signed_out">Signed out</string>
     <string name="close">close</string>
     <string name="play_services_error">Play Services Error</string>
@@ -34,7 +34,7 @@
     <string name="num">11</string>
     <string name="title_activity_write_comment">WriteCommentActivity</string>
     <string name="title_activity_my_events">My Events</string>
-    <string name="title_activity_image_upload">ImageUploadActivity</string>
+    <string name="title_activity_image_upload">Upload an Image</string>
     <string name="title_activity_live_at_hills">Live@Hills</string>
     <string name="title_activity_view_event_image">ViewEventImage</string>
     <string name="send_to">Share with...</string>
