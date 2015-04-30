@@ -76,6 +76,7 @@ public class DetailedEventActivity extends AppCompatActivity {
     ActionButton actionButton;
     AlertDialog.Builder commentDialog;
     EditText input;
+    ImageView locPin;
 
     int id;
     String title;
@@ -140,6 +141,8 @@ public class DetailedEventActivity extends AppCompatActivity {
         attendButton.setEnabled(false);
         cancelButton = (Button) findViewById(R.id.cancel_button);
         cancelButton.setEnabled(false);
+
+        locPin = (ImageView) findViewById(R.id.locPin);
 
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -326,7 +329,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
-        Toast.makeText(getApplicationContext(), "Notification set.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Notification set", Toast.LENGTH_SHORT).show();
         logNotification(date);
         notifIcon.setVisibility(View.VISIBLE);
     }
@@ -466,6 +469,18 @@ public class DetailedEventActivity extends AppCompatActivity {
                 }
             }
         });
+        locPin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("location", "clicked");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, locationIntentUri);
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
+                } else {
+                    Log.e(null, "no mapps");
+                }
+            }
+        });
 
     }
 
@@ -540,6 +555,7 @@ public class DetailedEventActivity extends AppCompatActivity {
             } else {
                 attendButton.setEnabled(true);
                 cancelButton.setEnabled(false);
+                attendIcon.setVisibility(View.INVISIBLE);
             }
         }
 
@@ -597,6 +613,7 @@ public class DetailedEventActivity extends AppCompatActivity {
         ClientServerInterface.post("get_weather.php", eventIdParam, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.e(null,response.toString());
                 initWeather(response);
             }
         });

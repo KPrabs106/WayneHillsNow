@@ -49,13 +49,9 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     SwipeRefreshLayout swipeRefreshLayout;
     LinearLayoutManager lin;
 
-    String[] drawerItems = {"Google Plus", "My Events", "Live@Hills", "Calendar", "Search", "Help"};
-    int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_photos, R.drawable.ic_calendar, R.drawable.ic_search, R.drawable.ic_help};
+    String[] drawerItems = {"Google Plus", "My Events", "Calendar","Live@Hills", "Search"};
+    int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_calendar, R.drawable.ic_photos, R.drawable.ic_search};
 
-    //TODO widget options; myevents, upcoming events
-    //TODO comments and live@hills delete option
-    //TODO floating action button issue in Live@Hills
-    // TODO help activity
     //TODO weather drawer layout
 
 

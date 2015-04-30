@@ -53,10 +53,10 @@ public class ViewImageActivity extends AppCompatActivity {
 
         eventPic = (TouchImageView) findViewById(R.id.eventImage);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        //setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
 
         final Intent intent = getIntent();
         Bundle extras = intent.getExtras();
