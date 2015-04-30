@@ -54,7 +54,7 @@
             android:value="com.waynehillsfbla.waynehillsnow.MainActivity" />
 
         <activity
-            android:name=".ViewEventImage"
+            android:name=".ViewImageActivity"
             android:label="Event Image" />
 
         <service
@@ -80,13 +80,13 @@
         <receiver android:name=".AlarmReceiver" />
 
         <activity
-            android:name=".MyEvents"
+            android:name=".MyEventsActivity"
             android:label="@string/title_activity_my_events" />
         <activity
             android:name=".ImageUploadActivity"
             android:label="@string/title_activity_image_upload" />
         <activity
-            android:name=".LiveAtHills"
+            android:name=".LiveAtHillsActivity"
             android:label="@string/title_activity_live_at_hills"
             android:parentActivityName=".MainActivity">
             <meta-data

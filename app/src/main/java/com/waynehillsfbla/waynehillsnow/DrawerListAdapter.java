@@ -68,9 +68,9 @@ public class DrawerListAdapter extends RecyclerView.Adapter<DrawerListAdapter.Dr
                 if ((position == 1 && hasHeader) || (position == 0 && !hasHeader))
                     v.getContext().startActivity(new Intent(v.getContext(), GooglePlusSignIn.class));
                 if ((position == 2 && hasHeader) || (position == 1 && !hasHeader))
-                    v.getContext().startActivity(new Intent(v.getContext(), MyEvents.class));
+                    v.getContext().startActivity(new Intent(v.getContext(), MyEventsActivity.class));
                 if ((position == 3 && hasHeader) || (position == 2 && !hasHeader))
-                    v.getContext().startActivity(new Intent(v.getContext(), LiveAtHills.class));
+                    v.getContext().startActivity(new Intent(v.getContext(), LiveAtHillsActivity.class));
                 if ((position == 4 && hasHeader) || (position == 3 && !hasHeader))
                     v.getContext().startActivity(new Intent(v.getContext(), CalendarActivity.class));
                 if ((position == 5 && hasHeader) || (position == 4 && !hasHeader))

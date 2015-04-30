@@ -14,7 +14,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -42,7 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class ImageUploadActivity extends ActionBarActivity {
+public class ImageUploadActivity extends AppCompatActivity {
 
     private final int SELECT_PHOTO = 1;
     private final String IMGUR_CLIENT_ID = "1f141501d65d7d7";
@@ -59,6 +60,11 @@ public class ImageUploadActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_upload);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         getPastEvents();
 
@@ -157,6 +163,7 @@ public class ImageUploadActivity extends ActionBarActivity {
         requestParams.add("googleId", getSharedPreferences("userDetails", MODE_PRIVATE).getString("googleId", null));
         ClientServerInterface.post("log_image.php", requestParams, new JsonHttpResponseHandler());
         Toast.makeText(getApplicationContext(), "Image Uploaded.", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     private void showDialog() {

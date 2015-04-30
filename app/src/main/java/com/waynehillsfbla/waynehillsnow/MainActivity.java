@@ -6,14 +6,13 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,12 +35,11 @@ import java.util.List;
  * the user can sign in to Google+.
  * ****************************************************
  */
-public class MainActivity extends ActionBarActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener {
 
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
 
-    Toolbar toolbar;
     Intent intent;
 
     TextView titleTextView;
@@ -54,7 +52,6 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
     String[] drawerItems = {"Google Plus", "My Events", "Live@Hills", "Calendar", "Search", "Help"};
     int[] icons = {R.drawable.ic_sign_in, R.drawable.ic_my_events, R.drawable.ic_photos, R.drawable.ic_calendar, R.drawable.ic_search, R.drawable.ic_help};
 
-    //TODO better search
     //TODO widget options; myevents, upcoming events
     //TODO comments and live@hills delete option
     //TODO floating action button issue in Live@Hills
@@ -104,7 +101,7 @@ public class MainActivity extends ActionBarActivity implements SwipeRefreshLayou
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

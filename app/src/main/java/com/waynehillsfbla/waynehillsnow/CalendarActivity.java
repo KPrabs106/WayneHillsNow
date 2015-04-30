@@ -2,7 +2,8 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +28,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class CalendarActivity extends ActionBarActivity implements BaseSliderView.OnSliderClickListener {
+public class CalendarActivity extends AppCompatActivity implements BaseSliderView.OnSliderClickListener {
 
     SliderLayout imageScroller;
     CaldroidFragment caldroidFragment;
@@ -37,6 +38,11 @@ public class CalendarActivity extends ActionBarActivity implements BaseSliderVie
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         imageScroller = (SliderLayout) findViewById(R.id.slider);
         getEvents();

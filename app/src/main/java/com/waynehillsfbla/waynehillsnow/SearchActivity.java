@@ -2,13 +2,12 @@ package com.waynehillsfbla.waynehillsnow;
 
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -28,18 +27,17 @@ import java.util.List;
 /**
  * Created by Sudharshan on 4/19/2015.
  */
-public class SearchActivity extends ActionBarActivity {
+public class SearchActivity extends AppCompatActivity {
 
     EditText input;
     ImageButton enterButton;
     RecyclerView recList;
-    Toolbar toolbar;
     TextView failure;
     ProgressBar progressBar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.search_layout);
+        setContentView(R.layout.activity_search);
 
         failure = (TextView) findViewById(R.id.failureMessage);
         progressBar = (ProgressBar) findViewById(R.id.progressBar2);
@@ -62,7 +60,7 @@ public class SearchActivity extends ActionBarActivity {
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recList.setLayoutManager(llm);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);

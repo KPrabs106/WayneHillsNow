@@ -2,14 +2,11 @@ package com.waynehillsfbla.waynehillsnow;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -27,7 +24,7 @@ import java.util.List;
  * It gets the event information from the database.
  * ******************************************************
  */
-public class ListEventActivity extends ActionBarActivity {
+public class ListEventActivity extends AppCompatActivity {
     int year;
     int month;
     int day;
@@ -37,6 +34,11 @@ public class ListEventActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_event);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -51,10 +53,6 @@ public class ListEventActivity extends ActionBarActivity {
         recList.setLayoutManager(llm);
 
         getEvents();
-
-        //View z = findViewById(R.layout.card_layout);
-        //ImageView attendIcon = (ImageView) z.findViewById(R.id.attendIcon);
-        //ImageView notifIcon = (ImageView) z.findViewById(R.id.notifIcon);
     }
 
     private List<EventInfo> createList(int size, JSONArray jsonArray) {

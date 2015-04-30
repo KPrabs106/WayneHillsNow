@@ -93,7 +93,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
                 Bundle bundle = new Bundle();
                 bundle.putString("pictureURL", eventList.get(i).pictureURL);
                 bundle.putString("eventName", eventList.get(i).title);
-                Intent intent = new Intent(v.getContext(), ViewEventImage.class);
+                Intent intent = new Intent(v.getContext(), ViewImageActivity.class);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
             }
@@ -107,8 +107,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
 
         Picasso.with(eventViewHolder.context).load(ei.pictureURL).into(eventViewHolder.vPicture, new Callback() {
             @Override
